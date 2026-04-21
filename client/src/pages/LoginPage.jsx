@@ -6,6 +6,7 @@ import { useMarket } from '../context/MarketContext'
 export function LoginPage() {
   const navigate = useNavigate()
   const { isAuthenticated, isAdmin, login, submitting, meta } = useMarket()
+  const adminHintEmail = meta.adminCredentialsHint?.email
   const [form, setForm] = useState({
     email: '',
     password: '',
@@ -30,11 +31,13 @@ export function LoginPage() {
             title="Sign in before viewing your dashboard"
             description="User dashboards require login. Admin controls remain hidden until the correct admin credentials are used."
           />
-          <div className="surface-card auth-note-card">
-            <p className="muted-label">Admin hint</p>
-            <p>Admin email: {meta.adminCredentialsHint?.email}</p>
-            <p>Use the seeded admin password configured in the demo data to access the admin dashboard.</p>
-          </div>
+          {adminHintEmail ? (
+            <div className="surface-card auth-note-card">
+              <p className="muted-label">Admin hint</p>
+              <p>Admin email: {adminHintEmail}</p>
+              <p>Use the production admin credentials configured for this deployment.</p>
+            </div>
+          ) : null}
         </div>
 
         <form className="surface-card auth-form" onSubmit={submitForm}>

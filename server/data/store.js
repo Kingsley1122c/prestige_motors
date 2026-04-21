@@ -7,6 +7,11 @@ const COUNTRY_OPTIONS = [
 ]
 
 const DEFAULT_COUNTRY_CODE = 'US'
+const readConfiguredValue = (key, fallback = '') => {
+  const configuredValue = String(process.env[key] || '').trim()
+  return configuredValue || fallback
+}
+const ADMIN_LOGIN_HINT_EMAIL = readConfiguredValue('ADMIN_LOGIN_HINT_EMAIL')
 
 const cloneValue = (value) => JSON.parse(JSON.stringify(value))
 
@@ -740,8 +745,8 @@ const cars = [
 
 const users = [
   createUserRecord({
-    id: 'admin-user', fullName: 'Prestige Admin', email: 'admin@prestigemotors.example', phone: '+1 305 555 0198',
-    password: 'Admin@2026', role: 'admin', country: 'US', location: 'Miami',
+    id: 'admin-user', fullName: readConfiguredValue('ADMIN_FULL_NAME', 'Prestige Admin'), email: readConfiguredValue('ADMIN_EMAIL', 'admin@prestigemotors.example'), phone: readConfiguredValue('ADMIN_PHONE', '+1 305 555 0198'),
+    password: readConfiguredValue('ADMIN_PASSWORD', 'Admin@2026'), role: 'admin', country: 'US', location: 'Miami',
   }),
   createUserRecord({
     id: 'demo-user', fullName: 'Amina Yusuf', email: 'amina@example.com', phone: '+1 917 555 0172',
@@ -860,7 +865,7 @@ const meta = {
   paymentTypes: ['full', 'installment'],
   defaultCountry: DEFAULT_COUNTRY_CODE,
   countries: COUNTRY_OPTIONS,
-  adminCredentialsHint: { email: 'admin@prestigemotors.example' },
+  adminCredentialsHint: ADMIN_LOGIN_HINT_EMAIL ? { email: ADMIN_LOGIN_HINT_EMAIL } : null,
   testimonials: [
     { id: 'review-1', name: 'Marcus Ellison', role: 'Private banking client, Miami', quote: 'The team had the VIN file, service history, and enclosed transport options ready before I sent a deposit. It felt like a real boutique dealership, not a listing board.' },
     { id: 'review-2', name: 'Rachel Kim', role: 'Founder, Newport Coast', quote: 'I liked that the numbers were presented cleanly. Deposit, monthly cost, payoff horizon, and handover timing were all laid out before the finance desk called me.' },
@@ -873,11 +878,11 @@ const meta = {
     { question: 'Which payment methods are supported?', answer: 'Card payment, bank transfer, and an optional escrow workflow for qualified transactions are supported. Receipts are generated automatically.' },
   ],
   company: {
-    name: 'Prestige Motors Miami',
-    address: '415 Biscayne Boulevard, Miami, Florida, United States',
-    phone: '+1 305 555 0044',
-    email: 'clientservices@prestigemotors.example',
-    hours: 'Mon-Sat, 9:00 AM - 7:00 PM',
+    name: readConfiguredValue('COMPANY_NAME', 'Prestige Motors Miami'),
+    address: readConfiguredValue('COMPANY_ADDRESS', '415 Biscayne Boulevard, Miami, Florida, United States'),
+    phone: readConfiguredValue('COMPANY_PHONE', '+1 305 555 0044'),
+    email: readConfiguredValue('COMPANY_EMAIL', 'clientservices@prestigemotors.example'),
+    hours: readConfiguredValue('COMPANY_HOURS', 'Mon-Sat, 9:00 AM - 7:00 PM'),
   },
   policies: {
     privacy: 'Client information is used for showroom appointments, finance review, identity checks, transport coordination, and receipt records only. We do not sell client data or market guaranteed approvals.',

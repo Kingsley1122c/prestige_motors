@@ -9,6 +9,7 @@ const {
   attachVehicleDisplayMedia,
 } = require('./data/store')
 const {
+  DATABASE_FILE_PATH,
   cars,
   users,
   financingApplications,
@@ -18,12 +19,14 @@ const {
   serviceRequests,
   meta,
   refreshMetaCollections,
+  getDatabaseSnapshot,
   saveDatabase,
 } = require('./data/database')
 
 const app = express()
 const PORT = process.env.PORT || 4000
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || ''
+const APP_STARTED_AT = new Date().toISOString()
 
 app.use(cors({
   origin(origin, callback) {
@@ -38,6 +41,7 @@ app.use(cors({
 app.use(express.json({ limit: '8mb' }))
 
 const PASSWORD_SALT_ROUNDS = 10
+const readConfiguredValue = (key) => String(process.env[key] || '').trim()
 
 const isPasswordHash = (password) => String(password || '').startsWith('$2')
 const hashPassword = (password) => bcrypt.hashSync(String(password), PASSWORD_SALT_ROUNDS)
@@ -69,6 +73,66 @@ const migrateStoredPasswords = () => {
 }
 
 migrateStoredPasswords()
+
+const syncConfiguredAdminUser = () => {
+  const configuredAdmin = {
+    fullName: readConfiguredValue('ADMIN_FULL_NAME'),
+    email: readConfiguredValue('ADMIN_EMAIL'),
+    phone: readConfiguredValue('ADMIN_PHONE'),
+    password: readConfiguredValue('ADMIN_PASSWORD'),
+  }
+  let didChange = false
+  let adminUser = users.find((entry) => entry.id === 'admin-user') || users.find((entry) => entry.role === 'admin')
+
+  if (!adminUser) {
+    if (!configuredAdmin.fullName || !configuredAdmin.email || !configuredAdmin.phone || !configuredAdmin.password) {
+      return
+    }
+
+    users.unshift(createUserRecord({
+      id: 'admin-user',
+      fullName: configuredAdmin.fullName,
+      email: configuredAdmin.email,
+      phone: configuredAdmin.phone,
+      password: hashPassword(configuredAdmin.password),
+      role: 'admin',
+      country: 'US',
+      location: 'Miami',
+    }))
+    saveDatabase()
+    return
+  }
+
+  if (configuredAdmin.email && configuredAdmin.email.toLowerCase() !== String(adminUser.email || '').toLowerCase()) {
+    const duplicateUser = users.find((entry) => entry.id !== adminUser.id && String(entry.email || '').toLowerCase() === configuredAdmin.email.toLowerCase())
+
+    if (!duplicateUser) {
+      adminUser.email = configuredAdmin.email
+      didChange = true
+    }
+  }
+
+  if (configuredAdmin.fullName && configuredAdmin.fullName !== adminUser.fullName) {
+    adminUser.fullName = configuredAdmin.fullName
+    didChange = true
+  }
+
+  if (configuredAdmin.phone && configuredAdmin.phone !== adminUser.phone) {
+    adminUser.phone = configuredAdmin.phone
+    didChange = true
+  }
+
+  if (configuredAdmin.password && !verifyPassword(configuredAdmin.password, adminUser.password)) {
+    adminUser.password = hashPassword(configuredAdmin.password)
+    didChange = true
+  }
+
+  if (didChange) {
+    saveDatabase()
+  }
+}
+
+syncConfiguredAdminUser()
 
 const sanitizeUser = (user) => {
   if (!user) {
@@ -251,8 +315,39 @@ const validateProofAttachment = (proofAttachment) => {
   return ''
 }
 
+const buildSystemStatus = () => ({
+  status: 'ok',
+  service: 'prestige-motors-api',
+  startedAt: APP_STARTED_AT,
+  timestamp: new Date().toISOString(),
+  uptimeSeconds: Math.round(process.uptime()),
+  version: process.env.RENDER_GIT_COMMIT || process.env.npm_package_version || 'dev',
+  database: {
+    configuredPath: DATABASE_FILE_PATH,
+    collections: {
+      cars: cars.length,
+      users: users.length,
+      financingApplications: financingApplications.length,
+      payments: payments.length,
+      paymentRequests: paymentRequests.length,
+      deliveryRequests: deliveryRequests.length,
+      serviceRequests: serviceRequests.length,
+    },
+  },
+})
+
+const createBackupFileName = () => `prestige-motors-backup-${new Date().toISOString().replace(/[:.]/g, '-')}.json`
+
 app.get('/api/health', (request, response) => {
-  response.json({ status: 'ok' })
+  const systemStatus = buildSystemStatus()
+
+  response.json({
+    status: systemStatus.status,
+    service: systemStatus.service,
+    timestamp: systemStatus.timestamp,
+    uptimeSeconds: systemStatus.uptimeSeconds,
+    version: systemStatus.version,
+  })
 })
 
 app.get('/api/meta', (request, response) => {
@@ -347,6 +442,23 @@ app.get('/api/dashboard/user/:userId', (request, response) => {
 
 app.get('/api/dashboard/admin', requireAdmin, (request, response) => {
   response.json(buildAdminDashboard())
+})
+
+app.get('/api/admin/system/status', requireAdmin, (request, response) => {
+  response.json(buildSystemStatus())
+})
+
+app.get('/api/admin/system/export', requireAdmin, (request, response) => {
+  const backupPayload = {
+    exportedAt: new Date().toISOString(),
+    exportedBy: request.actor.id,
+    version: process.env.RENDER_GIT_COMMIT || process.env.npm_package_version || 'dev',
+    snapshot: getDatabaseSnapshot(),
+  }
+
+  response.setHeader('Content-Type', 'application/json')
+  response.setHeader('Content-Disposition', `attachment; filename="${createBackupFileName()}"`)
+  response.send(JSON.stringify(backupPayload, null, 2))
 })
 
 app.post('/api/favorites', (request, response) => {

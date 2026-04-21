@@ -30,6 +30,8 @@ The frontend runs on `http://localhost:5173` and proxies API requests to `http:/
 
 If you want the client to call a different backend during development, copy `client/.env.example` to `client/.env` and set `VITE_API_BASE_URL`.
 
+For backend environment configuration, copy `server/.env.example` to your Render env settings or local shell.
+
 ## Tech stack
 
 - Frontend: React 19 + Vite
@@ -67,6 +69,21 @@ After the first blueprint import, set these values in Render:
 
 Then redeploy both services.
 
+### Optional production environment values for the API
+
+Set these on `prestige-motors-api` when you want to replace demo placeholders without changing code:
+
+1. `COMPANY_NAME`
+2. `COMPANY_ADDRESS`
+3. `COMPANY_PHONE`
+4. `COMPANY_EMAIL`
+5. `COMPANY_HOURS`
+6. `ADMIN_FULL_NAME`
+7. `ADMIN_EMAIL`
+8. `ADMIN_PHONE`
+9. `ADMIN_PASSWORD`
+10. `ADMIN_LOGIN_HINT_EMAIL` if you intentionally want a public admin email hint on the login page
+
 ### Render service settings already included
 
 1. API build command: `npm install`
@@ -88,3 +105,22 @@ Then redeploy both services.
 - Store payments and applications in a database
 - Enable HTTPS/SSL and move secrets to environment variables
 - Replace demo image URLs with licensed production assets
+
+## Monitoring and backup
+
+The API now exposes two production-friendly system endpoints:
+
+1. `GET /api/health`
+Returns a lightweight health payload with status, timestamp, uptime, and version so you can attach Render health checks or an external monitor.
+
+2. `GET /api/admin/system/status`
+Returns admin-only runtime details including uptime and collection counts.
+
+3. `GET /api/admin/system/export`
+Returns an admin-only JSON backup of the current SQLite-backed collections and computed meta payload as a downloadable file.
+
+Example backup flow:
+
+```powershell
+curl -H "x-user-id: <admin-user-id>" https://your-api-host/api/admin/system/export -o prestige-motors-backup.json
+```

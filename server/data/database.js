@@ -135,6 +135,11 @@ const saveDatabase = () => {
   })()
 }
 
+const getDatabaseSnapshot = () => ({
+  ...cloneValue(createSnapshot()),
+  meta: cloneValue(buildMeta(cars)),
+})
+
 const initializeDatabase = () => {
   const sqliteSnapshot = readCollectionsSnapshot()
 
@@ -171,5 +176,6 @@ module.exports = {
   serviceRequests,
   meta,
   refreshMetaCollections,
+  getDatabaseSnapshot,
   saveDatabase,
 }
