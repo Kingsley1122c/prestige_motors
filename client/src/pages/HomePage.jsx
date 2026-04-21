@@ -28,6 +28,7 @@ const showroomLanes = [
 export function HomePage() {
   const navigate = useNavigate()
   const { cars, featuredCars, meta } = useMarket()
+  const landingCars = featuredCars.slice(0, 3)
   const [quickSearch, setQuickSearch] = useState({
     brand: 'All',
     location: 'All',
@@ -59,6 +60,34 @@ export function HomePage() {
 
   return (
     <>
+      <section className="page-shell landing-inventory">
+        <div className="landing-inventory-shell glass-panel">
+          <div className="landing-inventory-header">
+            <div className="landing-inventory-copy">
+              <span className="eyebrow">Available now</span>
+              <h1>Cars first. Friction later.</h1>
+              <p>
+                Facebook ad traffic lands directly on active inventory with pricing, deposit guidance,
+                and financing access visible from the first screen.
+              </p>
+            </div>
+            <div className="landing-inventory-actions">
+              <Link className="button button-primary" to="/listings">
+                Browse all cars
+              </Link>
+              <Link className="button button-secondary" to="/financing">
+                Check financing
+              </Link>
+            </div>
+          </div>
+          <div className="card-grid">
+            {landingCars.map((car) => (
+              <CarCard key={car.id} car={car} />
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="hero-section page-shell">
         <div className="hero-copy glass-panel">
           <span className="eyebrow">Miami flagship inventory</span>
@@ -176,19 +205,6 @@ export function HomePage() {
               <h3>{lane.title}</h3>
               <p>{lane.text}</p>
             </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="page-shell section-spaced">
-        <SectionTitle
-          eyebrow="Featured Collection"
-          title="The highest-value cars on the floor right now"
-          description="Home page features now prioritize the strongest exotic and flagship inventory rather than generic filler, with deposit thresholds and release terms visible before enquiry."
-        />
-        <div className="card-grid">
-          {featuredCars.map((car) => (
-            <CarCard key={car.id} car={car} />
           ))}
         </div>
       </section>
