@@ -1,0 +1,1730 @@
+{
+  "cars": [
+    {
+      "id": "lexus-lx-600-2023",
+      "badge": "Flagship",
+      "brand": "Lexus",
+      "model": "LX 600 F SPORT",
+      "year": 2023,
+      "mileage": 8200,
+      "location": "Houston",
+      "condition": "Certified used",
+      "priceUsd": 128000,
+      "priceLocal": 128000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 15000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 19568
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 10152
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 7013
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 5443
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "SUV",
+      "fuelType": "Petrol",
+      "transmission": "10-speed automatic",
+      "drivetrain": "AWD",
+      "exteriorColor": "Obsidian Black",
+      "interiorColor": "Saddle Tan",
+      "description": "A flagship luxury SUV positioned in our Texas partner inventory with commanding road presence, executive rear comfort, and full verification before payment.",
+      "heroImage": "https://images.unsplash.com/photo-1494905998402-395d579af36f?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1494905998402-395d579af36f?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "360 camera",
+        "Mark Levinson audio",
+        "Ventilated seats",
+        "Adaptive suspension"
+      ],
+      "highlights": [
+        "Houston inspection available same day",
+        "Financing up to 24 months",
+        "Verified VIN report included"
+      ],
+      "delivery": {
+        "feeUsd": 350,
+        "eta": "2-4 business days after approval"
+      }
+    },
+    {
+      "id": "mercedes-s580-2022",
+      "badge": "Executive",
+      "brand": "Mercedes-Benz",
+      "model": "S 580 4MATIC",
+      "year": 2022,
+      "mileage": 15400,
+      "location": "Atlanta",
+      "condition": "Certified used",
+      "priceUsd": 146000,
+      "priceLocal": 146000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 18000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 22166
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 11499
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 7944
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 6166
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "Sedan",
+      "fuelType": "Petrol",
+      "transmission": "9-speed automatic",
+      "drivetrain": "AWD",
+      "exteriorColor": "Graphite Grey",
+      "interiorColor": "Macchiato Beige",
+      "description": "Long-wheelbase comfort and modern safety technology for buyers who want chauffeured luxury sourced through our Atlanta executive showroom network.",
+      "heroImage": "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Rear executive seating",
+        "Burmester 4D audio",
+        "Air suspension",
+        "Night package"
+      ],
+      "highlights": [
+        "Atlanta showroom verification appointment",
+        "Bank transfer or escrow supported",
+        "Business registration details available"
+      ],
+      "delivery": {
+        "feeUsd": 420,
+        "eta": "3-5 business days after deposit confirmation"
+      }
+    },
+    {
+      "id": "toyota-land-cruiser-2021",
+      "badge": "Popular",
+      "brand": "Toyota",
+      "model": "Land Cruiser GR Sport",
+      "year": 2021,
+      "mileage": 27600,
+      "location": "Dallas",
+      "condition": "Certified used",
+      "priceUsd": 93000,
+      "priceLocal": 93000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 9000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 14546
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 7546
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 5213
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 4046
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "SUV",
+      "fuelType": "Petrol",
+      "transmission": "10-speed automatic",
+      "drivetrain": "4WD",
+      "exteriorColor": "Pearl White",
+      "interiorColor": "Black Leather",
+      "description": "A dependable premium SUV for families and fleet buyers, offered through our Dallas stock with clear ownership records and flexible monthly plans.",
+      "heroImage": "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Crawl control",
+        "Adaptive cruise",
+        "Third-row seating",
+        "Off-road package"
+      ],
+      "highlights": [
+        "Ideal for installment buyers",
+        "Dallas inspection and test drive required before release",
+        "Delivery only after approval"
+      ],
+      "delivery": {
+        "feeUsd": 300,
+        "eta": "2-4 business days after approval"
+      }
+    },
+    {
+      "id": "bmw-x7-2023",
+      "badge": "New Arrival",
+      "brand": "BMW",
+      "model": "X7 xDrive40i",
+      "year": 2023,
+      "mileage": 10900,
+      "location": "Chicago",
+      "condition": "Certified used",
+      "priceUsd": 118500,
+      "priceLocal": 118500,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 14000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 18096
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 9388
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 6485
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 5034
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "SUV",
+      "fuelType": "Petrol",
+      "transmission": "8-speed automatic",
+      "drivetrain": "AWD",
+      "exteriorColor": "Black Sapphire",
+      "interiorColor": "Ivory White",
+      "description": "Spacious three-row comfort with a refined digital cabin and payment options structured for executives and family buyers sourcing through Chicago.",
+      "heroImage": "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1523983388277-336a66bf9bcd?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Panoramic roof",
+        "Gesture control",
+        "Harman Kardon audio",
+        "Air suspension"
+      ],
+      "highlights": [
+        "Chicago inspection before any release",
+        "Automated receipts for all payments",
+        "Delivery request after deposit"
+      ],
+      "delivery": {
+        "feeUsd": 360,
+        "eta": "2-5 business days after payment verification"
+      }
+    },
+    {
+      "id": "range-rover-sport-2022",
+      "badge": "Premium",
+      "brand": "Land Rover",
+      "model": "Range Rover Sport HSE",
+      "year": 2022,
+      "mileage": 19100,
+      "location": "San Francisco",
+      "condition": "Certified used",
+      "priceUsd": 121000,
+      "priceLocal": 121000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 15000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 18356
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 9523
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 6578
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 5106
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "SUV",
+      "fuelType": "Petrol",
+      "transmission": "8-speed automatic",
+      "drivetrain": "AWD",
+      "exteriorColor": "Santorini Black",
+      "interiorColor": "Ebony",
+      "description": "Performance SUV styling with a carefully documented ownership trail, suited for buyers who want West Coast inventory with flexible financing.",
+      "heroImage": "https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1489824904134-891ab64532f1?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Terrain response",
+        "Meridian audio",
+        "Matrix LED",
+        "Heated steering"
+      ],
+      "highlights": [
+        "Bay Area delivery estimate shown upfront",
+        "Escrow available for qualified buyers",
+        "Inspection-first process"
+      ],
+      "delivery": {
+        "feeUsd": 480,
+        "eta": "5-7 business days after financing approval"
+      }
+    },
+    {
+      "id": "porsche-cayenne-2024",
+      "badge": "Collector Pick",
+      "brand": "Porsche",
+      "model": "Cayenne Platinum Edition",
+      "year": 2024,
+      "mileage": 4200,
+      "location": "Osaka",
+      "condition": "Brand new",
+      "priceUsd": 136000,
+      "priceLocal": 136000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 20000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 20088
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 10421
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 7199
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 5588
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "SUV",
+      "fuelType": "Petrol",
+      "transmission": "8-speed Tiptronic",
+      "drivetrain": "AWD",
+      "exteriorColor": "Jet Black Metallic",
+      "interiorColor": "Bordeaux Red",
+      "description": "A high-specification luxury SUV for discerning buyers who want a premium Japan-market import experience with documented financing and compliance steps.",
+      "heroImage": "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1485291571150-772bcfc10da5?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Sport Chrono package",
+        "BOSE surround",
+        "Head-up display",
+        "Adaptive sport seats"
+      ],
+      "highlights": [
+        "Osaka import documentation disclosed",
+        "Loan and escrow workflows supported",
+        "Premium concierge inspection scheduling"
+      ],
+      "delivery": {
+        "feeUsd": 650,
+        "eta": "7-10 business days after release approval"
+      }
+    },
+    {
+      "id": "cadillac-escalade-v-2024",
+      "badge": "USA Arrival",
+      "brand": "Cadillac",
+      "model": "Escalade V",
+      "year": 2024,
+      "mileage": 6100,
+      "location": "Los Angeles",
+      "condition": "Certified used",
+      "priceUsd": 164000,
+      "priceLocal": 164000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 22000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 24590
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 12757
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 8812
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 6840
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "SUV",
+      "fuelType": "Petrol",
+      "transmission": "10-speed automatic",
+      "drivetrain": "AWD",
+      "exteriorColor": "Black Raven",
+      "interiorColor": "Jet Black",
+      "description": "A full-size performance luxury SUV sourced from the US market with bold styling, concierge inspection support, and transparent financing terms.",
+      "heroImage": "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Super Cruise",
+        "AKG studio audio",
+        "Executive second row",
+        "Night vision"
+      ],
+      "highlights": [
+        "US-based inventory release",
+        "High-value vehicle verification included",
+        "Ideal for executive family transport"
+      ],
+      "delivery": {
+        "feeUsd": 540,
+        "eta": "2-5 business days after approval"
+      }
+    },
+    {
+      "id": "tesla-model-x-plaid-2024",
+      "badge": "Electric",
+      "brand": "Tesla",
+      "model": "Model X Plaid",
+      "year": 2024,
+      "mileage": 3400,
+      "location": "New York",
+      "condition": "Brand new",
+      "priceUsd": 129500,
+      "priceLocal": 129500,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 17000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 19482
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 10107
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 6982
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 5419
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "SUV",
+      "fuelType": "Electric",
+      "transmission": "Single-speed",
+      "drivetrain": "AWD",
+      "exteriorColor": "Pearl White",
+      "interiorColor": "Cream",
+      "description": "High-performance electric luxury SUV with falcon-wing doors, digital controls, and an America-based handover process.",
+      "heroImage": "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Autopilot",
+        "Six-seat layout",
+        "HEPA filtration",
+        "Panoramic windshield"
+      ],
+      "highlights": [
+        "Popular US luxury EV",
+        "Inspection available in Manhattan partner showroom",
+        "Receipt and escrow workflow supported"
+      ],
+      "delivery": {
+        "feeUsd": 510,
+        "eta": "3-6 business days after payment verification"
+      }
+    },
+    {
+      "id": "mercedes-g63-2023",
+      "badge": "Miami Select",
+      "brand": "Mercedes-Benz",
+      "model": "AMG G 63",
+      "year": 2023,
+      "mileage": 7800,
+      "location": "Miami",
+      "condition": "Certified used",
+      "priceUsd": 198000,
+      "priceLocal": 198000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 28000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 29439
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 15272
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 10550
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 8189
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "SUV",
+      "fuelType": "Petrol",
+      "transmission": "9-speed automatic",
+      "drivetrain": "AWD",
+      "exteriorColor": "Magno Black",
+      "interiorColor": "Classic Red",
+      "description": "An ultra-premium luxury icon with US showroom access, detailed ownership records, and structured monthly plans.",
+      "heroImage": "https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "AMG performance exhaust",
+        "Burmester audio",
+        "Nappa leather",
+        "360 camera"
+      ],
+      "highlights": [
+        "Miami-based inspection scheduling",
+        "High-deposit buyers supported",
+        "Ideal for premium export or US handover"
+      ],
+      "delivery": {
+        "feeUsd": 620,
+        "eta": "3-5 business days after release approval"
+      }
+    },
+    {
+      "id": "lexus-lm-500h-2024",
+      "badge": "Asia Exclusive",
+      "brand": "Lexus",
+      "model": "LM 500h Ultra Luxury",
+      "year": 2024,
+      "mileage": 2500,
+      "location": "Tokyo",
+      "condition": "Brand new",
+      "priceUsd": 172000,
+      "priceLocal": 172000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 24000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 25629
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 13296
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 9185
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 7129
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "Luxury Van",
+      "fuelType": "Hybrid",
+      "transmission": "Automatic",
+      "drivetrain": "AWD",
+      "exteriorColor": "Sonic Titanium",
+      "interiorColor": "White Leather",
+      "description": "A chauffeur-grade luxury MPV from Japan with private lounge seating and Asia-market documentation for careful buyers.",
+      "heroImage": "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1489824904134-891ab64532f1?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Rear lounge package",
+        "Hybrid powertrain",
+        "Mark Levinson audio",
+        "Executive climate control"
+      ],
+      "highlights": [
+        "Japan-market luxury import",
+        "Asia documentation reviewed before release",
+        "High-comfort chauffeur configuration"
+      ],
+      "delivery": {
+        "feeUsd": 700,
+        "eta": "7-12 business days after approval"
+      }
+    },
+    {
+      "id": "toyota-alphard-2024",
+      "badge": "Asia Family",
+      "brand": "Toyota",
+      "model": "Alphard Executive Lounge",
+      "year": 2024,
+      "mileage": 5100,
+      "location": "Singapore",
+      "condition": "Foreign used",
+      "priceUsd": 108000,
+      "priceLocal": 108000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 13000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 16451
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 8535
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 5896
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 4576
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "Luxury Van",
+      "fuelType": "Hybrid",
+      "transmission": "CVT",
+      "drivetrain": "FWD",
+      "exteriorColor": "Precious Metal",
+      "interiorColor": "Beige",
+      "description": "A luxury people-mover with premium second-row comfort, ideal for family buyers or hospitality operators sourcing from Asia.",
+      "heroImage": "https://images.unsplash.com/photo-1517026575980-3e1e2dedeab4?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1517026575980-3e1e2dedeab4?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Ottoman captain seats",
+        "JBL audio",
+        "Digital rear mirror",
+        "Power sliding doors"
+      ],
+      "highlights": [
+        "Singapore-based vehicle history",
+        "Family and hotel shuttle use case",
+        "Installment-friendly pricing"
+      ],
+      "delivery": {
+        "feeUsd": 560,
+        "eta": "6-9 business days after payment confirmation"
+      }
+    },
+    {
+      "id": "nissan-gtr-2022",
+      "badge": "Performance Asia",
+      "brand": "Nissan",
+      "model": "GT-R Premium",
+      "year": 2022,
+      "mileage": 8900,
+      "location": "Seoul",
+      "condition": "Foreign used",
+      "priceUsd": 149000,
+      "priceLocal": 149000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 21000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 22166
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 11499
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 7944
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 6166
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "Coupe",
+      "fuelType": "Petrol",
+      "transmission": "6-speed dual clutch",
+      "drivetrain": "AWD",
+      "exteriorColor": "Gun Metallic",
+      "interiorColor": "Black",
+      "description": "A serious high-performance coupe sourced through Asia, offered with documented verification and transparent export-ready release terms.",
+      "heroImage": "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1489824904134-891ab64532f1?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Brembo brakes",
+        "Bose audio",
+        "Launch control",
+        "Performance telemetry"
+      ],
+      "highlights": [
+        "Seoul-market performance vehicle",
+        "Specialist inspection before release",
+        "Collector-grade documentation"
+      ],
+      "delivery": {
+        "feeUsd": 640,
+        "eta": "6-10 business days after approval"
+      }
+    },
+    {
+      "id": "audi-rs7-2024",
+      "badge": "US Sportback",
+      "brand": "Audi",
+      "model": "RS 7 Performance",
+      "year": 2024,
+      "mileage": 3900,
+      "location": "Los Angeles",
+      "condition": "Brand new",
+      "priceUsd": 158000,
+      "priceLocal": 158000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 23000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 23378
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 12128
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 8378
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 6503
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "Sportback",
+      "fuelType": "Petrol",
+      "transmission": "8-speed automatic",
+      "drivetrain": "AWD",
+      "exteriorColor": "Daytona Gray",
+      "interiorColor": "Black Valcona",
+      "description": "A four-door performance flagship from our California pipeline, pairing supercar pace with daily luxury and transparent finance structure.",
+      "heroImage": "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1502161254066-6c74afbf07aa?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "RS dynamic package",
+        "Bang & Olufsen audio",
+        "Carbon optics",
+        "All-wheel steering"
+      ],
+      "highlights": [
+        "California-based verification slot",
+        "Performance finance profile supported",
+        "Executive and enthusiast appeal"
+      ],
+      "delivery": {
+        "feeUsd": 575,
+        "eta": "2-5 business days after payment verification"
+      }
+    },
+    {
+      "id": "rolls-royce-ghost-2023",
+      "badge": "Ultra Luxury",
+      "brand": "Rolls-Royce",
+      "model": "Ghost Extended",
+      "year": 2023,
+      "mileage": 2800,
+      "location": "Miami",
+      "condition": "Certified used",
+      "priceUsd": 348000,
+      "priceLocal": 348000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 55000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 50738
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 26322
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 18183
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 14113
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "Sedan",
+      "fuelType": "Petrol",
+      "transmission": "8-speed automatic",
+      "drivetrain": "AWD",
+      "exteriorColor": "Black Diamond",
+      "interiorColor": "Arctic White",
+      "description": "A chauffeur-grade ultra-luxury sedan in our Miami collection for buyers who want top-tier provenance, concierge handling, and discreet payment workflows.",
+      "heroImage": "https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Starlight headliner",
+        "Rear theatre seating",
+        "Bespoke audio",
+        "Signature umbrella doors"
+      ],
+      "highlights": [
+        "Miami private inspection suite",
+        "Escrow preferred for premium transfers",
+        "Ideal for chauffeured executive ownership"
+      ],
+      "delivery": {
+        "feeUsd": 840,
+        "eta": "3-6 business days after release approval"
+      }
+    },
+    {
+      "id": "ferrari-purosangue-2024",
+      "badge": "Exotic US",
+      "brand": "Ferrari",
+      "model": "Purosangue",
+      "year": 2024,
+      "mileage": 1900,
+      "location": "Las Vegas",
+      "condition": "Brand new",
+      "priceUsd": 425000,
+      "priceLocal": 425000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 70000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 61475
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 31891
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 22030
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 17100
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "Performance SUV",
+      "fuelType": "Petrol",
+      "transmission": "8-speed dual clutch",
+      "drivetrain": "AWD",
+      "exteriorColor": "Nero Daytona",
+      "interiorColor": "Rosso Ferrari",
+      "description": "Ferrari’s four-door performance statement sourced from our US exotic network, built for collectors who still want clarity on verification and release terms.",
+      "heroImage": "https://images.unsplash.com/photo-1502161254066-6c74afbf07aa?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1502161254066-6c74afbf07aa?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Naturally aspirated V12",
+        "Carbon roof",
+        "Adaptive suspension",
+        "Launch telemetry"
+      ],
+      "highlights": [
+        "Las Vegas specialist inspection available",
+        "Collector-grade documentation pack",
+        "High-deposit approval path supported"
+      ],
+      "delivery": {
+        "feeUsd": 980,
+        "eta": "4-7 business days after approval"
+      }
+    },
+    {
+      "id": "lamborghini-urus-2024",
+      "badge": "Super SUV",
+      "brand": "Lamborghini",
+      "model": "Urus S",
+      "year": 2024,
+      "mileage": 2600,
+      "location": "Bangkok",
+      "condition": "Brand new",
+      "priceUsd": 289000,
+      "priceLocal": 289000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 46000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 42080
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 21830
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 15080
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 11705
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "SUV",
+      "fuelType": "Petrol",
+      "transmission": "8-speed automatic",
+      "drivetrain": "AWD",
+      "exteriorColor": "Nero Helene",
+      "interiorColor": "Nero Ade",
+      "description": "A super-SUV from our Asia luxury channel with aggressive styling, fast approval workflows, and documented handover conditions.",
+      "heroImage": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "ANIMA drive modes",
+        "Panoramic roof",
+        "Bang & Olufsen audio",
+        "Carbon ceramic brakes"
+      ],
+      "highlights": [
+        "Bangkok-market sourcing verified",
+        "Asia import paperwork shared upfront",
+        "Fast-track premium delivery coordination"
+      ],
+      "delivery": {
+        "feeUsd": 860,
+        "eta": "6-10 business days after approval"
+      }
+    },
+    {
+      "id": "bentley-bentayga-2024",
+      "badge": "Desert Spec",
+      "brand": "Bentley",
+      "model": "Bentayga Speed",
+      "year": 2024,
+      "mileage": 3200,
+      "location": "Scottsdale",
+      "condition": "Brand new",
+      "priceUsd": 274000,
+      "priceLocal": 274000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 43000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 40002
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 20752
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 14335
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 11127
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "SUV",
+      "fuelType": "Petrol",
+      "transmission": "8-speed automatic",
+      "drivetrain": "AWD",
+      "exteriorColor": "Onyx",
+      "interiorColor": "Linen and Beluga",
+      "description": "A grand touring Bentley SUV secured through our Arizona exotic desk with handcrafted cabin finishes and clearly documented release terms.",
+      "heroImage": "https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Naim audio",
+        "Rear entertainment",
+        "Bentley Dynamic Ride",
+        "Touring specification"
+      ],
+      "highlights": [
+        "Scottsdale private viewing available",
+        "High-balance finance cases supported",
+        "Collector-grade ownership file included"
+      ],
+      "delivery": {
+        "feeUsd": 780,
+        "eta": "3-6 business days after approval"
+      }
+    },
+    {
+      "id": "aston-martin-dbx707-2024",
+      "badge": "Northwest Exotic",
+      "brand": "Aston Martin",
+      "model": "DBX707",
+      "year": 2024,
+      "mileage": 4100,
+      "location": "Seattle",
+      "condition": "Certified used",
+      "priceUsd": 239000,
+      "priceLocal": 239000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 36000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 35153
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 18237
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 12598
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 9778
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "SUV",
+      "fuelType": "Petrol",
+      "transmission": "9-speed automatic",
+      "drivetrain": "AWD",
+      "exteriorColor": "Xenon Grey",
+      "interiorColor": "Oxford Tan",
+      "description": "A high-output British performance SUV routed through our Seattle exotic network, blending daily usability with super-SUV pace.",
+      "heroImage": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Carbon roof",
+        "Bowers & Wilkins audio",
+        "Active anti-roll control",
+        "Sport exhaust"
+      ],
+      "highlights": [
+        "Seattle handover route available",
+        "Verified ownership and service documentation",
+        "Rapid credit review for qualified buyers"
+      ],
+      "delivery": {
+        "feeUsd": 760,
+        "eta": "3-6 business days after approval"
+      }
+    },
+    {
+      "id": "lucid-air-sapphire-2024",
+      "badge": "EV Halo",
+      "brand": "Lucid",
+      "model": "Air Sapphire",
+      "year": 2024,
+      "mileage": 1800,
+      "location": "San Jose",
+      "condition": "Brand new",
+      "priceUsd": 262000,
+      "priceLocal": 262000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 40000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 38443
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 19944
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 13777
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 10693
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "Sedan",
+      "fuelType": "Electric",
+      "transmission": "Single-speed",
+      "drivetrain": "AWD",
+      "exteriorColor": "Infinite Black",
+      "interiorColor": "Santa Cruz",
+      "description": "A tri-motor electric flagship from Silicon Valley inventory with hyper-sedan acceleration and structured premium finance options.",
+      "heroImage": "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Tri-motor powertrain",
+        "Glass canopy roof",
+        "DreamDrive Pro",
+        "Massaging rear seats"
+      ],
+      "highlights": [
+        "San Jose EV specialist inspection",
+        "Premium charging and ownership briefing",
+        "Eligible for structured high-value financing"
+      ],
+      "delivery": {
+        "feeUsd": 720,
+        "eta": "3-5 business days after payment confirmation"
+      }
+    },
+    {
+      "id": "maybach-gls-600-2024",
+      "badge": "Beverly Hills",
+      "brand": "Mercedes-Maybach",
+      "model": "GLS 600",
+      "year": 2024,
+      "mileage": 2700,
+      "location": "Beverly Hills",
+      "condition": "Brand new",
+      "priceUsd": 248000,
+      "priceLocal": 248000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 39000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 36192
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 18776
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 12970
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 10067
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "SUV",
+      "fuelType": "Petrol",
+      "transmission": "9-speed automatic",
+      "drivetrain": "AWD",
+      "exteriorColor": "Obsidian Black and Mojave Silver",
+      "interiorColor": "Crystal White",
+      "description": "A Maybach flagship SUV reserved through our Beverly Hills partner showroom for buyers who want rear-cabin luxury without ambiguous terms.",
+      "heroImage": "https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Executive rear seats",
+        "E-Active Body Control",
+        "Burmester high-end 3D audio",
+        "Champagne cooler"
+      ],
+      "highlights": [
+        "Beverly Hills private suite viewing",
+        "White-glove paperwork handling",
+        "Preferred for chauffeur and owner-driver clients"
+      ],
+      "delivery": {
+        "feeUsd": 795,
+        "eta": "3-5 business days after approval"
+      }
+    },
+    {
+      "id": "honda-nsx-type-s-2022",
+      "badge": "Japan Halo",
+      "brand": "Honda",
+      "model": "NSX Type S",
+      "year": 2022,
+      "mileage": 5200,
+      "location": "Yokohama",
+      "condition": "Foreign used",
+      "priceUsd": 228000,
+      "priceLocal": 228000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 34000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 33595
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 17428
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 12039
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 9345
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "Coupe",
+      "fuelType": "Hybrid",
+      "transmission": "9-speed dual clutch",
+      "drivetrain": "AWD",
+      "exteriorColor": "Berlina Black",
+      "interiorColor": "Red Alcantara",
+      "description": "A rare Japan-market hybrid supercar sourced through Yokohama, offered with collector documentation and careful cross-border release handling.",
+      "heroImage": "https://images.unsplash.com/photo-1489824904134-891ab64532f1?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1489824904134-891ab64532f1?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1502161254066-6c74afbf07aa?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Sport Hybrid SH-AWD",
+        "Carbon package",
+        "ELS Studio audio",
+        "Track mode telemetry"
+      ],
+      "highlights": [
+        "Yokohama collector inspection offered",
+        "Rare allocation paperwork included",
+        "Ideal for enthusiast finance and escrow"
+      ],
+      "delivery": {
+        "feeUsd": 770,
+        "eta": "7-11 business days after approval"
+      }
+    },
+    {
+      "id": "toyota-century-suv-2024",
+      "badge": "Japan State Class",
+      "brand": "Toyota",
+      "model": "Century SUV",
+      "year": 2024,
+      "mileage": 900,
+      "location": "Nagoya",
+      "condition": "Brand new",
+      "priceUsd": 212000,
+      "priceLocal": 212000,
+      "currencyCode": "USD",
+      "minimumDepositUsd": 32000,
+      "installmentDurations": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "monthlyPlans": [
+        {
+          "months": 6,
+          "monthlyUsd": 31170
+        },
+        {
+          "months": 12,
+          "monthlyUsd": 16170
+        },
+        {
+          "months": 18,
+          "monthlyUsd": 11170
+        },
+        {
+          "months": 24,
+          "monthlyUsd": 8670
+        }
+      ],
+      "paymentTypes": [
+        "full",
+        "installment"
+      ],
+      "bodyStyle": "SUV",
+      "fuelType": "Hybrid",
+      "transmission": "Automatic",
+      "drivetrain": "AWD",
+      "exteriorColor": "Black",
+      "interiorColor": "Wool Blend Grey",
+      "description": "A formal Japan-market ultra-luxury SUV sourced through Nagoya for buyers who value privacy, rear-seat comfort, and discreet documentation.",
+      "heroImage": "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1517026575980-3e1e2dedeab4?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Powered ottoman seating",
+        "Rear privacy suite",
+        "Hybrid quiet mode",
+        "Rear entertainment controls"
+      ],
+      "highlights": [
+        "Nagoya sourcing documents reviewed",
+        "Discrete executive transport profile",
+        "Specialist concierge delivery planning"
+      ],
+      "delivery": {
+        "feeUsd": 810,
+        "eta": "7-12 business days after approval"
+      }
+    }
+  ],
+  "users": [
+    {
+      "id": "admin-user",
+      "fullName": "Prestige Admin",
+      "email": "admin@prestigemotors.example",
+      "phone": "+1 305 555 0198",
+      "password": "Admin@2026",
+      "role": "admin",
+      "country": "US",
+      "location": "Miami",
+      "favoriteCarIds": [],
+      "notifications": []
+    },
+    {
+      "id": "demo-user",
+      "fullName": "Amina Yusuf",
+      "email": "amina@example.com",
+      "phone": "+1 917 555 0172",
+      "password": "Buyer@2026",
+      "role": "user",
+      "country": "US",
+      "location": "New York",
+      "favoriteCarIds": [
+        "lexus-lx-600-2023",
+        "toyota-land-cruiser-2021"
+      ],
+      "notifications": [
+        {
+          "id": "note-1",
+          "title": "Verification first",
+          "body": "Inspection is required before vehicle release. Delivery opens after deposit or approved financing.",
+          "createdAt": "2026-04-19T10:15:00.000Z"
+        }
+      ]
+    }
+  ],
+  "financingApplications": [
+    {
+      "id": "app-1",
+      "userId": "demo-user",
+      "carId": "tesla-model-x-plaid-2024",
+      "fullName": "Amina Yusuf",
+      "phone": "+234 801 555 0199",
+      "email": "amina@example.com",
+      "incomeUsd": 6400,
+      "location": "New York",
+      "depositUsd": 18000,
+      "months": 24,
+      "status": "Approved",
+      "createdAt": "2026-04-18T12:00:00.000Z"
+    },
+    {
+      "id": "app-2",
+      "userId": "demo-user",
+      "carId": "cadillac-escalade-v-2024",
+      "fullName": "Amina Yusuf",
+      "phone": "+234 801 555 0199",
+      "email": "amina@example.com",
+      "incomeUsd": 6400,
+      "location": "Miami",
+      "depositUsd": 22000,
+      "months": 18,
+      "status": "Pending Review",
+      "createdAt": "2026-04-20T09:30:00.000Z"
+    }
+  ],
+  "payments": [
+    {
+      "id": "pay-1",
+      "userId": "demo-user",
+      "carId": "tesla-model-x-plaid-2024",
+      "type": "deposit",
+      "method": "bank-transfer",
+      "amountUsd": 18000,
+      "createdAt": "2026-04-19T08:00:00.000Z",
+      "receiptNumber": "RCPT-20260419-001",
+      "status": "Confirmed",
+      "proofAttachment": {
+        "name": "tesla-bank-transfer-slip.png",
+        "type": "image/png",
+        "dataUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4////fwAJ+wP9KobjigAAAABJRU5ErkJggg=="
+      },
+      "proofUploadedAt": "2026-04-19T07:52:00.000Z"
+    }
+  ],
+  "paymentRequests": [
+    {
+      "id": "payment-request-1",
+      "userId": "demo-user",
+      "carId": "tesla-model-x-plaid-2024",
+      "type": "deposit",
+      "requestedMethod": "bank-transfer",
+      "approvedMethod": "bank-transfer",
+      "requestedAmountUsd": 18000,
+      "approvedAmountUsd": 18000,
+      "status": "Confirmed",
+      "instructionsTitle": "Wire instructions prepared",
+      "bankName": "First Atlantic Private Bank",
+      "accountName": "Prestige Motors Miami LLC Client Account",
+      "accountNumber": "4821193048",
+      "referenceCode": "TESLA-DEP-001",
+      "paymentLink": "",
+      "adminNote": "Use the reference code in the transfer narration.",
+      "paymentId": "pay-1",
+      "proofAttachment": {
+        "name": "tesla-bank-transfer-slip.png",
+        "type": "image/png",
+        "dataUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4////fwAJ+wP9KobjigAAAABJRU5ErkJggg=="
+      },
+      "proofUploadedAt": "2026-04-19T07:52:00.000Z",
+      "createdAt": "2026-04-18T14:00:00.000Z",
+      "reviewedAt": "2026-04-18T14:30:00.000Z",
+      "confirmedAt": "2026-04-19T08:00:00.000Z"
+    },
+    {
+      "id": "payment-request-2",
+      "userId": "demo-user",
+      "carId": "cadillac-escalade-v-2024",
+      "type": "deposit",
+      "requestedMethod": "bank-transfer",
+      "approvedMethod": "",
+      "requestedAmountUsd": 22000,
+      "approvedAmountUsd": 22000,
+      "status": "Pending Approval",
+      "instructionsTitle": "",
+      "bankName": "",
+      "accountName": "",
+      "accountNumber": "",
+      "referenceCode": "",
+      "paymentLink": "",
+      "adminNote": "Buyer requested bank transfer instructions for the minimum deposit.",
+      "paymentId": "",
+      "proofAttachment": null,
+      "proofUploadedAt": "",
+      "createdAt": "2026-04-20T09:45:00.000Z",
+      "reviewedAt": "",
+      "confirmedAt": ""
+    }
+  ],
+  "deliveryRequests": [
+    {
+      "id": "delivery-1",
+      "userId": "demo-user",
+      "carId": "tesla-model-x-plaid-2024",
+      "trigger": "approved-loan",
+      "status": "Scheduled",
+      "address": "Brooklyn, New York",
+      "feeUsd": 510,
+      "eta": "3-6 business days after payment verification",
+      "createdAt": "2026-04-20T08:00:00.000Z"
+    }
+  ],
+  "serviceRequests": [
+    {
+      "id": "service-1",
+      "userId": "demo-user",
+      "type": "concierge",
+      "status": "Reviewing brief",
+      "fullName": "Amina Yusuf",
+      "email": "amina@example.com",
+      "phone": "+1 917 555 0172",
+      "location": "New York",
+      "title": "Source a 2024 Bentley Flying Spur Speed",
+      "budgetUsd": 285000,
+      "assetDetails": "Seeking a black-on-tan Flying Spur Speed with fewer than 5,000 miles and rear entertainment.",
+      "desiredOutcome": "Open to US stock first, then Japan or GCC export stock with verified history.",
+      "notes": "Would like finance and enclosed transport options included in the proposal.",
+      "createdAt": "2026-04-20T11:45:00.000Z"
+    }
+  ]
+}
