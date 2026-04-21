@@ -3,7 +3,7 @@ const path = require('path')
 const Database = require('better-sqlite3')
 const { seedData, buildMeta } = require('./store')
 
-const DATABASE_FILE_PATH = path.join(__dirname, 'database.sqlite')
+const DATABASE_FILE_PATH = process.env.DATABASE_FILE_PATH || path.join(__dirname, 'database.sqlite')
 const LEGACY_DATABASE_FILE_PATH = path.join(__dirname, 'database.json')
 const COLLECTION_NAMES = [
   'cars',
@@ -24,6 +24,8 @@ const paymentRequests = []
 const deliveryRequests = []
 const serviceRequests = []
 const meta = buildMeta([])
+
+fs.mkdirSync(path.dirname(DATABASE_FILE_PATH), { recursive: true })
 
 const sqlite = new Database(DATABASE_FILE_PATH)
 sqlite.pragma('journal_mode = WAL')
