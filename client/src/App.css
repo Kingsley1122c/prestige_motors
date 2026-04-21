@@ -213,6 +213,12 @@
   color: var(--text);
 }
 
+.button-whatsapp {
+  background: rgba(37, 211, 102, 0.14);
+  border-color: rgba(37, 211, 102, 0.34);
+  color: #dfffe9;
+}
+
 .button-muted {
   background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.08);

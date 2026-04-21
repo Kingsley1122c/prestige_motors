@@ -32,11 +32,16 @@ const serviceCards = [
 export function ListingsPage() {
   const { cars, meta } = useMarket()
   const [searchParams, setSearchParams] = useSearchParams()
+  const bodyStyles = useMemo(
+    () => [...new Set(cars.map((car) => car.bodyStyle).filter(Boolean))].sort((first, second) => first.localeCompare(second)),
+    [cars],
+  )
 
   const filters = {
     brand: searchParams.get('brand') || 'All',
     location: searchParams.get('location') || 'All',
     paymentType: searchParams.get('paymentType') || 'All',
+    bodyStyle: searchParams.get('bodyStyle') || 'All',
     minPrice: searchParams.get('minPrice') || '0',
     maxPrice: searchParams.get('maxPrice') || '500000',
   }
@@ -68,13 +73,17 @@ export function ListingsPage() {
           return false
         }
 
+        if (filters.bodyStyle !== 'All' && car.bodyStyle !== filters.bodyStyle) {
+          return false
+        }
+
         if (car.priceUsd < Number(filters.minPrice) || car.priceUsd > Number(filters.maxPrice)) {
           return false
         }
 
         return true
       }),
-    [cars, filters.brand, filters.location, filters.maxPrice, filters.minPrice, filters.paymentType],
+    [cars, filters.bodyStyle, filters.brand, filters.location, filters.maxPrice, filters.minPrice, filters.paymentType],
   )
 
   const inventorySnapshot = useMemo(() => {
@@ -184,6 +193,7 @@ export function ListingsPage() {
           onChange={updateFilter}
           brands={meta.brands}
           locations={meta.locations}
+          bodyStyles={bodyStyles}
         />
         <div className="listing-results">
           <div className="listing-toolbar surface-card">

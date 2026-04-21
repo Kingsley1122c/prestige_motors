@@ -1,4 +1,4 @@
-export function FilterPanel({ filters, onChange, brands, locations }) {
+export function FilterPanel({ filters, onChange, brands, locations, bodyStyles }) {
   return (
     <aside className="filter-panel surface-card">
       <div>
@@ -37,6 +37,21 @@ export function FilterPanel({ filters, onChange, brands, locations }) {
           <option value="All">All</option>
           <option value="full">Full payment</option>
           <option value="installment">Installment</option>
+        </select>
+      </div>
+      <div>
+        <label htmlFor="bodyStyle">Body style</label>
+        <select
+          id="bodyStyle"
+          value={filters.bodyStyle}
+          onChange={(event) => onChange('bodyStyle', event.target.value)}
+        >
+          <option value="All">All</option>
+          {bodyStyles.map((bodyStyle) => (
+            <option key={bodyStyle} value={bodyStyle}>
+              {bodyStyle}
+            </option>
+          ))}
         </select>
       </div>
       <div>

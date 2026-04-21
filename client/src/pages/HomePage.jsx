@@ -25,24 +25,40 @@ const showroomLanes = [
   },
 ]
 
+const normalizeAdToken = (value) => String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
+
 export function HomePage() {
   const location = useLocation()
   const navigate = useNavigate()
   const { cars, featuredCars, meta } = useMarket()
-  const landingCars = featuredCars.slice(0, 2)
   const [quickSearch, setQuickSearch] = useState({
     brand: 'All',
     location: 'All',
     paymentType: 'All',
   })
 
-  const adTraffic = useMemo(() => {
+  const adSignals = useMemo(() => {
     const params = new URLSearchParams(location.search)
     const source = String(params.get('utm_source') || params.get('source') || '').toLowerCase()
     const medium = String(params.get('utm_medium') || '').toLowerCase()
     const campaign = String(params.get('utm_campaign') || '').toLowerCase()
+    const adDescriptor = [
+      campaign,
+      params.get('utm_content'),
+      params.get('utm_term'),
+      params.get('inventory'),
+      params.get('style'),
+      params.get('brand'),
+    ]
+      .map((value) => normalizeAdToken(value))
+      .join(' ')
+      .trim()
+    const bodyStyles = [...new Set(cars.map((car) => car.bodyStyle).filter(Boolean))]
+    const matchedBrand = meta.brands.find((brand) => adDescriptor.includes(normalizeAdToken(brand))) || null
+    const matchedBodyStyle = bodyStyles.find((bodyStyle) => adDescriptor.includes(normalizeAdToken(bodyStyle))) || null
 
-    return Boolean(
+    return {
+      isAdTraffic: Boolean(
       params.get('fbclid') ||
         source.includes('facebook') ||
         source.includes('instagram') ||
@@ -52,26 +68,84 @@ export function HomePage() {
         campaign.includes('facebook') ||
         campaign.includes('instagram') ||
         campaign.includes('meta'),
-    )
-  }, [location.search])
+      ),
+      matchedBrand,
+      matchedBodyStyle,
+    }
+  }, [cars, location.search, meta.brands])
 
-  const landingContent = adTraffic
-    ? {
-        eyebrow: 'Shop cars now',
-        title: 'See the cars before anything else.',
-        description:
-          'You came from an ad, so the first screen goes straight to active cars with price, deposit range, and financing access.',
-        primaryCta: 'View all cars',
-        secondaryCta: 'Apply for financing',
-      }
+  const landingCars = useMemo(() => {
+    let inventorySlice = featuredCars
+
+    if (adSignals.matchedBrand) {
+      inventorySlice = cars.filter((car) => car.brand === adSignals.matchedBrand)
+    } else if (adSignals.matchedBodyStyle) {
+      inventorySlice = cars.filter((car) => car.bodyStyle === adSignals.matchedBodyStyle)
+    }
+
+    return (inventorySlice.length ? inventorySlice : featuredCars).slice(0, 2)
+  }, [adSignals.matchedBodyStyle, adSignals.matchedBrand, cars, featuredCars])
+
+  const landingInventoryHref = useMemo(() => {
+    const params = new URLSearchParams()
+
+    if (adSignals.matchedBrand) {
+      params.set('brand', adSignals.matchedBrand)
+    }
+
+    if (adSignals.matchedBodyStyle) {
+      params.set('bodyStyle', adSignals.matchedBodyStyle)
+    }
+
+    const query = params.toString()
+    return query ? `/listings?${query}` : '/listings'
+  }, [adSignals.matchedBodyStyle, adSignals.matchedBrand])
+
+  const landingContent = adSignals.isAdTraffic
+    ? adSignals.matchedBrand
+      ? {
+          eyebrow: `${adSignals.matchedBrand} inventory`,
+          title: `${adSignals.matchedBrand} cars on screen immediately.`,
+          description: `You came from an ad, so this landing section goes straight into active ${adSignals.matchedBrand} stock with transparent pricing and financing access.`,
+          primaryCta: `See ${adSignals.matchedBrand} inventory`,
+        }
+      : adSignals.matchedBodyStyle
+        ? {
+            eyebrow: `${adSignals.matchedBodyStyle} inventory`,
+            title: `${adSignals.matchedBodyStyle} options on screen immediately.`,
+            description: `You came from an ad, so this landing section goes straight into active ${adSignals.matchedBodyStyle.toLowerCase()} inventory with price and deposit visibility first.`,
+            primaryCta: `See ${adSignals.matchedBodyStyle} inventory`,
+          }
+        : {
+            eyebrow: 'Shop cars now',
+            title: 'See the cars before anything else.',
+            description:
+              'You came from an ad, so the first screen goes straight to active cars with price, deposit range, and financing access.',
+            primaryCta: 'View all cars',
+          }
     : {
         eyebrow: 'Available now',
         title: 'Cars first. Friction later.',
         description:
           'Start with active inventory, pricing, deposit guidance, and financing access before the rest of the showroom story.',
         primaryCta: 'Browse all cars',
-        secondaryCta: 'Check financing',
       }
+
+  const whatsappHref = useMemo(() => {
+    const phone = String(meta.company?.phone || '').replace(/\D/g, '')
+
+    if (!phone) {
+      return '/contact'
+    }
+
+    const message = adSignals.matchedBrand
+      ? `Hi, I came from your ad and want to ask about ${adSignals.matchedBrand} inventory.`
+      : adSignals.matchedBodyStyle
+        ? `Hi, I came from your ad and want to ask about your ${adSignals.matchedBodyStyle.toLowerCase()} inventory.`
+        : 'Hi, I came from your ad and want to ask about your available cars.'
+
+    return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
+  }, [adSignals.matchedBodyStyle, adSignals.matchedBrand, meta.company?.phone])
 
   const heroStats = useMemo(() => {
     const topPrice = cars.reduce((highest, car) => Math.max(highest, car.priceUsd), 0)
@@ -107,12 +181,12 @@ export function HomePage() {
               <p>{landingContent.description}</p>
             </div>
             <div className="landing-inventory-actions">
-              <Link className="button button-primary" to="/listings">
+              <Link className="button button-primary" to={landingInventoryHref}>
                 {landingContent.primaryCta}
               </Link>
-              <Link className="button button-secondary" to="/financing">
-                {landingContent.secondaryCta}
-              </Link>
+              <a className="button button-whatsapp" href={whatsappHref} rel="noreferrer" target="_blank">
+                WhatsApp now
+              </a>
             </div>
           </div>
           <div className="card-grid landing-card-grid">
