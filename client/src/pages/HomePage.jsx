@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useMemo, useState } from 'react'
 import { CarCard } from '../components/CarCard'
 import { SectionTitle } from '../components/SectionTitle'
@@ -26,14 +26,52 @@ const showroomLanes = [
 ]
 
 export function HomePage() {
+  const location = useLocation()
   const navigate = useNavigate()
   const { cars, featuredCars, meta } = useMarket()
-  const landingCars = featuredCars.slice(0, 3)
+  const landingCars = featuredCars.slice(0, 2)
   const [quickSearch, setQuickSearch] = useState({
     brand: 'All',
     location: 'All',
     paymentType: 'All',
   })
+
+  const adTraffic = useMemo(() => {
+    const params = new URLSearchParams(location.search)
+    const source = String(params.get('utm_source') || params.get('source') || '').toLowerCase()
+    const medium = String(params.get('utm_medium') || '').toLowerCase()
+    const campaign = String(params.get('utm_campaign') || '').toLowerCase()
+
+    return Boolean(
+      params.get('fbclid') ||
+        source.includes('facebook') ||
+        source.includes('instagram') ||
+        source.includes('meta') ||
+        medium.includes('paid') ||
+        medium.includes('social') ||
+        campaign.includes('facebook') ||
+        campaign.includes('instagram') ||
+        campaign.includes('meta'),
+    )
+  }, [location.search])
+
+  const landingContent = adTraffic
+    ? {
+        eyebrow: 'Shop cars now',
+        title: 'See the cars before anything else.',
+        description:
+          'You came from an ad, so the first screen goes straight to active cars with price, deposit range, and financing access.',
+        primaryCta: 'View all cars',
+        secondaryCta: 'Apply for financing',
+      }
+    : {
+        eyebrow: 'Available now',
+        title: 'Cars first. Friction later.',
+        description:
+          'Start with active inventory, pricing, deposit guidance, and financing access before the rest of the showroom story.',
+        primaryCta: 'Browse all cars',
+        secondaryCta: 'Check financing',
+      }
 
   const heroStats = useMemo(() => {
     const topPrice = cars.reduce((highest, car) => Math.max(highest, car.priceUsd), 0)
@@ -64,23 +102,20 @@ export function HomePage() {
         <div className="landing-inventory-shell glass-panel">
           <div className="landing-inventory-header">
             <div className="landing-inventory-copy">
-              <span className="eyebrow">Available now</span>
-              <h1>Cars first. Friction later.</h1>
-              <p>
-                Facebook ad traffic lands directly on active inventory with pricing, deposit guidance,
-                and financing access visible from the first screen.
-              </p>
+              <span className="eyebrow">{landingContent.eyebrow}</span>
+              <h1>{landingContent.title}</h1>
+              <p>{landingContent.description}</p>
             </div>
             <div className="landing-inventory-actions">
               <Link className="button button-primary" to="/listings">
-                Browse all cars
+                {landingContent.primaryCta}
               </Link>
               <Link className="button button-secondary" to="/financing">
-                Check financing
+                {landingContent.secondaryCta}
               </Link>
             </div>
           </div>
-          <div className="card-grid">
+          <div className="card-grid landing-card-grid">
             {landingCars.map((car) => (
               <CarCard key={car.id} car={car} />
             ))}
