@@ -36,9 +36,10 @@ export const getVehicleGalleryItems = (vehicle, maxItems = 4) => {
   const galleryItems = hasRealGallery
     ? [
         ...verifiedGalleryItems,
-        ...displayGalleryItems
-          .filter((item) => !verifiedGalleryImages.includes(item.src))
-          .slice(0, Math.max(0, maxItems - verifiedGalleryItems.length)),
+        ...displayGalleryItems.slice(
+          verifiedGalleryItems.length,
+          verifiedGalleryItems.length + Math.max(0, maxItems - verifiedGalleryItems.length),
+        ),
       ]
     : displayGalleryItems
 
