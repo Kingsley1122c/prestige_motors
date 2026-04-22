@@ -67,9 +67,9 @@ export function CarDetailsPage() {
   const latestApprovedAmount = latestPaymentRequest?.approvedAmountUsd || latestPaymentRequest?.requestedAmountUsd || car.minimumDepositUsd
   const needsProofUpload = ['bank-transfer', 'wire-transfer'].includes(latestPaymentRequest?.approvedMethod)
   const hasRealGallery = hasVerifiedGallery(car)
-  const galleryImages = hasRealGallery ? car.gallery : car.displayGallery || []
-  const galleryItems = hasRealGallery
-    ? galleryImages.map((image, index) => ({
+  const verifiedGalleryImages = hasRealGallery ? car.gallery.filter(Boolean) : []
+  const verifiedGalleryItems = hasRealGallery
+    ? verifiedGalleryImages.map((image, index) => ({
         id: `${car.id}-gallery-${index + 1}`,
         scene: car.displayGalleryItems?.[index]?.scene || (index < 3 ? 'exterior' : index < 6 ? 'interior' : 'detail'),
         label: car.displayGalleryItems?.[index]?.label || `Verified view ${index + 1}`,
@@ -77,9 +77,10 @@ export function CarDetailsPage() {
         themeName: car.displayTheme?.name || 'Verified catalog media',
         src: image,
       }))
-    : car.displayGalleryItems?.length
+    : []
+  const displayGalleryItems = car.displayGalleryItems?.length
       ? car.displayGalleryItems
-      : galleryImages.map((image, index) => ({
+      : (car.displayGallery || []).map((image, index) => ({
           id: `${car.id}-gallery-${index + 1}`,
           scene: index < 3 ? 'exterior' : index < 6 ? 'interior' : 'detail',
           label: `Verified view ${index + 1}`,
@@ -87,6 +88,12 @@ export function CarDetailsPage() {
           themeName: car.displayTheme?.name || 'Verified catalog media',
           src: image,
         }))
+  const galleryItems = hasRealGallery
+    ? [
+        ...verifiedGalleryItems,
+        ...displayGalleryItems.filter((item) => !verifiedGalleryImages.includes(item.src)).slice(0, Math.max(0, 4 - verifiedGalleryItems.length)),
+      ]
+    : displayGalleryItems
 
   const handleProofChange = async (event) => {
     const file = event.target.files?.[0]

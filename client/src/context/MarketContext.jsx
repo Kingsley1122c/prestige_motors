@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { convertUsdToLocal } from '../utils/format'
+import { sortVehiclesForMerchandising } from '../utils/media'
 
 const SESSION_STORAGE_KEY = 'prestige-market-session'
 const MarketContext = createContext(null)
@@ -428,7 +429,7 @@ export function MarketProvider({ children }) {
   )
 
   const favoriteIds = useMemo(() => new Set(userDashboard.favoriteCars.map((car) => car.id)), [userDashboard.favoriteCars])
-  const featuredCars = useMemo(() => [...cars].sort((first, second) => second.priceUsd - first.priceUsd).slice(0, 3), [cars])
+  const featuredCars = useMemo(() => sortVehiclesForMerchandising(cars).slice(0, 3), [cars])
   const selectedCountry = useMemo(() => {
     const countries = Array.isArray(meta.countries) ? meta.countries : []
     const preferredCode = currentUser?.country || meta.defaultCountry || 'US'

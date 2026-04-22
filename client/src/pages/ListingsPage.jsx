@@ -4,7 +4,7 @@ import { CarCard } from '../components/CarCard'
 import { FilterPanel } from '../components/FilterPanel'
 import { SectionTitle } from '../components/SectionTitle'
 import { useMarket } from '../context/MarketContext'
-import { getVehicleHeroImage } from '../utils/media'
+import { getVehicleHeroImage, sortVehiclesForMerchandising } from '../utils/media'
 import { formatUsd } from '../utils/format'
 
 const AMERICA_LOCATIONS = new Set(['Houston', 'Atlanta', 'Dallas', 'Chicago', 'San Francisco', 'Los Angeles', 'New York', 'Miami', 'Las Vegas'])
@@ -61,7 +61,7 @@ export function ListingsPage() {
 
   const filteredCars = useMemo(
     () =>
-      cars.filter((car) => {
+      sortVehiclesForMerchandising(cars.filter((car) => {
         if (filters.brand !== 'All' && car.brand !== filters.brand) {
           return false
         }
@@ -83,7 +83,7 @@ export function ListingsPage() {
         }
 
         return true
-      }),
+      })),
     [cars, filters.bodyStyle, filters.brand, filters.location, filters.maxPrice, filters.minPrice, filters.paymentType],
   )
 
@@ -99,7 +99,7 @@ export function ListingsPage() {
     }
   }, [cars])
 
-  const editorialCars = useMemo(() => [...cars].sort((first, second) => second.priceUsd - first.priceUsd).slice(0, 3), [cars])
+  const editorialCars = useMemo(() => sortVehiclesForMerchandising(cars).slice(0, 3), [cars])
 
   return (
     <section className="page-shell section-spaced">

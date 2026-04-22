@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react'
 import { CarCard } from '../components/CarCard'
 import { SectionTitle } from '../components/SectionTitle'
 import { useMarket } from '../context/MarketContext'
+import { sortVehiclesForMerchandising } from '../utils/media'
 
 const processSteps = [
   'Browse verified listings with full pricing, deposit, and monthly plan visibility.',
@@ -83,7 +84,7 @@ export function HomePage() {
       inventorySlice = cars.filter((car) => car.bodyStyle === adSignals.matchedBodyStyle)
     }
 
-    return (inventorySlice.length ? inventorySlice : featuredCars).slice(0, 2)
+    return sortVehiclesForMerchandising(inventorySlice.length ? inventorySlice : featuredCars).slice(0, 2)
   }, [adSignals.matchedBodyStyle, adSignals.matchedBrand, cars, featuredCars])
 
   const landingInventoryHref = useMemo(() => {

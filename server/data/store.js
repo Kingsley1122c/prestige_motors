@@ -319,7 +319,11 @@ const VERIFIED_MEDIA_LIBRARY = {
   },
   'ferrari-purosangue-2024': {
     heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Ferrari_Purosangue_DSC_7008.jpg/1280px-Ferrari_Purosangue_DSC_7008.jpg',
-    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Ferrari_Purosangue_DSC_7008.jpg/1280px-Ferrari_Purosangue_DSC_7008.jpg'],
+    gallery: [
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Ferrari_Purosangue_DSC_7008.jpg/1280px-Ferrari_Purosangue_DSC_7008.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/2023_Ferrari_Purosangue_1.jpg/1280px-2023_Ferrari_Purosangue_1.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/2023_Ferrari_Purosangue_2.jpg/1280px-2023_Ferrari_Purosangue_2.jpg',
+    ],
     mediaVerified: true,
   },
   'rolls-royce-ghost-2023': {
@@ -378,7 +382,11 @@ const VERIFIED_MEDIA_LIBRARY = {
   },
   'lamborghini-urus-2024': {
     heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Lamborghini_Urus_SE_DSC_8524.jpg/1280px-Lamborghini_Urus_SE_DSC_8524.jpg',
-    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Lamborghini_Urus_SE_DSC_8524.jpg/1280px-Lamborghini_Urus_SE_DSC_8524.jpg'],
+    gallery: [
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Lamborghini_Urus_SE_DSC_8524.jpg/1280px-Lamborghini_Urus_SE_DSC_8524.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/2018_01_31_Lancement_Urus_Lamborghini_Paris_%C2%A9Laurine_Paumard_Photographe.jpg/1280px-2018_01_31_Lancement_Urus_Lamborghini_Paris_%C2%A9Laurine_Paumard_Photographe.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/2018_01_31_Lancement_Urus_Lamborghini_Paris%282%29_%C2%A9Laurine_Paumard_Photographe.jpg/1280px-2018_01_31_Lancement_Urus_Lamborghini_Paris%282%29_%C2%A9Laurine_Paumard_Photographe.jpg',
+    ],
     mediaVerified: true,
   },
   'porsche-911-turbo-s-2024': {
