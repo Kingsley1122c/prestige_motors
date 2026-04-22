@@ -306,45 +306,86 @@ const attachVehicleDisplayMedia = (vehicle) => {
   }
 }
 
+const VERIFIED_MEDIA_LIBRARY = {
+  'ferrari-purosangue-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Ferrari_Purosangue_DSC_7008.jpg/1280px-Ferrari_Purosangue_DSC_7008.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Ferrari_Purosangue_DSC_7008.jpg/1280px-Ferrari_Purosangue_DSC_7008.jpg'],
+    mediaVerified: true,
+  },
+  'rolls-royce-ghost-2023': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/2022_Rolls-Royce_Ghost_Black_Badge_in_Arctic_White%2C_front_left.jpg/1280px-2022_Rolls-Royce_Ghost_Black_Badge_in_Arctic_White%2C_front_left.jpg',
+    gallery: [
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/2022_Rolls-Royce_Ghost_Black_Badge_in_Arctic_White%2C_front_left.jpg/1280px-2022_Rolls-Royce_Ghost_Black_Badge_in_Arctic_White%2C_front_left.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Rolls-Royce_Ghost_%28MSP16%29.jpg/1280px-Rolls-Royce_Ghost_%28MSP16%29.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Rolls-Royce_Ghost_II_Midnight_Sapphire_%288%29_%28cropped%29.jpg/1280px-Rolls-Royce_Ghost_II_Midnight_Sapphire_%288%29_%28cropped%29.jpg',
+    ],
+    mediaVerified: true,
+  },
+  'mercedes-s580-2022': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Mercedes-Benz_W223_IMG_3951.jpg/1280px-Mercedes-Benz_W223_IMG_3951.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Mercedes-Benz_W223_IMG_3951.jpg/1280px-Mercedes-Benz_W223_IMG_3951.jpg'],
+    mediaVerified: true,
+  },
+  'bentley-bentayga-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Bentley_Bentayga_V8_%28FL%29_IMG_0005.jpg/1280px-Bentley_Bentayga_V8_%28FL%29_IMG_0005.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Bentley_Bentayga_V8_%28FL%29_IMG_0005.jpg/1280px-Bentley_Bentayga_V8_%28FL%29_IMG_0005.jpg'],
+    mediaVerified: true,
+  },
+}
+
+const attachVerifiedMedia = (input) => {
+  const verifiedMedia = VERIFIED_MEDIA_LIBRARY[input.id]
+
+  if (!verifiedMedia) {
+    return input
+  }
+
+  return {
+    ...input,
+    ...verifiedMedia,
+  }
+}
+
 const createCarRecord = (input) => {
-  const priceUsd = Number(input.priceUsd)
-  const minimumDepositUsd = Number(input.minimumDepositUsd)
-  const durations = input.installmentDurations?.length
-    ? input.installmentDurations.map((value) => Number(value))
+  const resolvedInput = attachVerifiedMedia(input)
+  const priceUsd = Number(resolvedInput.priceUsd)
+  const minimumDepositUsd = Number(resolvedInput.minimumDepositUsd)
+  const durations = resolvedInput.installmentDurations?.length
+    ? resolvedInput.installmentDurations.map((value) => Number(value))
     : [6, 12, 18, 24]
   const defaultCountry = getCountrySettings(DEFAULT_COUNTRY_CODE)
 
   return attachVehicleDisplayMedia({
-    id: input.id,
-    badge: input.badge || 'Featured',
-    brand: input.brand,
-    model: input.model,
-    year: Number(input.year),
-    mileage: Number(input.mileage),
-    location: input.location,
-    condition: input.condition,
+    id: resolvedInput.id,
+    badge: resolvedInput.badge || 'Featured',
+    brand: resolvedInput.brand,
+    model: resolvedInput.model,
+    year: Number(resolvedInput.year),
+    mileage: Number(resolvedInput.mileage),
+    location: resolvedInput.location,
+    condition: resolvedInput.condition,
     priceUsd,
     priceLocal: Math.round(priceUsd * defaultCountry.exchangeRate),
     currencyCode: defaultCountry.currencyCode,
     minimumDepositUsd,
     installmentDurations: durations,
     monthlyPlans: buildPlans(priceUsd, minimumDepositUsd, durations),
-    paymentTypes: input.paymentTypes || ['full', 'installment'],
-    bodyStyle: input.bodyStyle,
-    fuelType: input.fuelType,
-    transmission: input.transmission,
-    drivetrain: input.drivetrain,
-    exteriorColor: input.exteriorColor,
-    interiorColor: input.interiorColor,
-    description: input.description,
-    mediaVerified: Boolean(input.mediaVerified),
-    heroImage: input.heroImage || '',
-    gallery: input.gallery || [],
-    features: input.features || [],
-    highlights: input.highlights || [],
+    paymentTypes: resolvedInput.paymentTypes || ['full', 'installment'],
+    bodyStyle: resolvedInput.bodyStyle,
+    fuelType: resolvedInput.fuelType,
+    transmission: resolvedInput.transmission,
+    drivetrain: resolvedInput.drivetrain,
+    exteriorColor: resolvedInput.exteriorColor,
+    interiorColor: resolvedInput.interiorColor,
+    description: resolvedInput.description,
+    mediaVerified: Boolean(resolvedInput.mediaVerified),
+    heroImage: resolvedInput.heroImage || '',
+    gallery: resolvedInput.gallery || [],
+    features: resolvedInput.features || [],
+    highlights: resolvedInput.highlights || [],
     delivery: {
-      feeUsd: Number(input.delivery?.feeUsd || 0),
-      eta: input.delivery?.eta || '2-5 business days',
+      feeUsd: Number(resolvedInput.delivery?.feeUsd || 0),
+      eta: resolvedInput.delivery?.eta || '2-5 business days',
     },
   })
 }

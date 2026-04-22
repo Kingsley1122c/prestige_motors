@@ -291,9 +291,9 @@ export function HomePage() {
 
       <section className="page-shell section-spaced signature-section">
         <SectionTitle
-          eyebrow="Flagship experience"
-          title="The front end now reads like a luxury showroom, not a catalog template"
-          description="Each lane below mirrors how the business operates: showroom appointments, finance review, and selective sourcing across US and Asia inventory." 
+          eyebrow="Showroom lanes"
+          title="Three desks buyers use first"
+          description="Inspection, finance review, and sourcing stay separated so each step is easier to follow." 
         />
         <div className="signature-grid">
           {showroomLanes.map((lane) => (
@@ -310,8 +310,8 @@ export function HomePage() {
         <div>
           <SectionTitle
             eyebrow="Client process"
-            title="A dealership workflow with less noise and more discipline"
-            description="The sequence is fixed: inspect the car, review the numbers, confirm the file, then authorize payment and delivery in that order."
+            title="Inspect, review, approve, release"
+            description="Payment never moves ahead of vehicle review, finance confirmation, and release approval."
           />
           <div className="info-stack">
             {processSteps.map((step) => (
@@ -340,8 +340,8 @@ export function HomePage() {
       <section className="page-shell section-spaced">
         <SectionTitle
           eyebrow="Client notes"
-          title="What buyers say after working the file with us"
-          description="The language is deliberately grounded: paperwork, timing, finance clarity, and handover quality rather than vague praise."
+          title="What clients mention most"
+          description="Most feedback centers on paperwork clarity, timing, and handover quality."
           align="center"
         />
         <div className="testimonial-grid">
@@ -358,8 +358,8 @@ export function HomePage() {
       <section className="page-shell section-spaced faq-section">
         <SectionTitle
           eyebrow="FAQ"
-          title="Questions serious buyers typically ask first"
-          description="These answers focus on the real points of friction in premium transactions: financing, inspection, paperwork, and delivery sequencing."
+          title="Questions before deposit or financing"
+          description="Short answers on inspection, payment, paperwork, and delivery timing."
         />
         <div className="faq-list">
           {meta.faqs.map((item) => (
