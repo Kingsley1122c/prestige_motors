@@ -401,6 +401,46 @@ const VERIFIED_MEDIA_LIBRARY = {
     gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Honda%2C_Paris_Motor_Show_2018%2C_Paris_%281Y7A1625%29_%28cropped%29.jpg/1280px-Honda%2C_Paris_Motor_Show_2018%2C_Paris_%281Y7A1625%29_%28cropped%29.jpg'],
     mediaVerified: true,
   },
+  'toyota-century-suv-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Toyota_Century%2C_Paris%2C_France.jpg/1280px-Toyota_Century%2C_Paris%2C_France.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Toyota_Century%2C_Paris%2C_France.jpg/1280px-Toyota_Century%2C_Paris%2C_France.jpg'],
+    mediaVerified: true,
+  },
+  'mercedes-g63-2023': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Mercedes-Benz_W463_G_350_BlueTEC_01.jpg/1280px-Mercedes-Benz_W463_G_350_BlueTEC_01.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Mercedes-Benz_W463_G_350_BlueTEC_01.jpg/1280px-Mercedes-Benz_W463_G_350_BlueTEC_01.jpg'],
+    mediaVerified: true,
+  },
+  'lexus-lm-500h-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Lexus_LM_350h_AWD_AAWH15_Sonic_Quartz_with_cargo_box_%2B_roof_rack_01_%28cropped%29.jpg/1280px-Lexus_LM_350h_AWD_AAWH15_Sonic_Quartz_with_cargo_box_%2B_roof_rack_01_%28cropped%29.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Lexus_LM_350h_AWD_AAWH15_Sonic_Quartz_with_cargo_box_%2B_roof_rack_01_%28cropped%29.jpg/1280px-Lexus_LM_350h_AWD_AAWH15_Sonic_Quartz_with_cargo_box_%2B_roof_rack_01_%28cropped%29.jpg'],
+    mediaVerified: true,
+  },
+  'lincoln-navigator-black-label-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/2019_Lincoln_Navigator_%27Reserve%27%2C_front_8.29.20.jpg/1280px-2019_Lincoln_Navigator_%27Reserve%27%2C_front_8.29.20.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/2019_Lincoln_Navigator_%27Reserve%27%2C_front_8.29.20.jpg/1280px-2019_Lincoln_Navigator_%27Reserve%27%2C_front_8.29.20.jpg'],
+    mediaVerified: true,
+  },
+  'cadillac-escalade-v-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/2021_Cadillac_Escalade_ESV_4WD_Premium_Luxury_in_Satin_Steel_Metallic%2C_front_right.jpg/1280px-2021_Cadillac_Escalade_ESV_4WD_Premium_Luxury_in_Satin_Steel_Metallic%2C_front_right.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/2021_Cadillac_Escalade_ESV_4WD_Premium_Luxury_in_Satin_Steel_Metallic%2C_front_right.jpg/1280px-2021_Cadillac_Escalade_ESV_4WD_Premium_Luxury_in_Satin_Steel_Metallic%2C_front_right.jpg'],
+    mediaVerified: true,
+  },
+  'audi-rs7-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Audi_RS7_C8_DSC_7842.jpg/1280px-Audi_RS7_C8_DSC_7842.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Audi_RS7_C8_DSC_7842.jpg/1280px-Audi_RS7_C8_DSC_7842.jpg'],
+    mediaVerified: true,
+  },
+  'gmc-yukon-denali-ultimate-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/%2721_GMC_Yukon.jpg/1280px-%2721_GMC_Yukon.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/%2721_GMC_Yukon.jpg/1280px-%2721_GMC_Yukon.jpg'],
+    mediaVerified: true,
+  },
+  'nissan-gtr-2022': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/2009-2010_Nissan_GT-R_%28R35%29_coupe_01.jpg/1280px-2009-2010_Nissan_GT-R_%28R35%29_coupe_01.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/2009-2010_Nissan_GT-R_%28R35%29_coupe_01.jpg/1280px-2009-2010_Nissan_GT-R_%28R35%29_coupe_01.jpg'],
+    mediaVerified: true,
+  },
 }
 
 const attachVerifiedMedia = (input) => {
