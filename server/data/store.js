@@ -336,6 +336,11 @@ const VERIFIED_MEDIA_LIBRARY = {
     gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Mercedes-Benz_W223_IMG_3951.jpg/1280px-Mercedes-Benz_W223_IMG_3951.jpg'],
     mediaVerified: true,
   },
+  'maybach-gls-600-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Mercedes-Benz_X167_IMG_5259.jpg/1280px-Mercedes-Benz_X167_IMG_5259.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Mercedes-Benz_X167_IMG_5259.jpg/1280px-Mercedes-Benz_X167_IMG_5259.jpg'],
+    mediaVerified: true,
+  },
   'bentley-bentayga-2024': {
     heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Bentley_Bentayga_V8_%28FL%29_IMG_0005.jpg/1280px-Bentley_Bentayga_V8_%28FL%29_IMG_0005.jpg',
     gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Bentley_Bentayga_V8_%28FL%29_IMG_0005.jpg/1280px-Bentley_Bentayga_V8_%28FL%29_IMG_0005.jpg'],
@@ -344,6 +349,11 @@ const VERIFIED_MEDIA_LIBRARY = {
   'bentley-flying-spur-speed-2024': {
     heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Bentley_Flying_Spur_Macau_front_view_%28June_9%2C_2025%29.jpg/1280px-Bentley_Flying_Spur_Macau_front_view_%28June_9%2C_2025%29.jpg',
     gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Bentley_Flying_Spur_Macau_front_view_%28June_9%2C_2025%29.jpg/1280px-Bentley_Flying_Spur_Macau_front_view_%28June_9%2C_2025%29.jpg'],
+    mediaVerified: true,
+  },
+  'bmw-m8-gran-coupe-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/2019_BMW_840d_xDrive_Automatic_3.0_Front.jpg/1280px-2019_BMW_840d_xDrive_Automatic_3.0_Front.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/2019_BMW_840d_xDrive_Automatic_3.0_Front.jpg/1280px-2019_BMW_840d_xDrive_Automatic_3.0_Front.jpg'],
     mediaVerified: true,
   },
   'ford-f150-raptor-r-2024': {
@@ -364,6 +374,31 @@ const VERIFIED_MEDIA_LIBRARY = {
   'chevrolet-silverado-hd-2024': {
     heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/2022_Chevrolet_Silverado_2500HD_High_Country%2C_Front_Left%2C_11-21-2021.jpg/1280px-2022_Chevrolet_Silverado_2500HD_High_Country%2C_Front_Left%2C_11-21-2021.jpg',
     gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/2022_Chevrolet_Silverado_2500HD_High_Country%2C_Front_Left%2C_11-21-2021.jpg/1280px-2022_Chevrolet_Silverado_2500HD_High_Country%2C_Front_Left%2C_11-21-2021.jpg'],
+    mediaVerified: true,
+  },
+  'lamborghini-urus-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Lamborghini_Urus_SE_DSC_8524.jpg/1280px-Lamborghini_Urus_SE_DSC_8524.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Lamborghini_Urus_SE_DSC_8524.jpg/1280px-Lamborghini_Urus_SE_DSC_8524.jpg'],
+    mediaVerified: true,
+  },
+  'porsche-911-turbo-s-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/2025_Porsche_992_Carrera_convertible_DSC_7026.jpg/1280px-2025_Porsche_992_Carrera_convertible_DSC_7026.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/2025_Porsche_992_Carrera_convertible_DSC_7026.jpg/1280px-2025_Porsche_992_Carrera_convertible_DSC_7026.jpg'],
+    mediaVerified: true,
+  },
+  'lucid-air-sapphire-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/2022_Lucid_Air_Grand_Touring_in_Zenith_Red%2C_front_left.jpg/1280px-2022_Lucid_Air_Grand_Touring_in_Zenith_Red%2C_front_left.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/2022_Lucid_Air_Grand_Touring_in_Zenith_Red%2C_front_left.jpg/1280px-2022_Lucid_Air_Grand_Touring_in_Zenith_Red%2C_front_left.jpg'],
+    mediaVerified: true,
+  },
+  'aston-martin-dbx707-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/2021_Aston_Martin_DBX_in_Midnight_Blue%2C_front_left.jpg/1280px-2021_Aston_Martin_DBX_in_Midnight_Blue%2C_front_left.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/2021_Aston_Martin_DBX_in_Midnight_Blue%2C_front_left.jpg/1280px-2021_Aston_Martin_DBX_in_Midnight_Blue%2C_front_left.jpg'],
+    mediaVerified: true,
+  },
+  'honda-nsx-type-s-2022': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Honda%2C_Paris_Motor_Show_2018%2C_Paris_%281Y7A1625%29_%28cropped%29.jpg/1280px-Honda%2C_Paris_Motor_Show_2018%2C_Paris_%281Y7A1625%29_%28cropped%29.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Honda%2C_Paris_Motor_Show_2018%2C_Paris_%281Y7A1625%29_%28cropped%29.jpg/1280px-Honda%2C_Paris_Motor_Show_2018%2C_Paris_%281Y7A1625%29_%28cropped%29.jpg'],
     mediaVerified: true,
   },
 }
