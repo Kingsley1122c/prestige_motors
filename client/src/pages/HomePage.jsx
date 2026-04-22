@@ -104,16 +104,20 @@ export function HomePage() {
   const landingContent = adSignals.isAdTraffic
     ? adSignals.matchedBrand
       ? {
+          eyebrow: `${adSignals.matchedBrand} inventory`,
           primaryCta: `See ${adSignals.matchedBrand} inventory`,
         }
       : adSignals.matchedBodyStyle
         ? {
+            eyebrow: `${adSignals.matchedBodyStyle} inventory`,
             primaryCta: `See ${adSignals.matchedBodyStyle} inventory`,
           }
         : {
+            eyebrow: 'Shop cars now',
             primaryCta: 'View all cars',
           }
     : {
+        eyebrow: 'Available now',
         primaryCta: 'Browse all cars',
       }
 
@@ -161,6 +165,9 @@ export function HomePage() {
       <section className="page-shell landing-inventory">
         <div className="landing-inventory-shell glass-panel">
           <div className="landing-inventory-header">
+            <div className="landing-inventory-copy">
+              <span className="eyebrow">{landingContent.eyebrow}</span>
+            </div>
             <div className="landing-inventory-actions">
               <Link className="button button-primary" to={landingInventoryHref}>
                 {landingContent.primaryCta}
