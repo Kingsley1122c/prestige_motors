@@ -94,11 +94,6 @@ export function HomePage() {
     [landingSliderCars, selectedLandingCarId],
   )
 
-  const landingSliderLoop = useMemo(
-    () => (landingSliderCars.length ? [...landingSliderCars, ...landingSliderCars] : []),
-    [landingSliderCars],
-  )
-
   useEffect(() => {
     if (!landingSliderCars.length) {
       setSelectedLandingCarId('')
@@ -219,25 +214,6 @@ export function HomePage() {
                   </Link>
                 </div>
               </article>
-
-              {landingSliderCars.length > 1 ? (
-                <div aria-label="Featured cars slider" className="landing-slider-marquee">
-                  <div className="landing-slider-track">
-                    {landingSliderLoop.map((car, index) => (
-                      <button
-                        aria-label={`Select ${car.brand} ${car.model}`}
-                        className={`landing-slider-card ${selectedLandingCar.id === car.id ? 'landing-slider-card-active' : ''}`}
-                        key={`${car.id}-${index}`}
-                        onClick={() => setSelectedLandingCarId(car.id)}
-                        type="button"
-                      >
-                        <img alt={`${car.brand} ${car.model}`} src={getVehicleHeroImage(car)} />
-                        <span>{car.brand} {car.model}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
             </div>
           ) : null}
 
