@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { VehicleImageLightbox } from '../components/VehicleImageLightbox'
 import { SectionTitle } from '../components/SectionTitle'
 import { useMarket } from '../context/MarketContext'
-import { hasVerifiedGallery } from '../utils/media'
+import { getVehicleGalleryItems } from '../utils/media'
 import { formatLocal, formatMileage, formatUsd } from '../utils/format'
 
 const readAttachmentAsDataUrl = (file) =>
@@ -42,6 +43,8 @@ export function CarDetailsPage() {
   })
   const [delivery, setDelivery] = useState({ address: '', trigger: 'deposit' })
   const [paymentProof, setPaymentProof] = useState(null)
+  const [activeGalleryIndex, setActiveGalleryIndex] = useState(0)
+  const [galleryLightboxOpen, setGalleryLightboxOpen] = useState(false)
 
   if (!car) {
     return (
@@ -66,34 +69,12 @@ export function CarDetailsPage() {
   const latestPaymentRequest = paymentRequests[0]
   const latestApprovedAmount = latestPaymentRequest?.approvedAmountUsd || latestPaymentRequest?.requestedAmountUsd || car.minimumDepositUsd
   const needsProofUpload = ['bank-transfer', 'wire-transfer'].includes(latestPaymentRequest?.approvedMethod)
-  const hasRealGallery = hasVerifiedGallery(car)
-  const verifiedGalleryImages = hasRealGallery ? car.gallery.filter(Boolean) : []
-  const verifiedGalleryItems = hasRealGallery
-    ? verifiedGalleryImages.map((image, index) => ({
-        id: `${car.id}-gallery-${index + 1}`,
-        scene: car.displayGalleryItems?.[index]?.scene || (index < 3 ? 'exterior' : index < 6 ? 'interior' : 'detail'),
-        label: car.displayGalleryItems?.[index]?.label || `Verified view ${index + 1}`,
-        detail: car.displayGalleryItems?.[index]?.detail || 'Matched gallery view',
-        themeName: car.displayTheme?.name || 'Verified catalog media',
-        src: image,
-      }))
-    : []
-  const displayGalleryItems = car.displayGalleryItems?.length
-      ? car.displayGalleryItems
-      : (car.displayGallery || []).map((image, index) => ({
-          id: `${car.id}-gallery-${index + 1}`,
-          scene: index < 3 ? 'exterior' : index < 6 ? 'interior' : 'detail',
-          label: `Verified view ${index + 1}`,
-          detail: 'Matched gallery view',
-          themeName: car.displayTheme?.name || 'Verified catalog media',
-          src: image,
-        }))
-  const galleryItems = hasRealGallery
-    ? [
-        ...verifiedGalleryItems,
-        ...displayGalleryItems.filter((item) => !verifiedGalleryImages.includes(item.src)).slice(0, Math.max(0, 4 - verifiedGalleryItems.length)),
-      ]
-    : displayGalleryItems
+  const galleryItems = useMemo(() => getVehicleGalleryItems(car), [car])
+
+  const openGalleryLightbox = (index) => {
+    setActiveGalleryIndex(index)
+    setGalleryLightboxOpen(true)
+  }
 
   const handleProofChange = async (event) => {
     const file = event.target.files?.[0]
@@ -178,7 +159,15 @@ export function CarDetailsPage() {
       <div className="gallery-grid">
         {galleryItems.map((item, index) => (
           <figure className={`gallery-card ${index === 0 ? 'gallery-card-featured' : ''}`} key={item.id || `${car.id}-${index + 1}`}>
-            <img src={item.src || item} alt={`${car.brand} ${car.model} ${item.label || `view ${index + 1}`}`} />
+            <button
+              aria-label={`Open ${item.label || `view ${index + 1}`} image`}
+              className="gallery-launch"
+              onClick={() => openGalleryLightbox(index)}
+              type="button"
+            >
+              <img src={item.src || item} alt={`${car.brand} ${car.model} ${item.label || `view ${index + 1}`}`} />
+              <span className="gallery-launch-hint">Tap to enlarge</span>
+            </button>
             <figcaption className="gallery-caption surface-card">
               <div className="gallery-caption-topline">
                 <span className={`gallery-scene-pill gallery-scene-${item.scene || 'detail'}`}>{item.scene || 'detail'}</span>
@@ -190,6 +179,15 @@ export function CarDetailsPage() {
           </figure>
         ))}
       </div>
+
+      <VehicleImageLightbox
+        activeIndex={activeGalleryIndex}
+        car={car}
+        galleryItems={galleryItems}
+        isOpen={galleryLightboxOpen}
+        onClose={() => setGalleryLightboxOpen(false)}
+        onSelectIndex={setActiveGalleryIndex}
+      />
 
       <div className="details-grid">
         <div>

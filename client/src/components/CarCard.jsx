@@ -1,6 +1,8 @@
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { VehicleImageLightbox } from './VehicleImageLightbox'
 import { useMarket } from '../context/MarketContext'
-import { getVehicleHeroImage } from '../utils/media'
+import { getVehicleGalleryItems, getVehicleHeroImage } from '../utils/media'
 import { formatLocal, formatMileage, formatUsd } from '../utils/format'
 
 export function CarCard({ car }) {
@@ -9,11 +11,28 @@ export function CarCard({ car }) {
   const localPrice = getLocalizedPrice(car.priceUsd)
   const highlightPreview = car.highlights.slice(0, 2)
   const cardImage = getVehicleHeroImage(car)
+  const galleryItems = useMemo(() => getVehicleGalleryItems(car), [car])
+  const [activeGalleryIndex, setActiveGalleryIndex] = useState(0)
+  const [galleryLightboxOpen, setGalleryLightboxOpen] = useState(false)
+
+  const openGalleryLightbox = () => {
+    setActiveGalleryIndex(0)
+    setGalleryLightboxOpen(true)
+  }
 
   return (
-    <article className="car-card">
+    <>
+      <article className="car-card">
       <div className="car-card-media">
-        <img src={cardImage} alt={`${car.brand} ${car.model}`} />
+        <button
+          aria-label={`Open ${car.brand} ${car.model} gallery`}
+          className="car-card-media-launch"
+          onClick={openGalleryLightbox}
+          type="button"
+        >
+          <img src={cardImage} alt={`${car.brand} ${car.model}`} />
+          <span className="car-card-media-hint">Open gallery</span>
+        </button>
         <span className="car-badge">{car.badge}</span>
         <span className="car-location-chip">{car.location}</span>
         <button
@@ -65,6 +84,15 @@ export function CarCard({ car }) {
           </Link>
         </div>
       </div>
-    </article>
+      </article>
+      <VehicleImageLightbox
+        activeIndex={activeGalleryIndex}
+        car={car}
+        galleryItems={galleryItems}
+        isOpen={galleryLightboxOpen}
+        onClose={() => setGalleryLightboxOpen(false)}
+        onSelectIndex={setActiveGalleryIndex}
+      />
+    </>
   )
 }

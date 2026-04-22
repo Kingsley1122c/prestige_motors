@@ -9,6 +9,42 @@ export const getVehicleHeroImage = (vehicle) => {
 export const hasVerifiedGallery = (vehicle) =>
   Boolean(vehicle?.mediaVerified && Array.isArray(vehicle.gallery) && vehicle.gallery.length)
 
+export const getVehicleGalleryItems = (vehicle, maxItems = 4) => {
+  const hasRealGallery = hasVerifiedGallery(vehicle)
+  const verifiedGalleryImages = hasRealGallery ? vehicle.gallery.filter(Boolean) : []
+  const verifiedGalleryItems = hasRealGallery
+    ? verifiedGalleryImages.map((image, index) => ({
+        id: `${vehicle.id}-gallery-${index + 1}`,
+        scene: vehicle.displayGalleryItems?.[index]?.scene || (index < 3 ? 'exterior' : index < 6 ? 'interior' : 'detail'),
+        label: vehicle.displayGalleryItems?.[index]?.label || `Verified view ${index + 1}`,
+        detail: vehicle.displayGalleryItems?.[index]?.detail || 'Matched gallery view',
+        themeName: vehicle.displayTheme?.name || 'Verified catalog media',
+        src: image,
+      }))
+    : []
+  const displayGalleryItems = vehicle.displayGalleryItems?.length
+    ? vehicle.displayGalleryItems
+    : (vehicle.displayGallery || []).map((image, index) => ({
+        id: `${vehicle.id}-gallery-${index + 1}`,
+        scene: index < 3 ? 'exterior' : index < 6 ? 'interior' : 'detail',
+        label: `Verified view ${index + 1}`,
+        detail: 'Matched gallery view',
+        themeName: vehicle.displayTheme?.name || 'Verified catalog media',
+        src: image,
+      }))
+
+  const galleryItems = hasRealGallery
+    ? [
+        ...verifiedGalleryItems,
+        ...displayGalleryItems
+          .filter((item) => !verifiedGalleryImages.includes(item.src))
+          .slice(0, Math.max(0, maxItems - verifiedGalleryItems.length)),
+      ]
+    : displayGalleryItems
+
+  return galleryItems.slice(0, maxItems)
+}
+
 const MERCHANDISING_PRIORITY = [
   'ferrari-purosangue-2024',
   'rolls-royce-ghost-2023',

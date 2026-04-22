@@ -39,6 +39,27 @@ export function Layout() {
               {item.label}
             </NavLink>
           ))}
+          <div className="mobile-auth-links">
+            {!isAuthenticated ? (
+              <>
+                <Link className="button button-secondary header-cta" to="/login" onClick={() => setMenuOpen(false)}>
+                  Login
+                </Link>
+                <Link className="button button-primary header-cta" to="/create-account" onClick={() => setMenuOpen(false)}>
+                  Create account
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link className="button button-secondary header-cta" to="/dashboard" onClick={() => setMenuOpen(false)}>
+                  Dashboard
+                </Link>
+                <button className="button button-primary header-cta" onClick={logout} type="button">
+                  Log out
+                </button>
+              </>
+            )}
+          </div>
         </nav>
         <div className="header-auth">
           <span className="country-pill">{selectedCountry.code}</span>
