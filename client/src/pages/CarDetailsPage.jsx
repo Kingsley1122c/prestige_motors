@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { SectionTitle } from '../components/SectionTitle'
 import { useMarket } from '../context/MarketContext'
+import { hasVerifiedGallery } from '../utils/media'
 import { formatLocal, formatMileage, formatUsd } from '../utils/format'
 
 const readAttachmentAsDataUrl = (file) =>
@@ -65,7 +66,7 @@ export function CarDetailsPage() {
   const latestPaymentRequest = paymentRequests[0]
   const latestApprovedAmount = latestPaymentRequest?.approvedAmountUsd || latestPaymentRequest?.requestedAmountUsd || car.minimumDepositUsd
   const needsProofUpload = ['bank-transfer', 'wire-transfer'].includes(latestPaymentRequest?.approvedMethod)
-  const hasRealGallery = Array.isArray(car.gallery) && car.gallery.length > 0
+  const hasRealGallery = hasVerifiedGallery(car)
   const galleryImages = hasRealGallery ? car.gallery : car.displayGallery || []
   const galleryItems = hasRealGallery
     ? galleryImages.map((image, index) => ({

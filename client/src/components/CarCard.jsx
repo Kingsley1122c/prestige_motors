@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useMarket } from '../context/MarketContext'
+import { getVehicleHeroImage } from '../utils/media'
 import { formatLocal, formatMileage, formatUsd } from '../utils/format'
 
 export function CarCard({ car }) {
@@ -7,7 +8,7 @@ export function CarCard({ car }) {
   const leadPlan = car.monthlyPlans[0]
   const localPrice = getLocalizedPrice(car.priceUsd)
   const highlightPreview = car.highlights.slice(0, 2)
-  const cardImage = car.heroImage || car.displayHeroImage
+  const cardImage = getVehicleHeroImage(car)
 
   return (
     <article className="car-card">

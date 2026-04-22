@@ -76,6 +76,31 @@ const syncSeedCars = () => {
       return
     }
 
+    if (existingCar.mediaVerified !== seedCar.mediaVerified) {
+      existingCar.mediaVerified = seedCar.mediaVerified
+      didChange = true
+    }
+
+    if (!existingCar.displayHeroImage && seedCar.displayHeroImage) {
+      existingCar.displayHeroImage = seedCar.displayHeroImage
+      didChange = true
+    }
+
+    if ((!Array.isArray(existingCar.displayGallery) || !existingCar.displayGallery.length) && Array.isArray(seedCar.displayGallery) && seedCar.displayGallery.length) {
+      existingCar.displayGallery = cloneValue(seedCar.displayGallery)
+      didChange = true
+    }
+
+    if ((!Array.isArray(existingCar.displayGalleryItems) || !existingCar.displayGalleryItems.length) && Array.isArray(seedCar.displayGalleryItems) && seedCar.displayGalleryItems.length) {
+      existingCar.displayGalleryItems = cloneValue(seedCar.displayGalleryItems)
+      didChange = true
+    }
+
+    if (!existingCar.displayTheme && seedCar.displayTheme) {
+      existingCar.displayTheme = cloneValue(seedCar.displayTheme)
+      didChange = true
+    }
+
     if (!existingCar.heroImage && seedCar.heroImage) {
       existingCar.heroImage = seedCar.heroImage
       didChange = true

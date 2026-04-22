@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { SectionTitle } from '../components/SectionTitle'
 import { useMarket } from '../context/MarketContext'
+import { getVehicleHeroImage } from '../utils/media'
 import { formatUsd } from '../utils/format'
 
 export function FinancingPage() {
@@ -171,7 +172,7 @@ export function FinancingPage() {
         <h3>{activeCar ? `${activeCar.brand} ${activeCar.model}` : 'Select a vehicle'}</h3>
         {activeCar ? (
           <>
-            <img src={activeCar.heroImage || activeCar.displayHeroImage} alt={`${activeCar.brand} ${activeCar.model}`} />
+            <img src={getVehicleHeroImage(activeCar)} alt={`${activeCar.brand} ${activeCar.model}`} />
             <p>Minimum deposit: {formatUsd(activeCar.minimumDepositUsd)}</p>
             <p>Selected country: {selectedCountry.name}</p>
             <div className="plain-list">

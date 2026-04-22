@@ -4,6 +4,7 @@ import { CarCard } from '../components/CarCard'
 import { FilterPanel } from '../components/FilterPanel'
 import { SectionTitle } from '../components/SectionTitle'
 import { useMarket } from '../context/MarketContext'
+import { getVehicleHeroImage } from '../utils/media'
 import { formatUsd } from '../utils/format'
 
 const AMERICA_LOCATIONS = new Set(['Houston', 'Atlanta', 'Dallas', 'Chicago', 'San Francisco', 'Los Angeles', 'New York', 'Miami', 'Las Vegas'])
@@ -156,7 +157,7 @@ export function ListingsPage() {
       <div className="listing-editorial-grid">
         {editorialCars.map((car) => (
           <article className="surface-card listing-editorial-card" key={car.id}>
-            <img alt={`${car.brand} ${car.model}`} src={car.heroImage || car.displayHeroImage} />
+            <img alt={`${car.brand} ${car.model}`} src={getVehicleHeroImage(car)} />
             <div className="listing-editorial-copy">
               <p className="muted-label">{car.location} flagship</p>
               <h3>{car.brand} {car.model}</h3>

@@ -348,6 +348,7 @@ const createCarRecord = (input) => {
     exteriorColor: input.exteriorColor,
     interiorColor: input.interiorColor,
     description: input.description,
+    mediaVerified: Boolean(input.mediaVerified),
     heroImage: input.heroImage || '',
     gallery: input.gallery || [],
     features: input.features || [],
