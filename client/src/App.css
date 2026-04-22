@@ -127,51 +127,58 @@ body {
 .landing-slider-marquee {
   position: relative;
   overflow: hidden;
+  padding: 0.2rem 0;
   mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
 }
 
 .landing-slider-track {
   display: flex;
-  gap: 0.9rem;
+  gap: 1rem;
   width: max-content;
-  animation: landing-marquee 32s linear infinite;
-}
-
-.landing-slider-marquee:hover .landing-slider-track {
-  animation-play-state: paused;
+  animation: landing-marquee 26s linear infinite;
 }
 
 .landing-slider-card {
   position: relative;
-  width: 220px;
+  width: 246px;
   padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.35rem;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.03);
   color: var(--text);
   cursor: pointer;
   text-align: left;
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.14);
 }
 
 .landing-slider-card img {
   display: block;
   width: 100%;
-  height: 148px;
+  height: 156px;
   object-fit: cover;
 }
 
 .landing-slider-card span {
+  position: absolute;
+  left: 0.8rem;
+  right: 0.8rem;
+  bottom: 0.8rem;
   display: block;
-  padding: 0.8rem 0.9rem 0.95rem;
-  color: rgba(255, 255, 255, 0.92);
+  padding: 0.6rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(8, 10, 12, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: rgba(255, 255, 255, 0.96);
   font-weight: 600;
 }
 
 .landing-slider-card-active {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 22px 38px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes landing-marquee {
@@ -1758,11 +1765,11 @@ textarea:focus {
   }
 
   .landing-slider-card {
-    width: 180px;
+    width: 196px;
   }
 
   .landing-slider-card img {
-    height: 128px;
+    height: 132px;
   }
 
   .car-card-media {
@@ -1828,15 +1835,18 @@ textarea:focus {
   }
 
   .landing-slider-card {
-    width: 148px;
+    width: 156px;
   }
 
   .landing-slider-card img {
-    height: 108px;
+    height: 112px;
   }
 
   .landing-slider-card span {
-    padding: 0.65rem 0.75rem 0.8rem;
+    left: 0.55rem;
+    right: 0.55rem;
+    bottom: 0.55rem;
+    padding: 0.45rem 0.6rem;
     font-size: 0.86rem;
   }
 

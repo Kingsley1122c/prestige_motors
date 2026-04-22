@@ -1,6 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useMemo, useState } from 'react'
-import { CarCard } from '../components/CarCard'
 import { SectionTitle } from '../components/SectionTitle'
 import { useMarket } from '../context/MarketContext'
 import { getVehicleHeroImage, sortVehiclesForMerchandising } from '../utils/media'
@@ -89,8 +88,6 @@ export function HomePage() {
   }, [adSignals.matchedBodyStyle, adSignals.matchedBrand, cars, featuredCars])
 
   const landingSliderCars = useMemo(() => landingInventory.slice(0, 8), [landingInventory])
-
-  const landingCars = useMemo(() => landingInventory.slice(0, 2), [landingInventory])
 
   const selectedLandingCar = useMemo(
     () => landingSliderCars.find((car) => car.id === selectedLandingCarId) || landingSliderCars[0] || null,
@@ -256,11 +253,6 @@ export function HomePage() {
                 WhatsApp now
               </a>
             </div>
-          </div>
-          <div className="card-grid landing-card-grid">
-            {landingCars.map((car) => (
-              <CarCard key={car.id} car={car} />
-            ))}
           </div>
         </div>
       </section>
