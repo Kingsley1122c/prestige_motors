@@ -441,6 +441,51 @@ const VERIFIED_MEDIA_LIBRARY = {
     gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/2009-2010_Nissan_GT-R_%28R35%29_coupe_01.jpg/1280px-2009-2010_Nissan_GT-R_%28R35%29_coupe_01.jpg'],
     mediaVerified: true,
   },
+  'jeep-grand-wagoneer-series-iii-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Jeep_Grand_Wagoneer_Edmonton_2022_2.jpg/1280px-Jeep_Grand_Wagoneer_Edmonton_2022_2.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Jeep_Grand_Wagoneer_Edmonton_2022_2.jpg/1280px-Jeep_Grand_Wagoneer_Edmonton_2022_2.jpg'],
+    mediaVerified: true,
+  },
+  'land-rover-defender-130-2025': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Land_Rover_Defender_110_D40_SE_L663_Pangea_Green_%281%29_%28cropped%29.jpg/1280px-Land_Rover_Defender_110_D40_SE_L663_Pangea_Green_%281%29_%28cropped%29.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Land_Rover_Defender_110_D40_SE_L663_Pangea_Green_%281%29_%28cropped%29.jpg/1280px-Land_Rover_Defender_110_D40_SE_L663_Pangea_Green_%281%29_%28cropped%29.jpg'],
+    mediaVerified: true,
+  },
+  'porsche-cayenne-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Porsche_Cayenne_%28III%2C_Facelift%29_%E2%80%93_f_01012025.jpg/1280px-Porsche_Cayenne_%28III%2C_Facelift%29_%E2%80%93_f_01012025.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Porsche_Cayenne_%28III%2C_Facelift%29_%E2%80%93_f_01012025.jpg/1280px-Porsche_Cayenne_%28III%2C_Facelift%29_%E2%80%93_f_01012025.jpg'],
+    mediaVerified: true,
+  },
+  'tesla-model-x-plaid-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/2017_Tesla_Model_X_100D_Front.jpg/1280px-2017_Tesla_Model_X_100D_Front.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/2017_Tesla_Model_X_100D_Front.jpg/1280px-2017_Tesla_Model_X_100D_Front.jpg'],
+    mediaVerified: true,
+  },
+  'rivian-r1t-quad-motor-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/2022_Rivian_R1T_%28in_Glacier_White%29%2C_front_6.21.22.jpg/1280px-2022_Rivian_R1T_%28in_Glacier_White%29%2C_front_6.21.22.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/2022_Rivian_R1T_%28in_Glacier_White%29%2C_front_6.21.22.jpg/1280px-2022_Rivian_R1T_%28in_Glacier_White%29%2C_front_6.21.22.jpg'],
+    mediaVerified: true,
+  },
+  'range-rover-sport-2022': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/2015_Land_Rover_Range_Rover_Sport_HSE_3.0_Front.jpg/1280px-2015_Land_Rover_Range_Rover_Sport_HSE_3.0_Front.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/2015_Land_Rover_Range_Rover_Sport_HSE_3.0_Front.jpg/1280px-2015_Land_Rover_Range_Rover_Sport_HSE_3.0_Front.jpg'],
+    mediaVerified: true,
+  },
+  'bmw-x7-2023': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/BMW_G07_1X7A1696.jpg/1280px-BMW_G07_1X7A1696.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/BMW_G07_1X7A1696.jpg/1280px-BMW_G07_1X7A1696.jpg'],
+    mediaVerified: true,
+  },
+  'toyota-alphard-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/2018-2023_Toyota_Alphard_X.jpg/1280px-2018-2023_Toyota_Alphard_X.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/2018-2023_Toyota_Alphard_X.jpg/1280px-2018-2023_Toyota_Alphard_X.jpg'],
+    mediaVerified: true,
+  },
+  'toyota-tundra-capstone-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/2022_Toyota_Tundra_Limited_CrewMax_Short_Bed_4x4_with_TRD_Off-Road_Package%2C_front_left%2C_11-01-2022.jpg/1280px-2022_Toyota_Tundra_Limited_CrewMax_Short_Bed_4x4_with_TRD_Off-Road_Package%2C_front_left%2C_11-01-2022.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/2022_Toyota_Tundra_Limited_CrewMax_Short_Bed_4x4_with_TRD_Off-Road_Package%2C_front_left%2C_11-01-2022.jpg/1280px-2022_Toyota_Tundra_Limited_CrewMax_Short_Bed_4x4_with_TRD_Off-Road_Package%2C_front_left%2C_11-01-2022.jpg'],
+    mediaVerified: true,
+  },
 }
 
 const attachVerifiedMedia = (input) => {
