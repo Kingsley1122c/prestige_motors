@@ -307,6 +307,16 @@ const attachVehicleDisplayMedia = (vehicle) => {
 }
 
 const VERIFIED_MEDIA_LIBRARY = {
+  'lexus-lx-600-2023': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/2018_Lexus_LX_570_%28facelift%29%2C_front_3.24.23.jpg/1280px-2018_Lexus_LX_570_%28facelift%29%2C_front_3.24.23.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/2018_Lexus_LX_570_%28facelift%29%2C_front_3.24.23.jpg/1280px-2018_Lexus_LX_570_%28facelift%29%2C_front_3.24.23.jpg'],
+    mediaVerified: true,
+  },
+  'toyota-land-cruiser-2021': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/2021_Toyota_Land_Cruiser_300_3.4_ZX_%28Colombia%29_front_view_04.png/1280px-2021_Toyota_Land_Cruiser_300_3.4_ZX_%28Colombia%29_front_view_04.png',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/2021_Toyota_Land_Cruiser_300_3.4_ZX_%28Colombia%29_front_view_04.png/1280px-2021_Toyota_Land_Cruiser_300_3.4_ZX_%28Colombia%29_front_view_04.png'],
+    mediaVerified: true,
+  },
   'ferrari-purosangue-2024': {
     heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Ferrari_Purosangue_DSC_7008.jpg/1280px-Ferrari_Purosangue_DSC_7008.jpg',
     gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Ferrari_Purosangue_DSC_7008.jpg/1280px-Ferrari_Purosangue_DSC_7008.jpg'],
@@ -329,6 +339,31 @@ const VERIFIED_MEDIA_LIBRARY = {
   'bentley-bentayga-2024': {
     heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Bentley_Bentayga_V8_%28FL%29_IMG_0005.jpg/1280px-Bentley_Bentayga_V8_%28FL%29_IMG_0005.jpg',
     gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Bentley_Bentayga_V8_%28FL%29_IMG_0005.jpg/1280px-Bentley_Bentayga_V8_%28FL%29_IMG_0005.jpg'],
+    mediaVerified: true,
+  },
+  'bentley-flying-spur-speed-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Bentley_Flying_Spur_Macau_front_view_%28June_9%2C_2025%29.jpg/1280px-Bentley_Flying_Spur_Macau_front_view_%28June_9%2C_2025%29.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Bentley_Flying_Spur_Macau_front_view_%28June_9%2C_2025%29.jpg/1280px-Bentley_Flying_Spur_Macau_front_view_%28June_9%2C_2025%29.jpg'],
+    mediaVerified: true,
+  },
+  'ford-f150-raptor-r-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/2021_Ford_F-150_Raptor%2C_front.jpg/1280px-2021_Ford_F-150_Raptor%2C_front.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/2021_Ford_F-150_Raptor%2C_front.jpg/1280px-2021_Ford_F-150_Raptor%2C_front.jpg'],
+    mediaVerified: true,
+  },
+  'ram-1500-trx-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/2023_Ram_1500_TRX_Havoc_Edition_in_Baja_Yellow_Clearcoat%2C_Front_Left%2C_04-30-2023.jpg/1280px-2023_Ram_1500_TRX_Havoc_Edition_in_Baja_Yellow_Clearcoat%2C_Front_Left%2C_04-30-2023.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/2023_Ram_1500_TRX_Havoc_Edition_in_Baja_Yellow_Clearcoat%2C_Front_Left%2C_04-30-2023.jpg/1280px-2023_Ram_1500_TRX_Havoc_Edition_in_Baja_Yellow_Clearcoat%2C_Front_Left%2C_04-30-2023.jpg'],
+    mediaVerified: true,
+  },
+  'gmc-hummer-ev-pickup-2025': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/2022_GMC_Hummer_EV_pickup_front.jpg/1280px-2022_GMC_Hummer_EV_pickup_front.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/2022_GMC_Hummer_EV_pickup_front.jpg/1280px-2022_GMC_Hummer_EV_pickup_front.jpg'],
+    mediaVerified: true,
+  },
+  'chevrolet-silverado-hd-2024': {
+    heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/2022_Chevrolet_Silverado_2500HD_High_Country%2C_Front_Left%2C_11-21-2021.jpg/1280px-2022_Chevrolet_Silverado_2500HD_High_Country%2C_Front_Left%2C_11-21-2021.jpg',
+    gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/2022_Chevrolet_Silverado_2500HD_High_Country%2C_Front_Left%2C_11-21-2021.jpg/1280px-2022_Chevrolet_Silverado_2500HD_High_Country%2C_Front_Left%2C_11-21-2021.jpg'],
     mediaVerified: true,
   },
 }
