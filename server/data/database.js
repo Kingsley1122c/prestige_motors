@@ -54,6 +54,8 @@ const createSnapshot = () => ({
   serviceRequests,
 })
 
+const arraysMatch = (first = [], second = []) => JSON.stringify(first || []) === JSON.stringify(second || [])
+
 const applySnapshot = (snapshot) => {
   replaceCollection(cars, snapshot.cars)
   replaceCollection(users, snapshot.users)
@@ -101,12 +103,15 @@ const syncSeedCars = () => {
       didChange = true
     }
 
-    if (!existingCar.heroImage && seedCar.heroImage) {
+    if ((seedCar.mediaVerified && existingCar.heroImage !== seedCar.heroImage) || (!existingCar.heroImage && seedCar.heroImage)) {
       existingCar.heroImage = seedCar.heroImage
       didChange = true
     }
 
-    if ((!Array.isArray(existingCar.gallery) || !existingCar.gallery.length) && Array.isArray(seedCar.gallery) && seedCar.gallery.length) {
+    if (
+      (seedCar.mediaVerified && !arraysMatch(existingCar.gallery, seedCar.gallery)) ||
+      ((!Array.isArray(existingCar.gallery) || !existingCar.gallery.length) && Array.isArray(seedCar.gallery) && seedCar.gallery.length)
+    ) {
       existingCar.gallery = cloneValue(seedCar.gallery)
       didChange = true
     }
