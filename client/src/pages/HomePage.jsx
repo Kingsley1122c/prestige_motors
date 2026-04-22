@@ -104,30 +104,16 @@ export function HomePage() {
   const landingContent = adSignals.isAdTraffic
     ? adSignals.matchedBrand
       ? {
-          eyebrow: `${adSignals.matchedBrand} inventory`,
-          title: `${adSignals.matchedBrand} cars on screen immediately.`,
-          description: `You came from an ad, so this landing section goes straight into active ${adSignals.matchedBrand} stock with transparent pricing and financing access.`,
           primaryCta: `See ${adSignals.matchedBrand} inventory`,
         }
       : adSignals.matchedBodyStyle
         ? {
-            eyebrow: `${adSignals.matchedBodyStyle} inventory`,
-            title: `${adSignals.matchedBodyStyle} options on screen immediately.`,
-            description: `You came from an ad, so this landing section goes straight into active ${adSignals.matchedBodyStyle.toLowerCase()} inventory with price and deposit visibility first.`,
             primaryCta: `See ${adSignals.matchedBodyStyle} inventory`,
           }
         : {
-            eyebrow: 'Shop cars now',
-            title: 'See the cars before anything else.',
-            description:
-              'You came from an ad, so the first screen goes straight to active cars with price, deposit range, and financing access.',
             primaryCta: 'View all cars',
           }
     : {
-        eyebrow: 'Available now',
-        title: 'Cars first. Friction later.',
-        description:
-          'Start with active inventory, pricing, deposit guidance, and financing access before the rest of the showroom story.',
         primaryCta: 'Browse all cars',
       }
 
@@ -175,11 +161,6 @@ export function HomePage() {
       <section className="page-shell landing-inventory">
         <div className="landing-inventory-shell glass-panel">
           <div className="landing-inventory-header">
-            <div className="landing-inventory-copy">
-              <span className="eyebrow">{landingContent.eyebrow}</span>
-              <h1>{landingContent.title}</h1>
-              <p>{landingContent.description}</p>
-            </div>
             <div className="landing-inventory-actions">
               <Link className="button button-primary" to={landingInventoryHref}>
                 {landingContent.primaryCta}

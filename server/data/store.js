@@ -237,9 +237,6 @@ const createVehicleMediaCard = ({ brand, model, year, bodyStyle, exteriorColor, 
   const resolvedTheme = theme || getVehicleTheme({ brand, model, year, badge, bodyStyle })
   const palette = resolvedTheme.palette
   const vehicleName = `${brand} ${model}`
-  const colorLine = scene === 'interior'
-    ? `Interior finish ${interiorColor || 'Tailored trim'}`
-    : `Exterior finish ${exteriorColor || 'Signature specification'}`
   const sceneBadge = scene === 'interior' ? 'Interior' : scene === 'detail' ? 'Detail' : 'Exterior'
   const artwork = scene === 'interior'
     ? buildInteriorIllustration(bodyStyle, palette)
@@ -263,22 +260,14 @@ const createVehicleMediaCard = ({ brand, model, year, bodyStyle, exteriorColor, 
       <circle cx="182" cy="118" r="144" fill="${palette.accent}" opacity="0.12" />
       <circle cx="824" cy="612" r="188" fill="${palette.accentSoft}" opacity="0.08" />
       <rect x="56" y="56" width="848" height="608" rx="32" fill="none" stroke="${palette.line}" stroke-opacity="0.14" />
-      <rect x="86" y="88" width="196" height="30" rx="15" fill="url(#glow)" opacity="0.92" />
+      <rect x="86" y="88" width="150" height="18" rx="9" fill="url(#glow)" opacity="0.92" />
       <rect x="720" y="88" width="150" height="32" rx="16" fill="${palette.frame}" fill-opacity="0.78" stroke="${palette.line}" stroke-opacity="0.3" />
-      <text x="88" y="154" fill="${palette.ink}" font-family="Segoe UI, Arial, sans-serif" font-size="44" font-weight="700">${vehicleName}</text>
-      <text x="88" y="198" fill="${palette.accentSoft}" font-family="Segoe UI, Arial, sans-serif" font-size="22">${year} ${bodyStyle} - ${badge || 'Verified catalog media'}</text>
       <text x="748" y="110" fill="${palette.accentSoft}" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">${sceneBadge}</text>
-      <text x="88" y="238" fill="${palette.ink}" fill-opacity="0.86" font-family="Segoe UI, Arial, sans-serif" font-size="30" font-weight="600">${label}</text>
-      <text x="88" y="274" fill="${palette.ink}" fill-opacity="0.7" font-family="Segoe UI, Arial, sans-serif" font-size="19">${detail}</text>
-      <text x="88" y="304" fill="${palette.ink}" fill-opacity="0.62" font-family="Segoe UI, Arial, sans-serif" font-size="17">${colorLine}</text>
-      <text x="88" y="334" fill="${palette.accentSoft}" fill-opacity="0.86" font-family="Segoe UI, Arial, sans-serif" font-size="17">${resolvedTheme.name} theme</text>
       ${artwork}
       <circle cx="308" cy="516" r="56" fill="${palette.frame}" opacity="0.98" />
       <circle cx="308" cy="516" r="34" fill="${palette.accentSoft}" opacity="0.92" />
       <circle cx="628" cy="516" r="56" fill="${palette.frame}" opacity="0.98" />
       <circle cx="628" cy="516" r="34" fill="${palette.accentSoft}" opacity="0.92" />
-      <text x="88" y="618" fill="${palette.accentSoft}" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="600">Interior and exterior media matched to vehicle name</text>
-      <text x="88" y="646" fill="${palette.ink}" fill-opacity="0.62" font-family="Segoe UI, Arial, sans-serif" font-size="16">${resolvedTheme.note}</text>
     </svg>
   `
 
