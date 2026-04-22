@@ -1,9 +1,9 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { CarCard } from '../components/CarCard'
 import { SectionTitle } from '../components/SectionTitle'
 import { useMarket } from '../context/MarketContext'
-import { sortVehiclesForMerchandising } from '../utils/media'
+import { getVehicleHeroImage, sortVehiclesForMerchandising } from '../utils/media'
 
 const processSteps = [
   'Browse verified listings with full pricing, deposit, and monthly plan visibility.',
@@ -37,6 +37,7 @@ export function HomePage() {
     location: 'All',
     paymentType: 'All',
   })
+  const [selectedLandingCarId, setSelectedLandingCarId] = useState('')
 
   const adSignals = useMemo(() => {
     const params = new URLSearchParams(location.search)
@@ -75,7 +76,7 @@ export function HomePage() {
     }
   }, [cars, location.search, meta.brands])
 
-  const landingCars = useMemo(() => {
+  const landingInventory = useMemo(() => {
     let inventorySlice = featuredCars
 
     if (adSignals.matchedBrand) {
@@ -84,8 +85,43 @@ export function HomePage() {
       inventorySlice = cars.filter((car) => car.bodyStyle === adSignals.matchedBodyStyle)
     }
 
-    return sortVehiclesForMerchandising(inventorySlice.length ? inventorySlice : featuredCars).slice(0, 2)
+    return sortVehiclesForMerchandising(inventorySlice.length ? inventorySlice : featuredCars)
   }, [adSignals.matchedBodyStyle, adSignals.matchedBrand, cars, featuredCars])
+
+  const landingSliderCars = useMemo(() => landingInventory.slice(0, 8), [landingInventory])
+
+  const landingCars = useMemo(() => landingInventory.slice(0, 2), [landingInventory])
+
+  const selectedLandingCar = useMemo(
+    () => landingSliderCars.find((car) => car.id === selectedLandingCarId) || landingSliderCars[0] || null,
+    [landingSliderCars, selectedLandingCarId],
+  )
+
+  const landingSliderLoop = useMemo(
+    () => (landingSliderCars.length ? [...landingSliderCars, ...landingSliderCars] : []),
+    [landingSliderCars],
+  )
+
+  useEffect(() => {
+    if (!landingSliderCars.length) {
+      setSelectedLandingCarId('')
+      return undefined
+    }
+
+    if (!landingSliderCars.some((car) => car.id === selectedLandingCarId)) {
+      setSelectedLandingCarId(landingSliderCars[0].id)
+    }
+
+    const rotationTimer = window.setInterval(() => {
+      setSelectedLandingCarId((currentId) => {
+        const currentIndex = landingSliderCars.findIndex((car) => car.id === currentId)
+        const nextIndex = currentIndex >= 0 ? (currentIndex + 1) % landingSliderCars.length : 0
+        return landingSliderCars[nextIndex].id
+      })
+    }, 4200)
+
+    return () => window.clearInterval(rotationTimer)
+  }, [landingSliderCars, selectedLandingCarId])
 
   const landingInventoryHref = useMemo(() => {
     const params = new URLSearchParams()
@@ -165,6 +201,49 @@ export function HomePage() {
     <>
       <section className="page-shell landing-inventory">
         <div className="landing-inventory-shell glass-panel">
+          {selectedLandingCar ? (
+            <div className="landing-slider-shell">
+              <article className="landing-slider-spotlight" key={selectedLandingCar.id}>
+                <img
+                  alt={`${selectedLandingCar.brand} ${selectedLandingCar.model}`}
+                  className="landing-slider-spotlight-image"
+                  src={getVehicleHeroImage(selectedLandingCar)}
+                />
+                <div className="landing-slider-overlay">
+                  <div className="landing-slider-meta">
+                    <span className="landing-slider-badge">Selected car</span>
+                    <h2>{selectedLandingCar.brand} {selectedLandingCar.model}</h2>
+                    <p>
+                      {selectedLandingCar.location} · ${selectedLandingCar.priceUsd.toLocaleString()} · {selectedLandingCar.bodyStyle}
+                    </p>
+                  </div>
+                  <Link className="glass-view-more" to={`/cars/${selectedLandingCar.id}`}>
+                    View more
+                  </Link>
+                </div>
+              </article>
+
+              {landingSliderCars.length > 1 ? (
+                <div aria-label="Featured cars slider" className="landing-slider-marquee">
+                  <div className="landing-slider-track">
+                    {landingSliderLoop.map((car, index) => (
+                      <button
+                        aria-label={`Select ${car.brand} ${car.model}`}
+                        className={`landing-slider-card ${selectedLandingCar.id === car.id ? 'landing-slider-card-active' : ''}`}
+                        key={`${car.id}-${index}`}
+                        onClick={() => setSelectedLandingCarId(car.id)}
+                        type="button"
+                      >
+                        <img alt={`${car.brand} ${car.model}`} src={getVehicleHeroImage(car)} />
+                        <span>{car.brand} {car.model}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+
           <div className="landing-inventory-header">
             <div className="landing-inventory-copy">
               <span className="eyebrow">{landingContent.eyebrow}</span>

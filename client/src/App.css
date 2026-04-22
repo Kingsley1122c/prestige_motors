@@ -32,6 +32,158 @@ body {
   padding: 1.35rem;
 }
 
+.landing-slider-shell {
+  display: grid;
+  gap: 1rem;
+}
+
+.landing-slider-spotlight {
+  position: relative;
+  min-height: 420px;
+  border-radius: 1.6rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #0c1217;
+  box-shadow: 0 32px 60px rgba(0, 0, 0, 0.26);
+}
+
+.landing-slider-spotlight::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(8, 10, 12, 0.12) 10%, rgba(8, 10, 12, 0.28) 42%, rgba(8, 10, 12, 0.72) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.48) 0%, rgba(0, 0, 0, 0.05) 55%, rgba(0, 0, 0, 0.4) 100%);
+}
+
+.landing-slider-spotlight-image {
+  width: 100%;
+  height: 100%;
+  min-height: 420px;
+  object-fit: cover;
+  display: block;
+}
+
+.landing-slider-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.4rem;
+}
+
+.landing-slider-meta {
+  display: grid;
+  gap: 0.45rem;
+  max-width: 38rem;
+}
+
+.landing-slider-meta h2 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  line-height: 0.92;
+}
+
+.landing-slider-meta p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.landing-slider-badge {
+  width: fit-content;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.glass-view-more {
+  align-self: flex-end;
+  justify-self: flex-end;
+  min-width: 168px;
+  padding: 0.95rem 1.2rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  color: var(--text);
+  text-align: center;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.18);
+}
+
+.glass-view-more:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.landing-slider-marquee {
+  position: relative;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+}
+
+.landing-slider-track {
+  display: flex;
+  gap: 0.9rem;
+  width: max-content;
+  animation: landing-marquee 32s linear infinite;
+}
+
+.landing-slider-marquee:hover .landing-slider-track {
+  animation-play-state: paused;
+}
+
+.landing-slider-card {
+  position: relative;
+  width: 220px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.2rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.landing-slider-card img {
+  display: block;
+  width: 100%;
+  height: 148px;
+  object-fit: cover;
+}
+
+.landing-slider-card span {
+  display: block;
+  padding: 0.8rem 0.9rem 0.95rem;
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 600;
+}
+
+.landing-slider-card-active {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.18);
+}
+
+@keyframes landing-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-50% - 0.45rem));
+  }
+}
+
 .landing-inventory-header {
   display: flex;
   align-items: end;
@@ -1302,6 +1454,46 @@ textarea:focus {
   align-items: center;
 }
 
+.admin-inventory-cell {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-inventory-preview {
+  position: relative;
+  width: 112px;
+  min-width: 112px;
+  padding: 0;
+  border: 0;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: transparent;
+  cursor: pointer;
+}
+
+.admin-inventory-preview img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+}
+
+.admin-inventory-preview-label {
+  position: absolute;
+  left: 0.6rem;
+  bottom: 0.6rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(8, 8, 8, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: var(--text);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
 .compact-row {
   justify-content: flex-end;
 }
@@ -1362,6 +1554,16 @@ textarea:focus {
 
   .landing-inventory-header {
     justify-content: stretch;
+  }
+
+  .landing-slider-overlay {
+    align-items: flex-end;
+    flex-direction: column;
+  }
+
+  .landing-slider-meta {
+    max-width: none;
+    width: 100%;
   }
 
   .landing-inventory-actions {
@@ -1464,6 +1666,10 @@ textarea:focus {
     padding: 0.75rem;
   }
 
+  .admin-inventory-cell {
+    align-items: flex-start;
+  }
+
   .gallery-lightbox-media img {
     max-height: 58vh;
   }
@@ -1546,6 +1752,19 @@ textarea:focus {
     padding: 1.1rem;
   }
 
+  .landing-slider-spotlight,
+  .landing-slider-spotlight-image {
+    min-height: 320px;
+  }
+
+  .landing-slider-card {
+    width: 180px;
+  }
+
+  .landing-slider-card img {
+    height: 128px;
+  }
+
   .car-card-media {
     height: 220px;
   }
@@ -1577,6 +1796,48 @@ textarea:focus {
   .header-auth,
   .landing-inventory-actions {
     grid-template-columns: 1fr;
+  }
+
+  .landing-slider-spotlight,
+  .landing-slider-spotlight-image {
+    min-height: 248px;
+  }
+
+  .landing-slider-overlay {
+    gap: 0.75rem;
+    padding: 0.85rem;
+  }
+
+  .landing-slider-badge {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.68rem;
+  }
+
+  .landing-slider-meta p {
+    font-size: 0.92rem;
+  }
+
+  .glass-view-more {
+    width: 100%;
+    min-width: 0;
+    padding: 0.82rem 1rem;
+  }
+
+  .landing-slider-meta h2 {
+    font-size: clamp(1.45rem, 8.5vw, 2rem);
+  }
+
+  .landing-slider-card {
+    width: 148px;
+  }
+
+  .landing-slider-card img {
+    height: 108px;
+  }
+
+  .landing-slider-card span {
+    padding: 0.65rem 0.75rem 0.8rem;
+    font-size: 0.86rem;
   }
 
   .mobile-auth-links {

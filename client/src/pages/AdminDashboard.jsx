@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react'
 import { SectionTitle } from '../components/SectionTitle'
+import { VehicleImageLightbox } from '../components/VehicleImageLightbox'
 import { useMarket } from '../context/MarketContext'
 import { formatDate, formatUsd } from '../utils/format'
+import { getVehicleGalleryItems, getVehicleHeroImage } from '../utils/media'
 
 const createEmptyForm = () => ({
   brand: '',
@@ -52,6 +54,8 @@ export function AdminDashboard() {
   } = useMarket()
   const [editingCarId, setEditingCarId] = useState('')
   const [form, setForm] = useState(createEmptyForm())
+  const [previewCarId, setPreviewCarId] = useState('')
+  const [activePreviewIndex, setActivePreviewIndex] = useState(0)
   const [editingPaymentRequestId, setEditingPaymentRequestId] = useState('')
   const [paymentInstructionForm, setPaymentInstructionForm] = useState(createEmptyPaymentInstructionForm())
   const [pendingUserDeletion, setPendingUserDeletion] = useState(null)
@@ -64,6 +68,16 @@ export function AdminDashboard() {
   const editingPaymentRequest = useMemo(
     () => adminDashboard.paymentRequests.find((paymentRequest) => paymentRequest.id === editingPaymentRequestId),
     [adminDashboard.paymentRequests, editingPaymentRequestId],
+  )
+
+  const previewCar = useMemo(
+    () => adminDashboard.cars.find((car) => car.id === previewCarId) || null,
+    [adminDashboard.cars, previewCarId],
+  )
+
+  const previewGalleryItems = useMemo(
+    () => (previewCar ? getVehicleGalleryItems(previewCar) : []),
+    [previewCar],
   )
 
   const populateForm = (car) => {
@@ -94,6 +108,16 @@ export function AdminDashboard() {
   const resetEditor = () => {
     setEditingCarId('')
     setForm(createEmptyForm())
+  }
+
+  const openInventoryPreview = (car) => {
+    setPreviewCarId(car.id)
+    setActivePreviewIndex(0)
+  }
+
+  const closeInventoryPreview = () => {
+    setPreviewCarId('')
+    setActivePreviewIndex(0)
   }
 
   const populatePaymentInstructionForm = (paymentRequest) => {
@@ -423,9 +447,20 @@ export function AdminDashboard() {
         <div className="table-list">
           {adminDashboard.cars.map((car) => (
             <div className="table-row table-row-actions" key={car.id}>
-              <div>
-                <strong>{car.brand} {car.model}</strong>
-                <span>{car.location} · {formatUsd(car.priceUsd)} · Deposit {formatUsd(car.minimumDepositUsd)}</span>
+              <div className="admin-inventory-cell">
+                <button
+                  aria-label={`Open ${car.brand} ${car.model} gallery`}
+                  className="admin-inventory-preview"
+                  onClick={() => openInventoryPreview(car)}
+                  type="button"
+                >
+                  <img alt={`${car.brand} ${car.model}`} src={getVehicleHeroImage(car)} />
+                  <span className="admin-inventory-preview-label">Preview</span>
+                </button>
+                <div>
+                  <strong>{car.brand} {car.model}</strong>
+                  <span>{car.location} · {formatUsd(car.priceUsd)} · Deposit {formatUsd(car.minimumDepositUsd)}</span>
+                </div>
               </div>
               <div className="button-row compact-row">
                 <button className="button button-secondary" onClick={() => populateForm(car)} type="button">
@@ -439,6 +474,17 @@ export function AdminDashboard() {
           ))}
         </div>
       </div>
+
+      {previewCar ? (
+        <VehicleImageLightbox
+          activeIndex={activePreviewIndex}
+          car={previewCar}
+          galleryItems={previewGalleryItems}
+          isOpen={Boolean(previewCar)}
+          onClose={closeInventoryPreview}
+          onSelectIndex={setActivePreviewIndex}
+        />
+      ) : null}
 
       <div className="dashboard-grid second-grid">
         <div className="surface-card table-card">
