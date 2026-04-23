@@ -31,12 +31,14 @@ export function HomePage() {
   const location = useLocation()
   const navigate = useNavigate()
   const { cars, featuredCars, meta } = useMarket()
+  const landingTransitionDurationMs = 280
   const [quickSearch, setQuickSearch] = useState({
     brand: 'All',
     location: 'All',
     paymentType: 'All',
   })
   const [selectedLandingCarId, setSelectedLandingCarId] = useState('')
+  const [isLandingCarVisible, setIsLandingCarVisible] = useState(true)
 
   const adSignals = useMemo(() => {
     const params = new URLSearchParams(location.search)
@@ -97,23 +99,35 @@ export function HomePage() {
   useEffect(() => {
     if (!landingSliderCars.length) {
       setSelectedLandingCarId('')
+      setIsLandingCarVisible(true)
       return undefined
     }
 
     if (!landingSliderCars.some((car) => car.id === selectedLandingCarId)) {
       setSelectedLandingCarId(landingSliderCars[0].id)
+      setIsLandingCarVisible(true)
     }
 
+    let switchTimer
     const rotationTimer = window.setInterval(() => {
-      setSelectedLandingCarId((currentId) => {
-        const currentIndex = landingSliderCars.findIndex((car) => car.id === currentId)
-        const nextIndex = currentIndex >= 0 ? (currentIndex + 1) % landingSliderCars.length : 0
-        return landingSliderCars[nextIndex].id
-      })
+      setIsLandingCarVisible(false)
+      switchTimer = window.setTimeout(() => {
+        setSelectedLandingCarId((currentId) => {
+          const currentIndex = landingSliderCars.findIndex((car) => car.id === currentId)
+          const nextIndex = currentIndex >= 0 ? (currentIndex + 1) % landingSliderCars.length : 0
+          return landingSliderCars[nextIndex].id
+        })
+        setIsLandingCarVisible(true)
+      }, landingTransitionDurationMs)
     }, 4200)
 
-    return () => window.clearInterval(rotationTimer)
-  }, [landingSliderCars, selectedLandingCarId])
+    return () => {
+      window.clearInterval(rotationTimer)
+      if (switchTimer) {
+        window.clearTimeout(switchTimer)
+      }
+    }
+  }, [landingSliderCars, landingTransitionDurationMs, selectedLandingCarId])
 
   const landingInventoryHref = useMemo(() => {
     const params = new URLSearchParams()
@@ -195,7 +209,9 @@ export function HomePage() {
         <div className="landing-inventory-shell glass-panel">
           {selectedLandingCar ? (
             <div className="landing-slider-shell">
-              <article className="landing-slider-spotlight" key={selectedLandingCar.id}>
+              <article
+                className={`landing-slider-spotlight ${isLandingCarVisible ? 'landing-slider-spotlight-live' : 'landing-slider-spotlight-transitioning'}`}
+              >
                 <img
                   alt={`${selectedLandingCar.brand} ${selectedLandingCar.model}`}
                   className="landing-slider-spotlight-image"
