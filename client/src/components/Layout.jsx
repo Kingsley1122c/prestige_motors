@@ -28,6 +28,7 @@ export function Layout() {
         <button className="menu-toggle" type="button" onClick={() => setMenuOpen((value) => !value)}>
           Menu
         </button>
+        <span className="mobile-country-pill country-pill">{selectedCountry.code}</span>
         <nav className={`site-nav ${menuOpen ? 'site-nav-open' : ''}`}>
           {navItems.map((item) => (
             <NavLink
