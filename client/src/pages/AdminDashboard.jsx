@@ -14,6 +14,13 @@ const createEmptyForm = () => ({
   condition: 'Certified used',
   priceUsd: '',
   minimumDepositUsd: '',
+  rentalDailyUsd: '',
+  rentalWeekendUsd: '',
+  rentalWeeklyUsd: '',
+  rentalMonthlyUsd: '',
+  rentalSecurityDepositUsd: '',
+  rentalMinimumDays: '',
+  rentalMileageLimitDaily: '',
   bodyStyle: 'SUV',
   fuelType: 'Petrol',
   transmission: 'Automatic',
@@ -91,6 +98,13 @@ export function AdminDashboard() {
       condition: car.condition,
       priceUsd: String(car.priceUsd),
       minimumDepositUsd: String(car.minimumDepositUsd),
+      rentalDailyUsd: String(car.rentalTerms?.dailyUsd || ''),
+      rentalWeekendUsd: String(car.rentalTerms?.weekendUsd || ''),
+      rentalWeeklyUsd: String(car.rentalTerms?.weeklyUsd || ''),
+      rentalMonthlyUsd: String(car.rentalTerms?.monthlyUsd || ''),
+      rentalSecurityDepositUsd: String(car.rentalTerms?.securityDepositUsd || ''),
+      rentalMinimumDays: String(car.rentalTerms?.minimumDays || ''),
+      rentalMileageLimitDaily: String(car.rentalTerms?.mileageLimitDaily || ''),
       bodyStyle: car.bodyStyle,
       fuelType: car.fuelType,
       transmission: car.transmission,
@@ -157,8 +171,25 @@ export function AdminDashboard() {
       gallery: form.gallery.split(',').map((value) => value.trim()).filter(Boolean),
       features: form.features.split(',').map((value) => value.trim()).filter(Boolean),
       highlights: form.highlights.split(',').map((value) => value.trim()).filter(Boolean),
-      paymentTypes: ['full', 'installment'],
+      paymentTypes: ['full', 'installment', 'rental'],
+      rentalTerms: {
+        dailyUsd: Number(form.rentalDailyUsd),
+        weekendUsd: Number(form.rentalWeekendUsd),
+        weeklyUsd: Number(form.rentalWeeklyUsd),
+        monthlyUsd: Number(form.rentalMonthlyUsd),
+        securityDepositUsd: Number(form.rentalSecurityDepositUsd),
+        minimumDays: Number(form.rentalMinimumDays),
+        mileageLimitDaily: Number(form.rentalMileageLimitDaily),
+      },
     }
+
+    delete payload.rentalDailyUsd
+    delete payload.rentalWeekendUsd
+    delete payload.rentalWeeklyUsd
+    delete payload.rentalMonthlyUsd
+    delete payload.rentalSecurityDepositUsd
+    delete payload.rentalMinimumDays
+    delete payload.rentalMileageLimitDaily
 
     if (editingCar) {
       await updateCar(editingCar.id, payload)
@@ -459,7 +490,7 @@ export function AdminDashboard() {
                 </button>
                 <div>
                   <strong>{car.brand} {car.model}</strong>
-                  <span>{car.location} · {formatUsd(car.priceUsd)} · Deposit {formatUsd(car.minimumDepositUsd)}</span>
+                  <span>{car.location} · {formatUsd(car.priceUsd)} · Deposit {formatUsd(car.minimumDepositUsd)} · Rent from {formatUsd(car.rentalTerms?.dailyUsd || 0)}/day</span>
                 </div>
               </div>
               <div className="button-row compact-row">

@@ -8,6 +8,7 @@ export function Layout() {
   const navItems = [
     { to: '/', label: 'Home' },
     { to: '/listings', label: 'Inventory' },
+    { to: '/rentals', label: 'Rentals' },
     { to: '/services', label: 'Services' },
     { to: '/financing', label: 'Financing' },
     { to: '/about', label: 'About' },

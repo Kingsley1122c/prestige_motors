@@ -121,6 +121,7 @@ export function ListingsPage() {
             <span>US handover ready</span>
             <span>Asia import verified</span>
             <span>Exotic financing profile</span>
+            <span>Luxury rental terms</span>
           </div>
           <div className="hero-actions">
             <Link className="button button-primary" to="/services?type=concierge">
@@ -173,8 +174,8 @@ export function ListingsPage() {
 
       <SectionTitle
         eyebrow="Inventory"
-        title="Browse America-based luxury inventory with full payment visibility"
-        description="Filter by US or Asia location, brand, price, or payment type and move directly into inspection or financing when the right vehicle appears."
+        title="Browse America-based luxury inventory with purchase and rental visibility"
+        description="Filter by US or Asia location, brand, price, or payment type and move directly into inspection, financing, or rental review when the right vehicle appears."
       />
       <div className="service-lane-grid">
         {serviceCards.map((card) => (

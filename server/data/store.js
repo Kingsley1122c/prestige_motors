@@ -30,6 +30,40 @@ const buildPlans = (priceUsd, minimumDepositUsd, durations = [6, 12, 18, 24]) =>
   })
 }
 
+const roundToNearest = (value, step) => Math.round(Number(value) / step) * step
+
+const buildRentalTerms = (priceUsd, bodyStyle) => {
+  const dailyBase = Math.max(450, roundToNearest(priceUsd * 0.0065, 50))
+  const minimumDays = ['SUV', 'Truck', 'Van'].includes(bodyStyle) ? 2 : 1
+  const mileageLimitDaily = ['SUV', 'Truck'].includes(bodyStyle) ? 120 : 100
+
+  return {
+    dailyUsd: dailyBase,
+    weekendUsd: roundToNearest(dailyBase * 2.7, 50),
+    weeklyUsd: roundToNearest(dailyBase * 6, 50),
+    monthlyUsd: roundToNearest(dailyBase * 22, 100),
+    securityDepositUsd: Math.max(2000, roundToNearest(dailyBase * 2, 100)),
+    minimumDays,
+    mileageLimitDaily,
+    chauffeurAvailable: priceUsd >= 180000 || ['Sedan', 'Van'].includes(bodyStyle),
+  }
+}
+
+const normalizeRentalTerms = (inputTerms, priceUsd, bodyStyle) => {
+  const defaults = buildRentalTerms(priceUsd, bodyStyle)
+
+  return {
+    dailyUsd: Number(inputTerms?.dailyUsd || defaults.dailyUsd),
+    weekendUsd: Number(inputTerms?.weekendUsd || defaults.weekendUsd),
+    weeklyUsd: Number(inputTerms?.weeklyUsd || defaults.weeklyUsd),
+    monthlyUsd: Number(inputTerms?.monthlyUsd || defaults.monthlyUsd),
+    securityDepositUsd: Number(inputTerms?.securityDepositUsd || defaults.securityDepositUsd),
+    minimumDays: Number(inputTerms?.minimumDays || defaults.minimumDays),
+    mileageLimitDaily: Number(inputTerms?.mileageLimitDaily || defaults.mileageLimitDaily),
+    chauffeurAvailable: inputTerms?.chauffeurAvailable ?? defaults.chauffeurAvailable,
+  }
+}
+
 const MEDIA_PALETTES = [
   { frame: '#08111f', frameSoft: '#11213b', accent: '#d6ad2f', accentSoft: '#f3d782', line: '#f5efe2', ink: '#e8edf7' },
   { frame: '#130d09', frameSoft: '#2a1b13', accent: '#dca763', accentSoft: '#f4d8af', line: '#fff2dc', ink: '#f2ede8' },
@@ -513,10 +547,12 @@ const createCarRecord = (input) => {
   const resolvedInput = attachVerifiedMedia(input)
   const priceUsd = Number(resolvedInput.priceUsd)
   const minimumDepositUsd = Number(resolvedInput.minimumDepositUsd)
+  const bodyStyle = resolvedInput.bodyStyle
   const durations = resolvedInput.installmentDurations?.length
     ? resolvedInput.installmentDurations.map((value) => Number(value))
     : [6, 12, 18, 24]
   const defaultCountry = getCountrySettings(DEFAULT_COUNTRY_CODE)
+  const paymentTypes = Array.from(new Set(resolvedInput.paymentTypes?.length ? resolvedInput.paymentTypes : ['full', 'installment', 'rental']))
 
   return attachVehicleDisplayMedia({
     id: resolvedInput.id,
@@ -533,8 +569,9 @@ const createCarRecord = (input) => {
     minimumDepositUsd,
     installmentDurations: durations,
     monthlyPlans: buildPlans(priceUsd, minimumDepositUsd, durations),
-    paymentTypes: resolvedInput.paymentTypes || ['full', 'installment'],
-    bodyStyle: resolvedInput.bodyStyle,
+    paymentTypes,
+    rentalTerms: normalizeRentalTerms(resolvedInput.rentalTerms, priceUsd, bodyStyle),
+    bodyStyle,
     fuelType: resolvedInput.fuelType,
     transmission: resolvedInput.transmission,
     drivetrain: resolvedInput.drivetrain,
@@ -1056,7 +1093,7 @@ const serviceRequests = [
 const meta = {
   brands: [],
   locations: [],
-  paymentTypes: ['full', 'installment'],
+  paymentTypes: ['full', 'installment', 'rental'],
   defaultCountry: DEFAULT_COUNTRY_CODE,
   countries: COUNTRY_OPTIONS,
   adminCredentialsHint: ADMIN_LOGIN_HINT_EMAIL ? { email: ADMIN_LOGIN_HINT_EMAIL } : null,
@@ -1089,6 +1126,7 @@ const buildMeta = (carCollection) => ({
   ...cloneValue(meta),
   brands: [...new Set(carCollection.map((car) => car.brand))],
   locations: [...new Set(carCollection.map((car) => car.location))],
+  paymentTypes: [...new Set(carCollection.flatMap((car) => car.paymentTypes || []))],
 })
 
 const seedData = {

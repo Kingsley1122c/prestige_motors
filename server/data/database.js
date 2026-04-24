@@ -55,6 +55,7 @@ const createSnapshot = () => ({
 })
 
 const arraysMatch = (first = [], second = []) => JSON.stringify(first || []) === JSON.stringify(second || [])
+const objectsMatch = (first = {}, second = {}) => JSON.stringify(first || {}) === JSON.stringify(second || {})
 
 const applySnapshot = (snapshot) => {
   replaceCollection(cars, snapshot.cars)
@@ -95,6 +96,16 @@ const syncSeedCars = () => {
 
     if ((!Array.isArray(existingCar.displayGalleryItems) || !existingCar.displayGalleryItems.length) && Array.isArray(seedCar.displayGalleryItems) && seedCar.displayGalleryItems.length) {
       existingCar.displayGalleryItems = cloneValue(seedCar.displayGalleryItems)
+      didChange = true
+    }
+
+    if (!arraysMatch(existingCar.paymentTypes, seedCar.paymentTypes)) {
+      existingCar.paymentTypes = cloneValue(seedCar.paymentTypes)
+      didChange = true
+    }
+
+    if (!objectsMatch(existingCar.rentalTerms, seedCar.rentalTerms)) {
+      existingCar.rentalTerms = cloneValue(seedCar.rentalTerms)
       didChange = true
     }
 

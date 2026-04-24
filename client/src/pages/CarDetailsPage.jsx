@@ -65,6 +65,7 @@ export function CarDetailsPage() {
   const activePaymentAmount =
     paymentDraft.carId === car.id && paymentDraft.amount ? paymentDraft.amount : defaultAmount
   const localPrice = getLocalizedPrice(car.priceUsd)
+  const rentalTerms = car.rentalTerms
   const paymentRequests = userDashboard.paymentRequests.filter((entry) => entry.carId === car.id)
   const latestPaymentRequest = paymentRequests[0]
   const latestApprovedAmount = latestPaymentRequest?.approvedAmountUsd || latestPaymentRequest?.requestedAmountUsd || car.minimumDepositUsd
@@ -147,9 +148,15 @@ export function CarDetailsPage() {
           <span>{formatLocal(localPrice.amount, localPrice.currencyCode, localPrice.locale)}</span>
           <p>Local market view: {selectedCountry.name}</p>
           <p>Minimum deposit: {formatUsd(car.minimumDepositUsd)}</p>
+          {car.paymentTypes.includes('rental') ? <p>Rental from {formatUsd(rentalTerms.dailyUsd)}/day or {formatUsd(rentalTerms.monthlyUsd)}/month</p> : null}
           <Link className="button button-primary button-block" to={`/financing?carId=${car.id}`}>
             Apply for financing
           </Link>
+          {car.paymentTypes.includes('rental') ? (
+            <Link className="button button-secondary button-block" to="#rental-terms">
+              See rental terms
+            </Link>
+          ) : null}
           <Link className="button button-secondary button-block" to="/contact#inspection">
             Schedule inspection
           </Link>
@@ -214,6 +221,50 @@ export function CarDetailsPage() {
               ))}
             </ul>
           </div>
+
+          {car.paymentTypes.includes('rental') ? (
+            <>
+              <SectionTitle
+                eyebrow="Rental options"
+                title="Daily, weekly, and monthly rental terms"
+                description="Verified rentals follow ID review, security deposit clearance, and mileage limits before release."
+              />
+              <div className="surface-card payment-plan-table" id="rental-terms">
+                <div className="plan-row">
+                  <strong>Daily rate</strong>
+                  <span>{formatUsd(rentalTerms.dailyUsd)} per day</span>
+                </div>
+                <div className="plan-row">
+                  <strong>Weekend package</strong>
+                  <span>{formatUsd(rentalTerms.weekendUsd)}</span>
+                </div>
+                <div className="plan-row">
+                  <strong>Weekly rate</strong>
+                  <span>{formatUsd(rentalTerms.weeklyUsd)} per week</span>
+                </div>
+                <div className="plan-row">
+                  <strong>Monthly rate</strong>
+                  <span>{formatUsd(rentalTerms.monthlyUsd)} per month</span>
+                </div>
+                <div className="plan-row">
+                  <strong>Security deposit</strong>
+                  <span>{formatUsd(rentalTerms.securityDepositUsd)}</span>
+                </div>
+                <div className="plan-row">
+                  <strong>Minimum hire</strong>
+                  <span>{rentalTerms.minimumDays} day{rentalTerms.minimumDays === 1 ? '' : 's'}</span>
+                </div>
+                <div className="plan-row">
+                  <strong>Mileage allowance</strong>
+                  <span>{rentalTerms.mileageLimitDaily} miles per day</span>
+                </div>
+                <div className="plan-row">
+                  <strong>Chauffeur desk</strong>
+                  <span>{rentalTerms.chauffeurAvailable ? 'Available on request' : 'Self-drive only'}</span>
+                </div>
+              </div>
+            </>
+          ) : null}
 
           <SectionTitle
             eyebrow="Installment plans"

@@ -11,6 +11,7 @@ import { HomePage } from './pages/HomePage'
 import { LoginPage } from './pages/LoginPage'
 import { ListingsPage } from './pages/ListingsPage'
 import { RegisterPage } from './pages/RegisterPage'
+import { RentalsPage } from './pages/RentalsPage'
 import { ServicesPage } from './pages/ServicesPage'
 import { UserDashboard } from './pages/UserDashboard'
 
@@ -58,6 +59,7 @@ function App() {
       <Route element={<Layout />} path="/">
         <Route element={<HomePage />} index />
         <Route element={<ListingsPage />} path="listings" />
+        <Route element={<RentalsPage />} path="rentals" />
         <Route element={<CarDetailsPage />} path="cars/:carId" />
         <Route element={<FinancingPage />} path="financing" />
         <Route element={<LoginPage />} path="login" />

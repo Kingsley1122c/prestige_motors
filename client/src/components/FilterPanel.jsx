@@ -37,6 +37,7 @@ export function FilterPanel({ filters, onChange, brands, locations, bodyStyles }
           <option value="All">All</option>
           <option value="full">Full payment</option>
           <option value="installment">Installment</option>
+          <option value="rental">Rental</option>
         </select>
       </div>
       <div>
