@@ -9,6 +9,7 @@ export function CarCard({ car }) {
   const { favoriteIds, toggleFavorite, submitting, getLocalizedPrice } = useMarket()
   const leadPlan = car.monthlyPlans[0]
   const rentalTerms = car.rentalTerms
+  const isRentable = Boolean(car.rentable)
   const localPrice = getLocalizedPrice(car.priceUsd)
   const highlightPreview = car.highlights.slice(0, 2)
   const cardImage = getVehicleHeroImage(car)
@@ -64,7 +65,7 @@ export function CarCard({ car }) {
           <span>{car.location}</span>
         </div>
         <p className="car-card-marketline">
-          {car.bodyStyle} collection with {car.paymentTypes.includes('rental') ? 'rental and ' : ''}{car.paymentTypes.includes('installment') ? 'installment-ready' : 'full-payment'} release terms.
+          {car.bodyStyle} collection with {isRentable ? 'rental and ' : ''}{car.paymentTypes.includes('installment') ? 'installment-ready' : 'full-payment'} release terms.
         </p>
         <p className="card-description">{car.description}</p>
         <div className="car-highlight-row">
@@ -75,14 +76,14 @@ export function CarCard({ car }) {
         <div className="finance-chip-row">
           <span>Deposit from {formatUsd(car.minimumDepositUsd)}</span>
           <span>{leadPlan.months} months from {formatUsd(leadPlan.monthlyUsd)}/mo</span>
-          {car.paymentTypes.includes('rental') ? <span>Rent from {formatUsd(rentalTerms.dailyUsd)}/day</span> : null}
+          {isRentable ? <span>Rent from {formatUsd(rentalTerms.dailyUsd)}/day</span> : null}
         </div>
         <div className="card-actions">
           <Link className="button button-primary" to={`/cars/${car.id}`}>
             View details
           </Link>
-          <Link className="button button-secondary" to={car.paymentTypes.includes('rental') ? `/cars/${car.id}#rental-terms` : `/financing?carId=${car.id}`}>
-            {car.paymentTypes.includes('rental') ? 'Rent options' : 'Apply for loan'}
+          <Link className="button button-secondary" to={isRentable ? `/cars/${car.id}#rental-terms` : `/financing?carId=${car.id}`}>
+            {isRentable ? 'Rent options' : 'Apply for loan'}
           </Link>
         </div>
       </div>

@@ -13,6 +13,7 @@ const COLLECTION_NAMES = [
   'paymentRequests',
   'deliveryRequests',
   'serviceRequests',
+  'rentalRequests',
 ]
 
 const cloneValue = (value) => JSON.parse(JSON.stringify(value))
@@ -23,6 +24,7 @@ const payments = []
 const paymentRequests = []
 const deliveryRequests = []
 const serviceRequests = []
+const rentalRequests = []
 const meta = buildMeta([])
 
 fs.mkdirSync(path.dirname(DATABASE_FILE_PATH), { recursive: true })
@@ -52,6 +54,7 @@ const createSnapshot = () => ({
   paymentRequests,
   deliveryRequests,
   serviceRequests,
+  rentalRequests,
 })
 
 const arraysMatch = (first = [], second = []) => JSON.stringify(first || []) === JSON.stringify(second || [])
@@ -65,6 +68,7 @@ const applySnapshot = (snapshot) => {
   replaceCollection(paymentRequests, snapshot.paymentRequests)
   replaceCollection(deliveryRequests, snapshot.deliveryRequests)
   replaceCollection(serviceRequests, snapshot.serviceRequests)
+  replaceCollection(rentalRequests, snapshot.rentalRequests)
   refreshMetaCollections()
 }
 
@@ -106,6 +110,11 @@ const syncSeedCars = () => {
 
     if (!objectsMatch(existingCar.rentalTerms, seedCar.rentalTerms)) {
       existingCar.rentalTerms = cloneValue(seedCar.rentalTerms)
+      didChange = true
+    }
+
+    if (typeof existingCar.rentable !== 'boolean') {
+      existingCar.rentable = seedCar.rentable
       didChange = true
     }
 
@@ -215,6 +224,7 @@ module.exports = {
   paymentRequests,
   deliveryRequests,
   serviceRequests,
+  rentalRequests,
   meta,
   refreshMetaCollections,
   getDatabaseSnapshot,

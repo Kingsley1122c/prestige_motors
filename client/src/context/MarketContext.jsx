@@ -22,6 +22,7 @@ const emptyUserDashboard = {
   paymentRequests: [],
   deliveryRequests: [],
   serviceRequests: [],
+  rentalRequests: [],
   notifications: [],
 }
 
@@ -34,6 +35,7 @@ const emptyAdminDashboard = {
   paymentRequests: [],
   deliveryRequests: [],
   serviceRequests: [],
+  rentalRequests: [],
 }
 
 const requestJson = async (path, options = {}) => {
@@ -325,6 +327,21 @@ export function MarketProvider({ children }) {
     [currentUser, ensureSignedIn, refreshDashboards, runMutation],
   )
 
+  const submitRentalRequest = useCallback(
+    async (payload) =>
+      runMutation(async () => {
+        ensureSignedIn()
+        const result = await requestJson('/api/rental-requests', {
+          method: 'POST',
+          headers: authHeaders,
+          body: JSON.stringify(payload),
+        })
+        await refreshDashboards()
+        return result
+      }, 'Rental request submitted.'),
+    [authHeaders, ensureSignedIn, refreshDashboards, runMutation],
+  )
+
   const updateApplicationStatus = useCallback(
     async (applicationId, status) =>
       runMutation(async () => {
@@ -352,6 +369,22 @@ export function MarketProvider({ children }) {
         await refreshDashboards()
         return result
       }, `Service request ${status.toLowerCase()}.`),
+    [authHeaders, ensureAdmin, refreshDashboards, runMutation],
+  )
+
+  const updateRentalRequestStatus = useCallback(
+    async (requestId, payload) =>
+      runMutation(async () => {
+        ensureAdmin()
+        const requestBody = typeof payload === 'string' ? { status: payload } : payload
+        const result = await requestJson(`/api/admin/rental-requests/${requestId}`, {
+          method: 'PATCH',
+          headers: authHeaders,
+          body: JSON.stringify(requestBody),
+        })
+        await refreshDashboards()
+        return result
+      }, `Rental request ${String(typeof payload === 'string' ? payload : payload?.status || 'updated').toLowerCase()}.`),
     [authHeaders, ensureAdmin, refreshDashboards, runMutation],
   )
 
@@ -473,6 +506,7 @@ export function MarketProvider({ children }) {
     createPayment,
     requestDelivery,
     submitServiceRequest,
+    submitRentalRequest,
     addCar,
     updateCar,
     deleteCar,
@@ -480,8 +514,9 @@ export function MarketProvider({ children }) {
     updateApplicationStatus,
     updatePaymentRequestInstructions,
     updateServiceRequestStatus,
+    updateRentalRequestStatus,
     clearFlash: () => setFlash(''),
-  }), [adminDashboard, addCar, applyForFinancing, cars, createPayment, currentUser, deleteCar, deleteUser, error, favoriteIds, featuredCars, flash, getLocalizedPrice, isAdmin, isAuthenticated, lastReceipt, loadInitialData, loading, login, logout, meta, register, requestDelivery, requestPaymentInstructions, selectedCountry, submitServiceRequest, submitting, toggleFavorite, updateApplicationStatus, updateCar, updatePaymentRequestInstructions, updateServiceRequestStatus, userDashboard])
+  }), [adminDashboard, addCar, applyForFinancing, cars, createPayment, currentUser, deleteCar, deleteUser, error, favoriteIds, featuredCars, flash, getLocalizedPrice, isAdmin, isAuthenticated, lastReceipt, loadInitialData, loading, login, logout, meta, register, requestDelivery, requestPaymentInstructions, selectedCountry, submitRentalRequest, submitServiceRequest, submitting, toggleFavorite, updateApplicationStatus, updateCar, updatePaymentRequestInstructions, updateRentalRequestStatus, updateServiceRequestStatus, userDashboard])
 
   return <MarketContext.Provider value={value}>{children}</MarketContext.Provider>
 }

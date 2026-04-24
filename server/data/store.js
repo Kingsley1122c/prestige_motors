@@ -552,7 +552,7 @@ const createCarRecord = (input) => {
     ? resolvedInput.installmentDurations.map((value) => Number(value))
     : [6, 12, 18, 24]
   const defaultCountry = getCountrySettings(DEFAULT_COUNTRY_CODE)
-  const paymentTypes = Array.from(new Set([...(resolvedInput.paymentTypes?.length ? resolvedInput.paymentTypes : ['full', 'installment']), 'rental']))
+  const paymentTypes = Array.from(new Set(resolvedInput.paymentTypes?.length ? resolvedInput.paymentTypes : ['full', 'installment']))
 
   return attachVehicleDisplayMedia({
     id: resolvedInput.id,
@@ -570,6 +570,7 @@ const createCarRecord = (input) => {
     installmentDurations: durations,
     monthlyPlans: buildPlans(priceUsd, minimumDepositUsd, durations),
     paymentTypes,
+    rentable: resolvedInput.rentable ?? true,
     rentalTerms: normalizeRentalTerms(resolvedInput.rentalTerms, priceUsd, bodyStyle),
     bodyStyle,
     fuelType: resolvedInput.fuelType,
@@ -1126,7 +1127,12 @@ const buildMeta = (carCollection) => ({
   ...cloneValue(meta),
   brands: [...new Set(carCollection.map((car) => car.brand))],
   locations: [...new Set(carCollection.map((car) => car.location))],
-  paymentTypes: [...new Set(carCollection.flatMap((car) => car.paymentTypes || []))],
+  paymentTypes: [
+    ...new Set([
+      ...carCollection.flatMap((car) => car.paymentTypes || []),
+      ...(carCollection.some((car) => car.rentable) ? ['rental'] : []),
+    ]),
+  ],
 })
 
 const seedData = {

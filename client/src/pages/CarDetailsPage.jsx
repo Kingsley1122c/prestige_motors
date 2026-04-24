@@ -1,10 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { VehicleImageLightbox } from '../components/VehicleImageLightbox'
 import { SectionTitle } from '../components/SectionTitle'
 import { useMarket } from '../context/MarketContext'
 import { getVehicleGalleryItems } from '../utils/media'
-import { formatLocal, formatMileage, formatUsd } from '../utils/format'
+import { formatDate, formatLocal, formatMileage, formatUsd } from '../utils/format'
 
 const readAttachmentAsDataUrl = (file) =>
   new Promise((resolve, reject) => {
@@ -25,10 +25,12 @@ export function CarDetailsPage() {
   const { carId } = useParams()
   const {
     cars,
+    currentUser,
     userDashboard,
     requestPaymentInstructions,
     createPayment,
     requestDelivery,
+    submitRentalRequest,
     submitting,
     getLocalizedPrice,
     selectedCountry,
@@ -42,6 +44,18 @@ export function CarDetailsPage() {
     amount: 0,
   })
   const [delivery, setDelivery] = useState({ address: '', trigger: 'deposit' })
+  const [rentalDraft, setRentalDraft] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    pickupLocation: '',
+    dropoffLocation: '',
+    pickupDate: '',
+    returnDate: '',
+    driverLicenseNumber: '',
+    chauffeurRequired: false,
+    notes: '',
+  })
   const [paymentProof, setPaymentProof] = useState(null)
   const [activeGalleryIndex, setActiveGalleryIndex] = useState(0)
   const [galleryLightboxOpen, setGalleryLightboxOpen] = useState(false)
@@ -65,12 +79,31 @@ export function CarDetailsPage() {
   const activePaymentAmount =
     paymentDraft.carId === car.id && paymentDraft.amount ? paymentDraft.amount : defaultAmount
   const localPrice = getLocalizedPrice(car.priceUsd)
+  const isRentable = Boolean(car.rentable)
   const rentalTerms = car.rentalTerms
   const paymentRequests = userDashboard.paymentRequests.filter((entry) => entry.carId === car.id)
+  const rentalRequests = userDashboard.rentalRequests.filter((entry) => entry.carId === car.id)
+  const latestRentalRequest = rentalRequests[0]
   const latestPaymentRequest = paymentRequests[0]
   const latestApprovedAmount = latestPaymentRequest?.approvedAmountUsd || latestPaymentRequest?.requestedAmountUsd || car.minimumDepositUsd
   const needsProofUpload = ['bank-transfer', 'wire-transfer'].includes(latestPaymentRequest?.approvedMethod)
   const galleryItems = useMemo(() => getVehicleGalleryItems(car), [car])
+
+  useEffect(() => {
+    if (!currentUser && !userDashboard.profile) {
+      return
+    }
+
+    const profile = userDashboard.profile || currentUser
+
+    setRentalDraft((current) => ({
+      ...current,
+      fullName: current.fullName || profile?.fullName || '',
+      email: current.email || profile?.email || '',
+      phone: current.phone || profile?.phone || '',
+      pickupLocation: current.pickupLocation || profile?.location || '',
+    }))
+  }, [currentUser, userDashboard.profile])
 
   const openGalleryLightbox = (index) => {
     setActiveGalleryIndex(index)
@@ -121,6 +154,24 @@ export function CarDetailsPage() {
     setDelivery({ address: '', trigger: delivery.trigger })
   }
 
+  const submitRental = async (event) => {
+    event.preventDefault()
+    await submitRentalRequest({ carId: car.id, ...rentalDraft })
+    setRentalDraft((current) => ({
+      ...current,
+      fullName: current.fullName,
+      email: current.email,
+      phone: current.phone,
+      pickupLocation: current.pickupLocation,
+      dropoffLocation: current.dropoffLocation,
+      pickupDate: '',
+      returnDate: '',
+      driverLicenseNumber: '',
+      chauffeurRequired: false,
+      notes: '',
+    }))
+  }
+
   return (
     <section className="page-shell section-spaced car-details-page">
       <div className="details-hero">
@@ -148,11 +199,11 @@ export function CarDetailsPage() {
           <span>{formatLocal(localPrice.amount, localPrice.currencyCode, localPrice.locale)}</span>
           <p>Local market view: {selectedCountry.name}</p>
           <p>Minimum deposit: {formatUsd(car.minimumDepositUsd)}</p>
-          {car.paymentTypes.includes('rental') ? <p>Rental from {formatUsd(rentalTerms.dailyUsd)}/day or {formatUsd(rentalTerms.monthlyUsd)}/month</p> : null}
+          {isRentable ? <p>Rental from {formatUsd(rentalTerms.dailyUsd)}/day or {formatUsd(rentalTerms.monthlyUsd)}/month</p> : null}
           <Link className="button button-primary button-block" to={`/financing?carId=${car.id}`}>
             Apply for financing
           </Link>
-          {car.paymentTypes.includes('rental') ? (
+          {isRentable ? (
             <Link className="button button-secondary button-block" to="#rental-terms">
               See rental terms
             </Link>
@@ -222,7 +273,7 @@ export function CarDetailsPage() {
             </ul>
           </div>
 
-          {car.paymentTypes.includes('rental') ? (
+          {isRentable ? (
             <>
               <SectionTitle
                 eyebrow="Rental options"
@@ -342,6 +393,61 @@ export function CarDetailsPage() {
               Request payment instructions
             </button>
           </form>
+
+          {isRentable ? (
+            <form className="surface-card action-form" onSubmit={submitRental}>
+              <SectionTitle
+                eyebrow="Rental booking"
+                title="Send your pickup and driver details"
+                description={isAuthenticated ? 'Submit the core rental brief and the desk will confirm availability, release checks, and next contact steps.' : 'Login or create an account before sending a rental request.'}
+              />
+              <label htmlFor="rental-full-name">Full name</label>
+              <input id="rental-full-name" value={rentalDraft.fullName} onChange={(event) => setRentalDraft((current) => ({ ...current, fullName: event.target.value }))} />
+              <label htmlFor="rental-email">Email</label>
+              <input id="rental-email" type="email" value={rentalDraft.email} onChange={(event) => setRentalDraft((current) => ({ ...current, email: event.target.value }))} />
+              <label htmlFor="rental-phone">Phone</label>
+              <input id="rental-phone" value={rentalDraft.phone} onChange={(event) => setRentalDraft((current) => ({ ...current, phone: event.target.value }))} />
+              <label htmlFor="rental-pickup-location">Pickup location</label>
+              <input id="rental-pickup-location" value={rentalDraft.pickupLocation} onChange={(event) => setRentalDraft((current) => ({ ...current, pickupLocation: event.target.value }))} />
+              <label htmlFor="rental-dropoff-location">Drop-off location</label>
+              <input id="rental-dropoff-location" value={rentalDraft.dropoffLocation} onChange={(event) => setRentalDraft((current) => ({ ...current, dropoffLocation: event.target.value }))} />
+              <label htmlFor="rental-pickup-date">Pickup date</label>
+              <input id="rental-pickup-date" type="date" value={rentalDraft.pickupDate} onChange={(event) => setRentalDraft((current) => ({ ...current, pickupDate: event.target.value }))} />
+              <label htmlFor="rental-return-date">Return date</label>
+              <input id="rental-return-date" type="date" value={rentalDraft.returnDate} onChange={(event) => setRentalDraft((current) => ({ ...current, returnDate: event.target.value }))} />
+              <label htmlFor="rental-license">Driver license or passport number</label>
+              <input id="rental-license" value={rentalDraft.driverLicenseNumber} onChange={(event) => setRentalDraft((current) => ({ ...current, driverLicenseNumber: event.target.value }))} />
+              <label htmlFor="rental-notes">Notes</label>
+              <textarea id="rental-notes" rows="4" value={rentalDraft.notes} onChange={(event) => setRentalDraft((current) => ({ ...current, notes: event.target.value }))} placeholder="Arrival timing, chauffeur preferences, or any other release details" />
+              <label htmlFor="rental-chauffeur" className="checkbox-row">
+                <input id="rental-chauffeur" checked={rentalDraft.chauffeurRequired} onChange={(event) => setRentalDraft((current) => ({ ...current, chauffeurRequired: event.target.checked }))} type="checkbox" />
+                Request chauffeur support
+              </label>
+              <button className="button button-secondary button-block" disabled={submitting || ['Pending Review', 'Approved for contact', 'Vehicle reserved'].includes(latestRentalRequest?.status)} type="submit">
+                Send rental request
+              </button>
+            </form>
+          ) : null}
+
+          {latestRentalRequest ? (
+            <div className="surface-card action-form">
+              <SectionTitle
+                eyebrow="Rental request status"
+                title="Your latest rental request"
+                description={`${formatDate(latestRentalRequest.pickupDate)} to ${formatDate(latestRentalRequest.returnDate)} · ${latestRentalRequest.chauffeurRequired ? 'chauffeur requested' : 'self-drive request'}`}
+              />
+              <div className="plain-list">
+                <p>Status: {latestRentalRequest.status}</p>
+                <p>Pickup: {latestRentalRequest.pickupLocation}</p>
+                <p>Drop-off: {latestRentalRequest.dropoffLocation}</p>
+                <p>Driver ID: {latestRentalRequest.driverLicenseNumber}</p>
+                {latestRentalRequest.contactEmail ? <p>Desk email: {latestRentalRequest.contactEmail}</p> : null}
+                {latestRentalRequest.contactPhone ? <p>Desk phone: {latestRentalRequest.contactPhone}</p> : null}
+                {latestRentalRequest.adminNote ? <p>Admin note: {latestRentalRequest.adminNote}</p> : null}
+                {latestRentalRequest.notes ? <p>Notes: {latestRentalRequest.notes}</p> : null}
+              </div>
+            </div>
+          ) : null}
 
           {latestPaymentRequest ? (
             <div className="surface-card action-form">

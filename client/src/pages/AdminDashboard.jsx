@@ -21,6 +21,7 @@ const createEmptyForm = () => ({
   rentalSecurityDepositUsd: '',
   rentalMinimumDays: '',
   rentalMileageLimitDaily: '',
+  rentable: true,
   bodyStyle: 'SUV',
   fuelType: 'Petrol',
   transmission: 'Automatic',
@@ -47,6 +48,13 @@ const createEmptyPaymentInstructionForm = () => ({
   adminNote: '',
 })
 
+const createEmptyRentalReviewForm = () => ({
+  status: 'Pending Review',
+  contactEmail: '',
+  contactPhone: '',
+  adminNote: '',
+})
+
 export function AdminDashboard() {
   const {
     adminDashboard,
@@ -57,6 +65,7 @@ export function AdminDashboard() {
     updateApplicationStatus,
     updatePaymentRequestInstructions,
     updateServiceRequestStatus,
+    updateRentalRequestStatus,
     submitting,
   } = useMarket()
   const [editingCarId, setEditingCarId] = useState('')
@@ -64,7 +73,9 @@ export function AdminDashboard() {
   const [previewCarId, setPreviewCarId] = useState('')
   const [activePreviewIndex, setActivePreviewIndex] = useState(0)
   const [editingPaymentRequestId, setEditingPaymentRequestId] = useState('')
+  const [editingRentalRequestId, setEditingRentalRequestId] = useState('')
   const [paymentInstructionForm, setPaymentInstructionForm] = useState(createEmptyPaymentInstructionForm())
+  const [rentalReviewForm, setRentalReviewForm] = useState(createEmptyRentalReviewForm())
   const [pendingUserDeletion, setPendingUserDeletion] = useState(null)
 
   const editingCar = useMemo(
@@ -75,6 +86,11 @@ export function AdminDashboard() {
   const editingPaymentRequest = useMemo(
     () => adminDashboard.paymentRequests.find((paymentRequest) => paymentRequest.id === editingPaymentRequestId),
     [adminDashboard.paymentRequests, editingPaymentRequestId],
+  )
+
+  const editingRentalRequest = useMemo(
+    () => adminDashboard.rentalRequests.find((request) => request.id === editingRentalRequestId),
+    [adminDashboard.rentalRequests, editingRentalRequestId],
   )
 
   const previewCar = useMemo(
@@ -105,6 +121,7 @@ export function AdminDashboard() {
       rentalSecurityDepositUsd: String(car.rentalTerms?.securityDepositUsd || ''),
       rentalMinimumDays: String(car.rentalTerms?.minimumDays || ''),
       rentalMileageLimitDaily: String(car.rentalTerms?.mileageLimitDaily || ''),
+      rentable: Boolean(car.rentable),
       bodyStyle: car.bodyStyle,
       fuelType: car.fuelType,
       transmission: car.transmission,
@@ -155,6 +172,21 @@ export function AdminDashboard() {
     setPaymentInstructionForm(createEmptyPaymentInstructionForm())
   }
 
+  const populateRentalReviewForm = (request) => {
+    setEditingRentalRequestId(request.id)
+    setRentalReviewForm({
+      status: request.status || 'Pending Review',
+      contactEmail: request.contactEmail || '',
+      contactPhone: request.contactPhone || '',
+      adminNote: request.adminNote || '',
+    })
+  }
+
+  const resetRentalReviewEditor = () => {
+    setEditingRentalRequestId('')
+    setRentalReviewForm(createEmptyRentalReviewForm())
+  }
+
   const confirmUserDeletion = async () => {
     if (!pendingUserDeletion) {
       return
@@ -171,7 +203,7 @@ export function AdminDashboard() {
       gallery: form.gallery.split(',').map((value) => value.trim()).filter(Boolean),
       features: form.features.split(',').map((value) => value.trim()).filter(Boolean),
       highlights: form.highlights.split(',').map((value) => value.trim()).filter(Boolean),
-      paymentTypes: ['full', 'installment', 'rental'],
+      paymentTypes: ['full', 'installment'],
       rentalTerms: {
         dailyUsd: Number(form.rentalDailyUsd),
         weekendUsd: Number(form.rentalWeekendUsd),
@@ -215,6 +247,30 @@ export function AdminDashboard() {
     resetPaymentInstructionEditor()
   }
 
+  const submitRentalReview = async (event) => {
+    event.preventDefault()
+
+    if (!editingRentalRequest) {
+      return
+    }
+
+    await updateRentalRequestStatus(editingRentalRequest.id, rentalReviewForm)
+    resetRentalReviewEditor()
+  }
+
+  const getRentalReviewPayload = (request, status) => {
+    if (editingRentalRequestId === request.id) {
+      return { ...rentalReviewForm, status }
+    }
+
+    return {
+      status,
+      contactEmail: request.contactEmail || '',
+      contactPhone: request.contactPhone || '',
+      adminNote: request.adminNote || '',
+    }
+  }
+
   return (
     <section className="page-shell section-spaced dashboard-page">
       <SectionTitle
@@ -248,6 +304,10 @@ export function AdminDashboard() {
           <strong>{adminDashboard.stats.openServiceRequests || 0}</strong>
           <span>Open service briefs</span>
         </article>
+        <article className="surface-card metric-card">
+          <strong>{adminDashboard.stats.openRentalRequests || 0}</strong>
+          <span>Open rental requests</span>
+        </article>
       </div>
 
       <div className="dashboard-grid admin-grid">
@@ -264,6 +324,13 @@ export function AdminDashboard() {
                     rows="4"
                     value={value}
                     onChange={(event) => setForm((current) => ({ ...current, [key]: event.target.value }))}
+                  />
+                ) : key === 'rentable' ? (
+                  <input
+                    checked={Boolean(value)}
+                    id={key}
+                    onChange={(event) => setForm((current) => ({ ...current, [key]: event.target.checked }))}
+                    type="checkbox"
                   />
                 ) : (
                   <input
@@ -344,6 +411,43 @@ export function AdminDashboard() {
                 Send instructions
               </button>
               <button className="button button-secondary" onClick={resetPaymentInstructionEditor} type="button">
+                Clear editor
+              </button>
+            </div>
+          </form>
+
+          <form className="surface-card admin-form" onSubmit={submitRentalReview}>
+            <p className="muted-label">Rental review editor</p>
+            <h3>{editingRentalRequest ? 'Review rental request' : 'Choose a rental request below'}</h3>
+            <div className="form-grid">
+              <div>
+                <label htmlFor="rental-request-status">Status</label>
+                <select id="rental-request-status" value={rentalReviewForm.status} onChange={(event) => setRentalReviewForm((current) => ({ ...current, status: event.target.value }))}>
+                  <option value="Pending Review">Pending Review</option>
+                  <option value="Approved for contact">Approved for contact</option>
+                  <option value="Vehicle reserved">Vehicle reserved</option>
+                  <option value="Closed">Closed</option>
+                  <option value="Declined">Declined</option>
+                </select>
+              </div>
+              <div>
+                <label htmlFor="rental-contact-email">Contact email</label>
+                <input id="rental-contact-email" value={rentalReviewForm.contactEmail} onChange={(event) => setRentalReviewForm((current) => ({ ...current, contactEmail: event.target.value }))} />
+              </div>
+              <div>
+                <label htmlFor="rental-contact-phone">Contact phone</label>
+                <input id="rental-contact-phone" value={rentalReviewForm.contactPhone} onChange={(event) => setRentalReviewForm((current) => ({ ...current, contactPhone: event.target.value }))} />
+              </div>
+              <div className="form-grid-wide">
+                <label htmlFor="rental-admin-note">Admin note</label>
+                <textarea id="rental-admin-note" rows="4" value={rentalReviewForm.adminNote} onChange={(event) => setRentalReviewForm((current) => ({ ...current, adminNote: event.target.value }))} />
+              </div>
+            </div>
+            <div className="button-row">
+              <button className="button button-primary" disabled={submitting || !editingRentalRequest} type="submit">
+                Save rental review
+              </button>
+              <button className="button button-secondary" onClick={resetRentalReviewEditor} type="button">
                 Clear editor
               </button>
             </div>
@@ -470,6 +574,48 @@ export function AdminDashboard() {
               ))}
             </div>
           </div>
+
+          <div className="surface-card table-card">
+            <p className="muted-label">Rental requests</p>
+            <div className="table-list">
+              {adminDashboard.rentalRequests.map((request) => (
+                <div className="table-row table-row-actions" key={request.id}>
+                  <div>
+                    <strong>{request.car?.brand} {request.car?.model}</strong>
+                    <span>{request.fullName} · {request.pickupLocation} to {request.dropoffLocation}</span>
+                    <span>{formatDate(request.pickupDate)} to {formatDate(request.returnDate)} · {request.chauffeurRequired ? 'chauffeur' : 'self-drive'}</span>
+                    {request.contactEmail || request.contactPhone ? <span>Desk contact: {request.contactEmail || request.contactPhone}</span> : null}
+                    {request.adminNote ? <span>{request.adminNote}</span> : null}
+                  </div>
+                  <div className="button-row compact-row">
+                    <button
+                      className="button button-secondary"
+                      onClick={() => populateRentalReviewForm(request)}
+                      type="button"
+                    >
+                      Review
+                    </button>
+                    <button
+                      className="button button-primary"
+                      disabled={submitting || request.status === 'Vehicle reserved'}
+                      onClick={() => updateRentalRequestStatus(request.id, getRentalReviewPayload(request, 'Vehicle reserved'))}
+                      type="button"
+                    >
+                      Reserve
+                    </button>
+                    <button
+                      className="button button-muted"
+                      disabled={submitting || request.status === 'Closed'}
+                      onClick={() => updateRentalRequestStatus(request.id, getRentalReviewPayload(request, 'Closed'))}
+                      type="button"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -490,7 +636,7 @@ export function AdminDashboard() {
                 </button>
                 <div>
                   <strong>{car.brand} {car.model}</strong>
-                  <span>{car.location} · {formatUsd(car.priceUsd)} · Deposit {formatUsd(car.minimumDepositUsd)} · Rent from {formatUsd(car.rentalTerms?.dailyUsd || 0)}/day</span>
+                  <span>{car.location} · {formatUsd(car.priceUsd)} · Deposit {formatUsd(car.minimumDepositUsd)} · {car.rentable ? `Rent from ${formatUsd(car.rentalTerms?.dailyUsd || 0)}/day` : 'Rental disabled'}</span>
                 </div>
               </div>
               <div className="button-row compact-row">
@@ -572,7 +718,7 @@ export function AdminDashboard() {
             <h3 id="confirm-user-delete-title">Remove {pendingUserDeletion.fullName}?</h3>
             <p>
               This will permanently remove the user from the admin dashboard together with their financing,
-              payment, delivery, and service records.
+              payment, delivery, service, and rental records.
             </p>
             <div className="button-row">
               <button className="button button-secondary" disabled={submitting} onClick={() => setPendingUserDeletion(null)} type="button">

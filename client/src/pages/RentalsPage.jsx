@@ -12,7 +12,7 @@ export function RentalsPage() {
   const requestedCarId = searchParams.get('carId') || ''
 
   const rentalCars = useMemo(
-    () => sortVehiclesForMerchandising(cars.filter((car) => car.paymentTypes.includes('rental'))),
+    () => sortVehiclesForMerchandising(cars.filter((car) => car.rentable)),
     [cars],
   )
 

@@ -70,7 +70,11 @@ export function ListingsPage() {
           return false
         }
 
-        if (filters.paymentType !== 'All' && !car.paymentTypes.includes(filters.paymentType)) {
+        if (filters.paymentType === 'rental' && !car.rentable) {
+          return false
+        }
+
+        if (filters.paymentType !== 'All' && filters.paymentType !== 'rental' && !car.paymentTypes.includes(filters.paymentType)) {
           return false
         }
 

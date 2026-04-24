@@ -17,6 +17,7 @@ const {
   paymentRequests,
   deliveryRequests,
   serviceRequests,
+  rentalRequests,
   meta,
   refreshMetaCollections,
   getDatabaseSnapshot,
@@ -206,6 +207,12 @@ const decoratePaymentRequest = (paymentRequest) => ({
   user: sanitizeUser(getUser(paymentRequest.userId)),
 })
 
+const decorateRentalRequest = (rentalRequest) => ({
+  ...rentalRequest,
+  car: getCar(rentalRequest.carId),
+  user: sanitizeUser(getUser(rentalRequest.userId)),
+})
+
 const buildUserDashboard = (userId) => {
   const user = getUser(userId)
 
@@ -221,6 +228,7 @@ const buildUserDashboard = (userId) => {
     paymentRequests: paymentRequests.filter((paymentRequest) => paymentRequest.userId === userId).map(decoratePaymentRequest).sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
     deliveryRequests: deliveryRequests.filter((request) => request.userId === userId).map((request) => ({ ...request, car: getCar(request.carId) })).sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
     serviceRequests: serviceRequests.filter((request) => request.userId === userId).map(decorateServiceRequest).sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
+    rentalRequests: rentalRequests.filter((request) => request.userId === userId).map(decorateRentalRequest).sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
     notifications: [...user.notifications].sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
   }
 }
@@ -233,6 +241,7 @@ const buildAdminDashboard = () => ({
     confirmedPayments: payments.filter((item) => item.status === 'Confirmed').length,
     pendingPaymentRequests: paymentRequests.filter((item) => item.status === 'Pending Approval').length,
     openServiceRequests: serviceRequests.filter((item) => item.status !== 'Closed').length,
+    openRentalRequests: rentalRequests.filter((item) => !['Closed', 'Declined'].includes(item.status)).length,
   },
   cars: cars.map(decorateCar),
   users: users.map(sanitizeUser),
@@ -241,6 +250,7 @@ const buildAdminDashboard = () => ({
   paymentRequests: paymentRequests.map(decoratePaymentRequest).sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
   deliveryRequests: deliveryRequests.map((request) => ({ ...request, car: getCar(request.carId) })).sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
   serviceRequests: serviceRequests.map(decorateServiceRequest).sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
+  rentalRequests: rentalRequests.map(decorateRentalRequest).sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
 })
 
 const validateServiceRequest = ({ type, title, fullName, email, phone, location, assetDetails, desiredOutcome }) => {
@@ -266,6 +276,41 @@ const validatePaymentRequest = ({ type, preferredMethod, requestedAmountUsd }) =
 
   if (!requestedAmountUsd || Number(requestedAmountUsd) <= 0) {
     return 'Enter a valid payment amount.'
+  }
+
+  return ''
+}
+
+const validateRentalRequest = ({ fullName, email, phone, pickupLocation, dropoffLocation, pickupDate, returnDate, driverLicenseNumber }) => {
+  if (!fullName || !email || !phone || !pickupLocation || !dropoffLocation || !pickupDate || !returnDate || !driverLicenseNumber) {
+    return 'Complete every required rental request field.'
+  }
+
+  const pickupAt = Date.parse(pickupDate)
+  const returnAt = Date.parse(returnDate)
+
+  if (Number.isNaN(pickupAt) || Number.isNaN(returnAt)) {
+    return 'Choose valid pickup and return dates.'
+  }
+
+  if (returnAt <= pickupAt) {
+    return 'Return date must be later than pickup date.'
+  }
+
+  return ''
+}
+
+const validateRentalReview = ({ status, contactEmail, contactPhone, adminNote }) => {
+  if (!['Pending Review', 'Approved for contact', 'Vehicle reserved', 'Closed', 'Declined'].includes(status)) {
+    return 'Invalid rental request status.'
+  }
+
+  if (status === 'Declined' && !adminNote) {
+    return 'Add an admin note when declining a rental request.'
+  }
+
+  if (['Approved for contact', 'Vehicle reserved'].includes(status) && !contactEmail && !contactPhone) {
+    return 'Add a contact email or phone number before approving a rental request.'
   }
 
   return ''
@@ -332,6 +377,7 @@ const buildSystemStatus = () => ({
       paymentRequests: paymentRequests.length,
       deliveryRequests: deliveryRequests.length,
       serviceRequests: serviceRequests.length,
+      rentalRequests: rentalRequests.length,
     },
   },
 })
@@ -397,7 +443,8 @@ app.get('/api/cars', (request, response) => {
   const filteredCars = cars.filter((car) => {
     if (brand && brand !== 'All' && car.brand !== brand) return false
     if (location && location !== 'All' && car.location !== location) return false
-    if (paymentType && paymentType !== 'All' && !car.paymentTypes.includes(paymentType)) return false
+    if (paymentType === 'rental' && !car.rentable) return false
+    if (paymentType && paymentType !== 'All' && paymentType !== 'rental' && !car.paymentTypes.includes(paymentType)) return false
     if (minPrice && car.priceUsd < Number(minPrice)) return false
     if (maxPrice && car.priceUsd > Number(maxPrice)) return false
     return true
@@ -814,6 +861,103 @@ app.post('/api/service-requests', (request, response) => {
   })
 })
 
+app.post('/api/rental-requests', requireSignedIn, (request, response) => {
+  const {
+    carId,
+    fullName,
+    email,
+    phone,
+    pickupLocation,
+    dropoffLocation,
+    pickupDate,
+    returnDate,
+    driverLicenseNumber,
+    chauffeurRequired,
+    notes,
+  } = request.body || {}
+  const user = request.actor
+  const car = getCar(carId)
+
+  if (!car) {
+    response.status(404).json({ message: 'Vehicle not found.' })
+    return
+  }
+
+  if (!car.rentable) {
+    response.status(400).json({ message: 'This vehicle is not currently available for rent.' })
+    return
+  }
+
+  const validationError = validateRentalRequest({
+    fullName,
+    email,
+    phone,
+    pickupLocation,
+    dropoffLocation,
+    pickupDate,
+    returnDate,
+    driverLicenseNumber,
+  })
+
+  if (validationError) {
+    response.status(400).json({ message: validationError })
+    return
+  }
+
+  const minimumRentalDays = Number(car.rentalTerms?.minimumDays || 1)
+  const rentalDays = Math.ceil((Date.parse(returnDate) - Date.parse(pickupDate)) / (1000 * 60 * 60 * 24))
+
+  if (rentalDays < minimumRentalDays) {
+    response.status(400).json({ message: `Minimum rental duration for this vehicle is ${minimumRentalDays} day${minimumRentalDays === 1 ? '' : 's'}.` })
+    return
+  }
+
+  const activeRequest = rentalRequests.find(
+    (entry) => entry.userId === user.id && entry.carId === car.id && !['Closed', 'Declined'].includes(entry.status),
+  )
+
+  if (activeRequest) {
+    response.status(400).json({ message: 'An active rental request already exists for this vehicle.' })
+    return
+  }
+
+  const rentalRequest = {
+    id: nextId('rental', rentalRequests),
+    userId: user.id,
+    carId: car.id,
+    fullName,
+    email,
+    phone,
+    pickupLocation,
+    dropoffLocation,
+    pickupDate,
+    returnDate,
+    driverLicenseNumber,
+    chauffeurRequired: Boolean(chauffeurRequired),
+    notes: notes || '',
+    adminNote: '',
+    contactEmail: '',
+    contactPhone: '',
+    status: 'Pending Review',
+    createdAt: new Date().toISOString(),
+    reviewedAt: '',
+  }
+
+  rentalRequests.unshift(rentalRequest)
+  user.fullName = fullName
+  user.email = email
+  user.phone = phone
+  user.location = pickupLocation
+
+  pushNotification(user.id, 'Rental request submitted', `Your rental request for ${car.brand} ${car.model} is waiting for review.`)
+  saveDatabase()
+
+  response.status(201).json({
+    message: 'Rental request submitted. The rental desk will review it shortly.',
+    rentalRequest: decorateRentalRequest(rentalRequest),
+  })
+})
+
 app.patch('/api/admin/service-requests/:requestId', requireAdmin, (request, response) => {
   const { status } = request.body || {}
   const serviceRequest = serviceRequests.find((entry) => entry.id === request.params.requestId)
@@ -833,6 +977,39 @@ app.patch('/api/admin/service-requests/:requestId', requireAdmin, (request, resp
   saveDatabase()
 
   response.json({ message: 'Service request updated.', serviceRequest: decorateServiceRequest(serviceRequest) })
+})
+
+app.patch('/api/admin/rental-requests/:requestId', requireAdmin, (request, response) => {
+  const { status, adminNote, contactEmail, contactPhone } = request.body || {}
+  const rentalRequest = rentalRequests.find((entry) => entry.id === request.params.requestId)
+
+  if (!rentalRequest) {
+    response.status(404).json({ message: 'Rental request not found.' })
+    return
+  }
+
+  const validationError = validateRentalReview({ status, adminNote, contactEmail, contactPhone })
+
+  if (validationError) {
+    response.status(400).json({ message: validationError })
+    return
+  }
+
+  rentalRequest.status = status
+  rentalRequest.adminNote = adminNote || ''
+  rentalRequest.contactEmail = contactEmail || ''
+  rentalRequest.contactPhone = contactPhone || ''
+  rentalRequest.reviewedAt = new Date().toISOString()
+
+  const car = getCar(rentalRequest.carId)
+  pushNotification(
+    rentalRequest.userId,
+    'Rental request updated',
+    `Your rental request for ${car.brand} ${car.model} is now ${status.toLowerCase()}.`,
+  )
+  saveDatabase()
+
+  response.json({ message: 'Rental request updated.', rentalRequest: decorateRentalRequest(rentalRequest) })
 })
 
 app.post('/api/admin/cars', requireAdmin, (request, response) => {
@@ -931,6 +1108,12 @@ app.delete('/api/admin/users/:userId', requireAdmin, (request, response) => {
   for (let currentIndex = serviceRequests.length - 1; currentIndex >= 0; currentIndex -= 1) {
     if (serviceRequests[currentIndex].userId === user.id) {
       serviceRequests.splice(currentIndex, 1)
+    }
+  }
+
+  for (let currentIndex = rentalRequests.length - 1; currentIndex >= 0; currentIndex -= 1) {
+    if (rentalRequests[currentIndex].userId === user.id) {
+      rentalRequests.splice(currentIndex, 1)
     }
   }
 

@@ -47,6 +47,10 @@ export function UserDashboard() {
           <span>Delivery requests</span>
         </article>
         <article className="surface-card metric-card">
+          <strong>{userDashboard.rentalRequests.length}</strong>
+          <span>Rental requests</span>
+        </article>
+        <article className="surface-card metric-card">
           <strong>{userDashboard.serviceRequests.length}</strong>
           <span>Service briefs</span>
         </article>
@@ -174,6 +178,39 @@ export function UserDashboard() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      <div className="surface-card table-card">
+        <p className="muted-label">Rental requests</p>
+        <div className="table-list">
+          {userDashboard.rentalRequests.length ? userDashboard.rentalRequests.map((request) => (
+            <div className="table-row" key={request.id}>
+              <div>
+                <strong>{request.car?.brand} {request.car?.model}</strong>
+                <span>{request.pickupLocation} to {request.dropoffLocation}</span>
+                <span>{formatDate(request.pickupDate)} to {formatDate(request.returnDate)}</span>
+                {request.contactEmail || request.contactPhone ? <span>Desk contact: {request.contactEmail || request.contactPhone}</span> : null}
+                {request.adminNote ? <span>{request.adminNote}</span> : null}
+              </div>
+              <div className="text-right">
+                <strong>{request.status}</strong>
+                <span>{request.chauffeurRequired ? 'Chauffeur requested' : 'Self-drive request'}</span>
+              </div>
+            </div>
+          )) : (
+            <div className="table-row">
+              <div>
+                <strong>No rental requests yet</strong>
+                <span>Open a rentable car and submit pickup, return, and driver details.</span>
+              </div>
+              <div className="text-right">
+                <Link className="button button-secondary" to="/rentals">
+                  Browse rentals
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
