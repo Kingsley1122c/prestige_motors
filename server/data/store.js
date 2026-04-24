@@ -552,7 +552,7 @@ const createCarRecord = (input) => {
     ? resolvedInput.installmentDurations.map((value) => Number(value))
     : [6, 12, 18, 24]
   const defaultCountry = getCountrySettings(DEFAULT_COUNTRY_CODE)
-  const paymentTypes = Array.from(new Set(resolvedInput.paymentTypes?.length ? resolvedInput.paymentTypes : ['full', 'installment', 'rental']))
+  const paymentTypes = Array.from(new Set([...(resolvedInput.paymentTypes?.length ? resolvedInput.paymentTypes : ['full', 'installment']), 'rental']))
 
   return attachVehicleDisplayMedia({
     id: resolvedInput.id,
