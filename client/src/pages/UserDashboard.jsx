@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { BrandLogo } from '../components/BrandLogo'
 import { CarCard } from '../components/CarCard'
 import { SectionTitle } from '../components/SectionTitle'
 import { useMarket } from '../context/MarketContext'
@@ -8,7 +9,7 @@ export function UserDashboard() {
   const { userDashboard, lastReceipt, currentUser, selectedCountry } = useMarket()
 
   return (
-    <section className="page-shell section-spaced dashboard-page">
+    <section className="page-shell section-spaced dashboard-page user-dashboard-page">
       <SectionTitle
         eyebrow="User dashboard"
         title="Track saved cars, financing, and payment activity"
@@ -56,15 +57,17 @@ export function UserDashboard() {
         </article>
       </div>
 
-      <div className="dashboard-grid">
+      <div className="dashboard-grid user-dashboard-grid">
         <div>
           <SectionTitle eyebrow="Favorites" title="Saved vehicles" />
           <div className="card-grid compact-grid">
             {userDashboard.favoriteCars.length ? (
               userDashboard.favoriteCars.map((car) => <CarCard key={car.id} car={car} />)
             ) : (
-              <div className="surface-card empty-state">
-                <p>No saved cars yet.</p>
+              <div className="surface-card empty-state empty-state-branded">
+                <BrandLogo showLocation={false} variant="header" />
+                <p className="muted-label">No saved cars yet</p>
+                <p>Start with inventory and save the cars you want to compare before financing, rental, or payment review.</p>
                 <Link className="button button-primary" to="/listings">
                   Browse inventory
                 </Link>
@@ -96,7 +99,7 @@ export function UserDashboard() {
         </div>
       </div>
 
-      <div className="dashboard-grid second-grid">
+      <div className="dashboard-grid second-grid user-dashboard-secondary">
         <div className="surface-card table-card">
           <p className="muted-label">Applications</p>
           <div className="table-list">
@@ -124,6 +127,9 @@ export function UserDashboard() {
                   <strong>{paymentRequest.car?.brand} {paymentRequest.car?.model}</strong>
                   <span>{paymentRequest.type} · requested {paymentRequest.requestedMethod.replace('-', ' ')}</span>
                   <span>{paymentRequest.instructionsTitle || paymentRequest.adminNote || 'Waiting for admin review.'}</span>
+                  {paymentRequest.referenceCode ? <span>Reference: {paymentRequest.referenceCode}</span> : null}
+                  {paymentRequest.reviewedAt ? <span>Reviewed: {formatDate(paymentRequest.reviewedAt)}</span> : null}
+                  {paymentRequest.confirmedAt ? <span>Confirmed: {formatDate(paymentRequest.confirmedAt)}</span> : null}
                   {paymentRequest.proofAttachment ? (
                     <span>
                       Proof uploaded: <a href={paymentRequest.proofAttachment.dataUrl} download={paymentRequest.proofAttachment.name}>{paymentRequest.proofAttachment.name}</a>
@@ -146,7 +152,12 @@ export function UserDashboard() {
               <div className="table-row" key={payment.id}>
                 <div>
                   <strong>{payment.car?.brand} {payment.car?.model}</strong>
-                  <span>{payment.type} · {payment.method}</span>
+                  <span>{payment.type} · {payment.method.replace('-', ' ')}</span>
+                  <span>Status: {payment.status}</span>
+                  {payment.receiptNumber ? <span>Receipt: {payment.receiptNumber}</span> : null}
+                  {payment.providerReference ? <span>Provider ref: {payment.providerReference}</span> : null}
+                  {payment.verifiedAt ? <span>Verified: {formatDate(payment.verifiedAt)}</span> : null}
+                  {payment.adminNote ? <span>Admin note: {payment.adminNote}</span> : null}
                   {payment.proofAttachment ? (
                     <span>
                       Proof: <a href={payment.proofAttachment.dataUrl} download={payment.proofAttachment.name}>{payment.proofAttachment.name}</a>
@@ -155,7 +166,7 @@ export function UserDashboard() {
                 </div>
                 <div className="text-right">
                   <strong>{formatUsd(payment.amountUsd)}</strong>
-                  <span>{payment.receiptNumber}</span>
+                  <span>{payment.receiptNumber || 'Receipt pending'}</span>
                 </div>
               </div>
             ))}
@@ -199,8 +210,9 @@ export function UserDashboard() {
               </div>
             </div>
           )) : (
-            <div className="table-row">
+            <div className="table-row table-row-empty">
               <div>
+                <BrandLogo showLocation={false} variant="header" />
                 <strong>No rental requests yet</strong>
                 <span>Open a rentable car and submit pickup, return, and driver details.</span>
               </div>
@@ -229,8 +241,9 @@ export function UserDashboard() {
               </div>
             </div>
           )) : (
-            <div className="table-row">
+            <div className="table-row table-row-empty">
               <div>
+                <BrandLogo showLocation={false} variant="header" />
                 <strong>No service briefs yet</strong>
                 <span>Use concierge sourcing, trade-in, or private sale intake from the services page.</span>
               </div>

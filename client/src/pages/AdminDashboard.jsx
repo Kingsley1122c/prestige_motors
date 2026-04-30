@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { BrandLogo } from '../components/BrandLogo'
 import { SectionTitle } from '../components/SectionTitle'
 import { VehicleImageLightbox } from '../components/VehicleImageLightbox'
 import { useMarket } from '../context/MarketContext'
@@ -64,6 +65,7 @@ export function AdminDashboard() {
     deleteUser,
     updateApplicationStatus,
     updatePaymentRequestInstructions,
+    updatePaymentStatus,
     updateServiceRequestStatus,
     updateRentalRequestStatus,
     submitting,
@@ -276,7 +278,7 @@ export function AdminDashboard() {
       <SectionTitle
         eyebrow="Admin dashboard"
         title="Manage inventory, approvals, users, and payments"
-        description="This demo admin panel supports listing updates, application decisions, and payment visibility without misleading financing claims."
+        description="Use this dashboard to manage listings, application decisions, payment visibility, and service workflow without misleading financing claims."
       />
 
       <div className="metric-grid">
@@ -295,6 +297,10 @@ export function AdminDashboard() {
         <article className="surface-card metric-card">
           <strong>{adminDashboard.stats.confirmedPayments || 0}</strong>
           <span>Confirmed payments</span>
+        </article>
+        <article className="surface-card metric-card">
+          <strong>{adminDashboard.stats.pendingVerificationPayments || 0}</strong>
+          <span>Awaiting verification</span>
         </article>
         <article className="surface-card metric-card">
           <strong>{adminDashboard.stats.pendingPaymentRequests || 0}</strong>
@@ -366,7 +372,11 @@ export function AdminDashboard() {
               </div>
               <div>
                 <label htmlFor="approved-method">Approved method</label>
-                <select id="approved-method" value={paymentInstructionForm.approvedMethod} onChange={(event) => setPaymentInstructionForm((current) => ({ ...current, approvedMethod: event.target.value }))}>
+                <select id="approved-method" value={paymentInstructionForm.approvedMethod} onChange={(event) => setPaymentInstructionForm((current) => ({
+                  ...current,
+                  approvedMethod: event.target.value,
+                  paymentLink: event.target.value === 'payment-link' && !current.paymentLink ? 'paystack' : current.paymentLink,
+                }))}>
                   <option value="bank-transfer">Bank transfer</option>
                   <option value="wire-transfer">Wire transfer</option>
                   <option value="payment-link">Payment link</option>
@@ -400,6 +410,7 @@ export function AdminDashboard() {
               <div className="form-grid-wide">
                 <label htmlFor="payment-link">Payment link</label>
                 <input id="payment-link" value={paymentInstructionForm.paymentLink} onChange={(event) => setPaymentInstructionForm((current) => ({ ...current, paymentLink: event.target.value }))} />
+                <small>Use `paystack` to launch hosted Paystack checkout, or paste another secure hosted link.</small>
               </div>
               <div className="form-grid-wide">
                 <label htmlFor="payment-admin-note">Admin note</label>
@@ -513,22 +524,113 @@ export function AdminDashboard() {
           </div>
 
           <div className="surface-card table-card">
-            <p className="muted-label">Recent payments</p>
+            <p className="muted-label">Payment verification queue</p>
             <div className="table-list">
-              {adminDashboard.payments.map((payment) => (
-                <div className="table-row" key={payment.id}>
+              {adminDashboard.pendingVerificationPayments.length ? adminDashboard.pendingVerificationPayments.map((payment) => (
+                <div className="table-row table-row-actions" key={`queue-${payment.id}`}>
                   <div>
-                    <strong>{payment.receiptNumber}</strong>
-                    <span>{payment.car?.brand} {payment.car?.model}</span>
+                    <strong>{payment.car?.brand} {payment.car?.model}</strong>
+                    <span>{payment.method.replace('-', ' ')} · {formatUsd(payment.amountUsd)} · {payment.status}</span>
+                    {payment.providerReference ? <span>Reference: {payment.providerReference}</span> : null}
+                    {payment.adminNote ? <span>{payment.adminNote}</span> : null}
                     {payment.proofAttachment ? (
                       <span>
                         Proof: <a href={payment.proofAttachment.dataUrl} download={payment.proofAttachment.name}>{payment.proofAttachment.name}</a>
                       </span>
                     ) : null}
                   </div>
-                  <div className="text-right">
+                  <div className="button-row compact-row">
+                    <button
+                      className="button button-primary"
+                      disabled={submitting}
+                      onClick={() => updatePaymentStatus(payment.id, { status: 'Confirmed', adminNote: payment.adminNote || 'Payment verified by admin.' })}
+                      type="button"
+                    >
+                      Confirm
+                    </button>
+                    <button
+                      className="button button-muted"
+                      disabled={submitting}
+                      onClick={() => updatePaymentStatus(payment.id, { status: 'Declined', adminNote: payment.adminNote || 'Verification declined by admin.' })}
+                      type="button"
+                    >
+                      Decline
+                    </button>
+                  </div>
+                </div>
+              )) : (
+                <div className="table-row table-row-empty">
+                  <div>
+                    <BrandLogo showLocation={false} variant="header" />
+                    <strong>No payments waiting for manual review</strong>
+                    <span>Bank, wire, and unresolved provider payments will appear here.</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="surface-card table-card">
+            <p className="muted-label">Recent payments</p>
+            <div className="table-list">
+              {adminDashboard.payments.map((payment) => (
+                <div className="table-row table-row-actions" key={payment.id}>
+                  <div>
+                    <strong>{payment.receiptNumber || payment.id}</strong>
+                    <span>{payment.car?.brand} {payment.car?.model}</span>
+                    <span>{payment.method.replace('-', ' ')} · {payment.status}</span>
+                    {payment.providerReference ? <span>Reference: {payment.providerReference}</span> : null}
+                    {payment.adminNote ? <span>{payment.adminNote}</span> : null}
+                    {payment.proofAttachment ? (
+                      <span>
+                        Proof: <a href={payment.proofAttachment.dataUrl} download={payment.proofAttachment.name}>{payment.proofAttachment.name}</a>
+                      </span>
+                    ) : null}
+                  </div>
+                  <div className="button-row compact-row">
                     <strong>{formatUsd(payment.amountUsd)}</strong>
                     <span>{formatDate(payment.createdAt)}</span>
+                    {payment.status !== 'Confirmed' ? (
+                      <button
+                        className="button button-primary"
+                        disabled={submitting}
+                        onClick={() => updatePaymentStatus(payment.id, { status: 'Confirmed', adminNote: payment.adminNote || '' })}
+                        type="button"
+                      >
+                        Confirm
+                      </button>
+                    ) : null}
+                    {payment.status !== 'Declined' ? (
+                      <button
+                        className="button button-muted"
+                        disabled={submitting}
+                        onClick={() => updatePaymentStatus(payment.id, { status: 'Declined', adminNote: payment.adminNote || 'Verification declined by admin.' })}
+                        type="button"
+                      >
+                        Decline
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="surface-card table-card">
+            <p className="muted-label">Payment audit log</p>
+            <div className="table-list">
+              {adminDashboard.paymentEvents.map((paymentEvent) => (
+                <div className="table-row" key={paymentEvent.id}>
+                  <div>
+                    <strong>{paymentEvent.eventType}</strong>
+                    <span>{paymentEvent.car?.brand} {paymentEvent.car?.model}</span>
+                    <span>{paymentEvent.provider || 'manual'} · {paymentEvent.status || 'logged'}</span>
+                    {paymentEvent.reference ? <span>Reference: {paymentEvent.reference}</span> : null}
+                    {paymentEvent.note ? <span>{paymentEvent.note}</span> : null}
+                  </div>
+                  <div className="text-right">
+                    <strong>{paymentEvent.actorType}</strong>
+                    <span>{formatDate(paymentEvent.createdAt)}</span>
                   </div>
                 </div>
               ))}

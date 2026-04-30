@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const bcrypt = require('bcryptjs')
+const crypto = require('crypto')
 const {
   nextId,
   createCarRecord,
@@ -14,6 +15,7 @@ const {
   users,
   financingApplications,
   payments,
+  paymentEvents,
   paymentRequests,
   deliveryRequests,
   serviceRequests,
@@ -39,10 +41,19 @@ app.use(cors({
     callback(new Error('Origin not allowed by CORS'))
   },
 }))
+app.post('/api/payments/paystack/webhook', express.raw({ type: 'application/json' }), (request, response, next) => next())
 app.use(express.json({ limit: '8mb' }))
 
 const PASSWORD_SALT_ROUNDS = 10
-const readConfiguredValue = (key) => String(process.env[key] || '').trim()
+const AUTH_TOKEN_TTL_MS = 1000 * 60 * 60 * 24 * 30
+const TOKEN_HEADER_PREFIX = 'Bearer '
+const readConfiguredValue = (key, fallback = '') => String(process.env[key] || '').trim() || fallback
+const AUTH_TOKEN_SECRET = readConfiguredValue('AUTH_TOKEN_SECRET', 'development-token-secret-change-me')
+const PAYSTACK_SECRET_KEY = readConfiguredValue('PAYSTACK_SECRET_KEY')
+const PAYSTACK_PUBLIC_KEY = readConfiguredValue('PAYSTACK_PUBLIC_KEY')
+const PAYSTACK_CURRENCY = readConfiguredValue('PAYSTACK_CURRENCY', 'USD')
+const PAYSTACK_TEST_MODE = readConfiguredValue('PAYSTACK_TEST_MODE', 'off')
+const PAYSTACK_API_BASE_URL = 'https://api.paystack.co'
 
 const isPasswordHash = (password) => String(password || '').startsWith('$2')
 const hashPassword = (password) => bcrypt.hashSync(String(password), PASSWORD_SALT_ROUNDS)
@@ -144,11 +155,71 @@ const sanitizeUser = (user) => {
   return { ...safeUser, countrySettings: getCountrySettings(safeUser.country) }
 }
 
+const createTokenSignature = (payload) => crypto.createHmac('sha256', AUTH_TOKEN_SECRET).update(payload).digest('base64url')
+
+const createAuthToken = (user) => {
+  const payload = Buffer.from(JSON.stringify({ userId: user.id, exp: Date.now() + AUTH_TOKEN_TTL_MS })).toString('base64url')
+  return `${payload}.${createTokenSignature(payload)}`
+}
+
+const readBearerToken = (request) => {
+  const authorizationHeader = String(request.headers.authorization || '')
+
+  if (!authorizationHeader.startsWith(TOKEN_HEADER_PREFIX)) {
+    return ''
+  }
+
+  return authorizationHeader.slice(TOKEN_HEADER_PREFIX.length).trim()
+}
+
+const readAuthSession = (token) => {
+  if (!token) {
+    return null
+  }
+
+  const [payload, signature, ...rest] = String(token).split('.')
+
+  if (!payload || !signature || rest.length) {
+    return null
+  }
+
+  const expectedSignature = createTokenSignature(payload)
+
+  if (signature.length !== expectedSignature.length) {
+    return null
+  }
+
+  if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))) {
+    return null
+  }
+
+  try {
+    const authSession = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'))
+
+    if (!authSession?.userId || !authSession?.exp || Number(authSession.exp) <= Date.now()) {
+      return null
+    }
+
+    return authSession
+  } catch {
+    return null
+  }
+}
+
 const decorateCar = (car) => attachVehicleDisplayMedia(car)
 const getUser = (userId) => users.find((entry) => entry.id === userId)
 const getCar = (carId) => decorateCar(cars.find((car) => car.id === carId))
 const findUserByEmail = (email) => users.find((entry) => entry.email.toLowerCase() === String(email).toLowerCase())
-const getActor = (request) => getUser(request.headers['x-user-id'])
+const getActor = (request) => {
+  const authSession = readAuthSession(readBearerToken(request))
+
+  if (!authSession) {
+    return null
+  }
+
+  request.authSession = authSession
+  return getUser(authSession.userId)
+}
 
 const requireSignedIn = (request, response, next) => {
   const actor = getActor(request)
@@ -207,6 +278,275 @@ const decoratePaymentRequest = (paymentRequest) => ({
   user: sanitizeUser(getUser(paymentRequest.userId)),
 })
 
+const decoratePaymentEvent = (paymentEvent) => ({
+  ...paymentEvent,
+  payment: payments.find((payment) => payment.id === paymentEvent.paymentId) || null,
+  paymentRequest: paymentRequests.find((paymentRequest) => paymentRequest.id === paymentEvent.paymentRequestId) || null,
+  car: getCar(paymentEvent.carId),
+  user: sanitizeUser(getUser(paymentEvent.userId)),
+})
+
+const createReceiptNumber = () => `RCPT-${Date.now()}`
+const paymentNeedsManualVerification = (method) => ['bank-transfer', 'wire-transfer'].includes(method)
+const paymentNeedsProviderVerification = (method) => method === 'payment-link'
+const paymentIsFinalized = (payment) => ['Confirmed', 'Declined', 'Failed'].includes(payment?.status)
+const paystackIsConfigured = () => Boolean(PAYSTACK_SECRET_KEY) || PAYSTACK_TEST_MODE === 'mock'
+const paystackRunsInMockMode = () => PAYSTACK_TEST_MODE === 'mock'
+const toPaystackMinorUnits = (amountUsd) => Math.round(Number(amountUsd) * 100)
+
+const getRequestOrigin = (request) => {
+  const candidate = request?.headers?.origin || request?.headers?.referer
+
+  if (!candidate) {
+    return ''
+  }
+
+  try {
+    return new URL(candidate).origin
+  } catch {
+    return ''
+  }
+}
+
+const buildFrontendUrl = (path, request) => {
+  const frontendOrigin = FRONTEND_ORIGIN || getRequestOrigin(request) || 'http://localhost:5173'
+  return new URL(path, frontendOrigin).toString()
+}
+
+const buildPaystackHeaders = () => ({
+  Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+  'Content-Type': 'application/json',
+})
+
+const buildPaystackSignature = (payload) => crypto.createHmac('sha512', PAYSTACK_SECRET_KEY).update(payload).digest('hex')
+const paystackWebhookSignatureIsValid = (request) => {
+  const headerSignature = String(request.headers['x-paystack-signature'] || '')
+
+  if (!headerSignature || !PAYSTACK_SECRET_KEY || !Buffer.isBuffer(request.body)) {
+    return false
+  }
+
+  const expectedSignature = buildPaystackSignature(request.body)
+
+  if (expectedSignature.length !== headerSignature.length) {
+    return false
+  }
+
+  return crypto.timingSafeEqual(Buffer.from(headerSignature), Buffer.from(expectedSignature))
+}
+
+const createPaymentRecord = ({ userId, carId, type, method, amountUsd, paymentRequestId, status, proofAttachment = null, provider = '', providerReference = '', providerAccessCode = '' }) => ({
+  id: nextId('pay', payments),
+  userId,
+  carId,
+  paymentRequestId,
+  type,
+  method,
+  provider,
+  providerReference,
+  providerAccessCode,
+  amountUsd: Number(amountUsd),
+  createdAt: new Date().toISOString(),
+  receiptNumber: '',
+  status,
+  proofAttachment,
+  proofUploadedAt: proofAttachment ? new Date().toISOString() : '',
+  verifiedAt: '',
+  adminNote: '',
+})
+
+const logPaymentEvent = ({ payment = null, paymentRequest = null, eventType, provider = '', reference = '', status = '', actorType = 'system', actorId = '', note = '' }) => {
+  paymentEvents.unshift({
+    id: nextId('payment-event', paymentEvents),
+    paymentId: payment?.id || '',
+    paymentRequestId: paymentRequest?.id || '',
+    userId: payment?.userId || paymentRequest?.userId || '',
+    carId: payment?.carId || paymentRequest?.carId || '',
+    eventType,
+    provider,
+    reference,
+    status,
+    actorType,
+    actorId,
+    note,
+    createdAt: new Date().toISOString(),
+  })
+}
+
+const findPaymentByRequestId = (paymentRequestId) => payments.find((entry) => entry.paymentRequestId === paymentRequestId)
+
+const markPaymentRequestStatus = (paymentRequest, status) => {
+  paymentRequest.status = status
+
+  if (status === 'Confirmed') {
+    paymentRequest.confirmedAt = new Date().toISOString()
+  }
+}
+
+const confirmPayment = (payment, paymentRequest, options = {}) => {
+  if (!payment || !paymentRequest) {
+    return null
+  }
+
+  payment.status = 'Confirmed'
+  payment.receiptNumber = payment.receiptNumber || createReceiptNumber()
+  payment.verifiedAt = options.verifiedAt || new Date().toISOString()
+  payment.adminNote = options.adminNote || payment.adminNote || ''
+  payment.providerReference = options.providerReference || payment.providerReference || ''
+  payment.providerAccessCode = options.providerAccessCode || payment.providerAccessCode || ''
+
+  paymentRequest.paymentId = payment.id
+  paymentRequest.proofAttachment = payment.proofAttachment || paymentRequest.proofAttachment || null
+  paymentRequest.proofUploadedAt = payment.proofUploadedAt || paymentRequest.proofUploadedAt || ''
+  paymentRequest.approvedAmountUsd = payment.amountUsd
+  paymentRequest.approvedMethod = payment.method
+  paymentRequest.referenceCode = paymentRequest.referenceCode || options.referenceCode || payment.providerReference || ''
+  markPaymentRequestStatus(paymentRequest, 'Confirmed')
+  paymentRequest.confirmedAt = payment.verifiedAt
+
+  return {
+    payment: { ...payment, car: getCar(payment.carId) },
+    receipt: {
+      receiptNumber: payment.receiptNumber,
+      amountUsd: payment.amountUsd,
+      method: payment.method,
+      issuedAt: payment.verifiedAt,
+    },
+  }
+}
+
+const failPayment = (payment, paymentRequest, status, adminNote = '') => {
+  if (!payment || !paymentRequest) {
+    return
+  }
+
+  payment.status = status
+  payment.adminNote = adminNote || payment.adminNote || ''
+  payment.verifiedAt = new Date().toISOString()
+  paymentRequest.adminNote = adminNote || paymentRequest.adminNote || ''
+  paymentRequest.status = status === 'Declined' ? 'Declined' : 'Instructions Sent'
+}
+
+const processVerifiedPayment = ({ payment, paymentRequest, verifiedReference, verifiedAmountMinor, verifiedAt, adminNote = '' }) => {
+  if (!payment || !paymentRequest) {
+    throw new Error('Linked payment data was not found.')
+  }
+
+  if (String(verifiedReference || '') !== String(payment.providerReference || '')) {
+    throw new Error('Paystack reference mismatch.')
+  }
+
+  if (Number(verifiedAmountMinor) !== toPaystackMinorUnits(payment.amountUsd)) {
+    throw new Error('Paystack amount does not match the approved payment amount.')
+  }
+
+  const confirmed = confirmPayment(payment, paymentRequest, {
+    verifiedAt: verifiedAt || new Date().toISOString(),
+    providerReference: verifiedReference,
+    referenceCode: verifiedReference,
+    adminNote,
+  })
+
+  const car = getCar(payment.carId)
+  pushNotification(payment.userId, 'Payment verified', `Receipt ${confirmed.receipt.receiptNumber} was generated for your ${payment.type} payment on ${car.brand} ${car.model}.`)
+  return confirmed
+}
+
+const processPaystackSettlement = ({ reference, status, amountMinor, paidAt, adminNote = '' }) => {
+  const payment = payments.find((entry) => entry.provider === 'paystack' && entry.providerReference === reference)
+
+  if (!payment) {
+    throw new Error('Paystack payment record not found.')
+  }
+
+  const paymentRequest = paymentRequests.find((entry) => entry.id === payment.paymentRequestId)
+
+  if (!paymentRequest) {
+    throw new Error('Linked payment request not found.')
+  }
+
+  if (payment.status === 'Confirmed') {
+    return confirmPayment(payment, paymentRequest, {
+      verifiedAt: payment.verifiedAt || paidAt || payment.createdAt,
+      providerReference: payment.providerReference,
+      adminNote,
+    })
+  }
+
+  if (status !== 'success') {
+    payment.status = 'Pending Verification'
+    payment.adminNote = adminNote || `Paystack returned ${status}.`
+    paymentRequest.status = 'Pending Verification'
+    return { payment: { ...payment, car: getCar(payment.carId) }, receipt: null }
+  }
+
+  return processVerifiedPayment({
+    payment,
+    paymentRequest,
+    verifiedReference: reference,
+    verifiedAmountMinor: amountMinor,
+    verifiedAt: paidAt,
+    adminNote,
+  })
+}
+
+const initializePaystackTransaction = async ({ email, amountUsd, reference, callbackUrl, metadata }) => {
+  if (paystackRunsInMockMode()) {
+    return {
+      authorization_url: callbackUrl,
+      access_code: `mock_access_${reference}`,
+      reference,
+    }
+  }
+
+  const paystackResponse = await fetch(`${PAYSTACK_API_BASE_URL}/transaction/initialize`, {
+    method: 'POST',
+    headers: buildPaystackHeaders(),
+    body: JSON.stringify({
+      email,
+      amount: toPaystackMinorUnits(amountUsd),
+      currency: PAYSTACK_CURRENCY,
+      reference,
+      callback_url: callbackUrl,
+      metadata,
+    }),
+  })
+
+  const result = await paystackResponse.json()
+
+  if (!paystackResponse.ok || !result?.status || !result?.data?.authorization_url) {
+    throw new Error(result?.message || 'Unable to initialize Paystack payment.')
+  }
+
+  return result.data
+}
+
+const verifyPaystackTransaction = async (reference) => {
+  const paystackResponse = await fetch(`${PAYSTACK_API_BASE_URL}/transaction/verify/${encodeURIComponent(reference)}`, {
+    headers: buildPaystackHeaders(),
+  })
+  const result = await paystackResponse.json()
+
+  if (!paystackResponse.ok || !result?.status || !result?.data) {
+    throw new Error(result?.message || 'Unable to verify Paystack payment.')
+  }
+
+  return result.data
+}
+
+const verifyPaystackTransactionWithFallback = async (reference, amountUsd) => {
+  if (paystackRunsInMockMode()) {
+    return {
+      reference,
+      amount: toPaystackMinorUnits(amountUsd),
+      status: 'success',
+      paid_at: new Date().toISOString(),
+    }
+  }
+
+  return verifyPaystackTransaction(reference)
+}
+
 const decorateRentalRequest = (rentalRequest) => ({
   ...rentalRequest,
   car: getCar(rentalRequest.carId),
@@ -239,6 +579,7 @@ const buildAdminDashboard = () => ({
     totalUsers: users.filter((user) => user.role !== 'admin').length,
     activeApplications: financingApplications.filter((item) => item.status === 'Pending Review').length,
     confirmedPayments: payments.filter((item) => item.status === 'Confirmed').length,
+    pendingVerificationPayments: payments.filter((item) => item.status === 'Pending Verification').length,
     pendingPaymentRequests: paymentRequests.filter((item) => item.status === 'Pending Approval').length,
     openServiceRequests: serviceRequests.filter((item) => item.status !== 'Closed').length,
     openRentalRequests: rentalRequests.filter((item) => !['Closed', 'Declined'].includes(item.status)).length,
@@ -247,7 +588,9 @@ const buildAdminDashboard = () => ({
   users: users.map(sanitizeUser),
   applications: financingApplications.map(decorateApplication).sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
   payments: payments.map((payment) => ({ ...payment, car: getCar(payment.carId) })).sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
+  pendingVerificationPayments: payments.filter((payment) => payment.status === 'Pending Verification').map((payment) => ({ ...payment, car: getCar(payment.carId) })).sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
   paymentRequests: paymentRequests.map(decoratePaymentRequest).sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
+  paymentEvents: paymentEvents.map(decoratePaymentEvent).sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)).slice(0, 40),
   deliveryRequests: deliveryRequests.map((request) => ({ ...request, car: getCar(request.carId) })).sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
   serviceRequests: serviceRequests.map(decorateServiceRequest).sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
   rentalRequests: rentalRequests.map(decorateRentalRequest).sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
@@ -330,7 +673,9 @@ const validatePaymentInstructions = ({ status, approvedMethod, bankName, account
   }
 
   if (approvedMethod === 'payment-link' && !paymentLink) {
-    return 'Provide the payment link before sending instructions.'
+    if (paymentLink !== 'paystack') {
+      return 'Provide the payment link before sending instructions.'
+    }
   }
 
   if ((approvedMethod === 'bank-transfer' || approvedMethod === 'wire-transfer') && (!bankName || !accountName || !accountNumber)) {
@@ -422,7 +767,7 @@ app.post('/api/auth/register', (request, response) => {
   users.push(user)
   saveDatabase()
 
-  response.status(201).json({ message: 'Account created successfully.', user: sanitizeUser(user) })
+  response.status(201).json({ message: 'Account created successfully.', user: sanitizeUser(user), token: createAuthToken(user) })
 })
 
 app.post('/api/auth/login', (request, response) => {
@@ -434,7 +779,7 @@ app.post('/api/auth/login', (request, response) => {
     return
   }
 
-  response.json({ message: 'Login successful.', user: sanitizeUser(user) })
+  response.json({ message: 'Login successful.', user: sanitizeUser(user), token: createAuthToken(user) })
 })
 
 app.get('/api/cars', (request, response) => {
@@ -508,14 +853,10 @@ app.get('/api/admin/system/export', requireAdmin, (request, response) => {
   response.send(JSON.stringify(backupPayload, null, 2))
 })
 
-app.post('/api/favorites', (request, response) => {
-  const { userId, carId } = request.body
-  const user = getUser(userId)
-
-  if (!user) {
-    response.status(401).json({ message: 'Please create an account or log in first.' })
-    return
-  }
+app.post('/api/favorites', requireSignedIn, (request, response) => {
+  const { carId } = request.body
+  const user = request.actor
+  const userId = user.id
 
   if (!getCar(carId)) {
     response.status(404).json({ message: 'Vehicle not found.' })
@@ -534,15 +875,11 @@ app.post('/api/favorites', (request, response) => {
   response.json(buildUserDashboard(userId))
 })
 
-app.post('/api/financing-applications', (request, response) => {
-  const { userId, carId, fullName, phone, email, incomeUsd, location, depositUsd, months } = request.body
+app.post('/api/financing-applications', requireSignedIn, (request, response) => {
+  const { carId, fullName, phone, email, incomeUsd, location, depositUsd, months } = request.body
   const car = getCar(carId)
-  const user = getUser(userId)
-
-  if (!user) {
-    response.status(401).json({ message: 'Please create an account or log in before applying.' })
-    return
-  }
+  const user = request.actor
+  const userId = user.id
 
   if (!car) {
     response.status(404).json({ message: 'Select a valid vehicle before applying.' })
@@ -628,6 +965,15 @@ app.post('/api/payment-requests', requireSignedIn, (request, response) => {
   }
 
   paymentRequests.unshift(paymentRequest)
+  logPaymentEvent({
+    paymentRequest,
+    eventType: 'payment-request-created',
+    provider: preferredMethod,
+    status: paymentRequest.status,
+    actorType: 'user',
+    actorId: userId,
+    note: `Buyer requested ${preferredMethod} for ${type}.`,
+  })
   pushNotification(userId, 'Payment method submitted', `Your ${preferredMethod.replace('-', ' ')} request for ${car.brand} ${car.model} is waiting for admin instructions.`)
   saveDatabase()
 
@@ -686,6 +1032,16 @@ app.patch('/api/admin/payment-requests/:requestId', requireAdmin, (request, resp
   paymentRequest.paymentLink = payload.paymentLink || ''
   paymentRequest.adminNote = payload.adminNote || ''
   paymentRequest.reviewedAt = new Date().toISOString()
+  logPaymentEvent({
+    paymentRequest,
+    eventType: 'payment-instructions-updated',
+    provider: paymentRequest.approvedMethod || paymentRequest.requestedMethod,
+    reference: paymentRequest.referenceCode || '',
+    status: paymentRequest.status,
+    actorType: 'admin',
+    actorId: request.actor.id,
+    note: paymentRequest.adminNote || 'Payment instructions updated.',
+  })
 
   const car = getCar(paymentRequest.carId)
   pushNotification(
@@ -698,6 +1054,212 @@ app.patch('/api/admin/payment-requests/:requestId', requireAdmin, (request, resp
   saveDatabase()
 
   response.json({ message: 'Payment request updated.', paymentRequest: decoratePaymentRequest(paymentRequest) })
+})
+
+app.post('/api/payments/paystack/initialize', requireSignedIn, async (request, response) => {
+  if (!paystackIsConfigured()) {
+    response.status(503).json({ message: 'Paystack is not configured on this server yet.' })
+    return
+  }
+
+  const { paymentRequestId, carId } = request.body || {}
+  const user = request.actor
+  const paymentRequest = paymentRequests.find((entry) => entry.id === paymentRequestId)
+
+  if (!paymentRequest || paymentRequest.userId !== user.id || paymentRequest.carId !== carId) {
+    response.status(404).json({ message: 'Approved payment request not found.' })
+    return
+  }
+
+  if (paymentRequest.status !== 'Instructions Sent' || paymentRequest.approvedMethod !== 'payment-link') {
+    response.status(400).json({ message: 'This payment request is not ready for Paystack checkout.' })
+    return
+  }
+
+  const reference = `pstk_${paymentRequest.id}_${Date.now()}`
+  const callbackUrl = buildFrontendUrl(
+    `/cars/${paymentRequest.carId}?payment=verify&paymentRequestId=${encodeURIComponent(paymentRequest.id)}&reference=${encodeURIComponent(reference)}`,
+    request,
+  )
+  const existingPayment = findPaymentByRequestId(paymentRequest.id)
+  const payment = existingPayment && !paymentIsFinalized(existingPayment)
+    ? existingPayment
+    : createPaymentRecord({
+      userId: user.id,
+      carId,
+      paymentRequestId: paymentRequest.id,
+      type: paymentRequest.type,
+      method: 'payment-link',
+      amountUsd: paymentRequest.approvedAmountUsd || paymentRequest.requestedAmountUsd,
+      status: 'Pending Authorization',
+      provider: 'paystack',
+      providerReference: reference,
+    })
+
+  payment.provider = 'paystack'
+  payment.providerReference = reference
+  payment.status = 'Pending Authorization'
+
+  if (!existingPayment || existingPayment.id !== payment.id) {
+    payments.unshift(payment)
+  }
+
+  try {
+    const initialized = await initializePaystackTransaction({
+      email: user.email,
+      amountUsd: payment.amountUsd,
+      reference,
+      callbackUrl,
+      metadata: {
+        paymentRequestId: paymentRequest.id,
+        carId,
+        userId: user.id,
+        paymentType: paymentRequest.type,
+      },
+    })
+
+    payment.providerAccessCode = initialized.access_code || ''
+    paymentRequest.paymentId = payment.id
+    logPaymentEvent({
+      payment,
+      paymentRequest,
+      eventType: 'paystack-initialized',
+      provider: 'paystack',
+      reference,
+      status: payment.status,
+      actorType: 'user',
+      actorId: user.id,
+      note: paystackRunsInMockMode() ? 'Mock Paystack checkout initialized for local testing.' : 'Hosted Paystack checkout initialized.',
+    })
+    saveDatabase()
+
+    response.status(201).json({
+      message: 'Paystack checkout initialized.',
+      authorizationUrl: paystackRunsInMockMode() ? callbackUrl : initialized.authorization_url,
+      reference,
+      payment: { ...payment, car: getCar(payment.carId) },
+      publicKeyConfigured: Boolean(PAYSTACK_PUBLIC_KEY),
+      mockMode: paystackRunsInMockMode(),
+    })
+  } catch (error) {
+    payment.status = 'Failed'
+    payment.adminNote = error.message
+    logPaymentEvent({
+      payment,
+      paymentRequest,
+      eventType: 'paystack-initialize-failed',
+      provider: 'paystack',
+      reference,
+      status: payment.status,
+      note: error.message,
+    })
+    saveDatabase()
+    response.status(502).json({ message: error.message || 'Unable to start Paystack checkout.' })
+  }
+})
+
+app.post('/api/payments/paystack/verify', requireSignedIn, async (request, response) => {
+  if (!paystackIsConfigured()) {
+    response.status(503).json({ message: 'Paystack is not configured on this server yet.' })
+    return
+  }
+
+  const { paymentRequestId, reference } = request.body || {}
+  const user = request.actor
+  const paymentRequest = paymentRequests.find((entry) => entry.id === paymentRequestId)
+  const payment = findPaymentByRequestId(paymentRequestId)
+
+  if (!paymentRequest || paymentRequest.userId !== user.id || !payment) {
+    response.status(404).json({ message: 'Paystack payment record not found.' })
+    return
+  }
+
+  if (payment.status === 'Confirmed') {
+    const confirmed = confirmPayment(payment, paymentRequest, { verifiedAt: payment.verifiedAt || payment.createdAt, providerReference: payment.providerReference })
+    saveDatabase()
+    response.json({ message: 'Payment already verified.', ...confirmed })
+    return
+  }
+
+  try {
+    const verified = await verifyPaystackTransactionWithFallback(reference || payment.providerReference, payment.amountUsd)
+
+    const confirmed = processPaystackSettlement({
+      reference: verified.reference,
+      status: verified.status,
+      amountMinor: verified.amount,
+      paidAt: verified.paid_at || new Date().toISOString(),
+    })
+    saveDatabase()
+
+    if (!confirmed.receipt) {
+      response.status(409).json({ message: `Paystack returned ${verified.status}.`, payment: confirmed.payment, receipt: null })
+      return
+    }
+
+    response.json({ message: 'Paystack payment verified.', ...confirmed })
+  } catch (error) {
+    payment.status = 'Pending Verification'
+    payment.adminNote = error.message
+    paymentRequest.status = 'Pending Verification'
+    saveDatabase()
+    response.status(502).json({ message: error.message || 'Unable to verify Paystack payment at the moment.' })
+  }
+})
+
+app.post('/api/payments/paystack/webhook', (request, response) => {
+  if (!paystackIsConfigured()) {
+    response.status(503).json({ message: 'Paystack is not configured on this server yet.' })
+    return
+  }
+
+  if (!paystackWebhookSignatureIsValid(request)) {
+    if (paystackRunsInMockMode()) {
+      response.status(200).json({ message: 'Mock mode ignores webhook signature validation.' })
+      return
+    }
+
+    response.status(401).json({ message: 'Invalid Paystack webhook signature.' })
+    return
+  }
+
+  let eventPayload = null
+
+  try {
+    eventPayload = JSON.parse(request.body.toString('utf8'))
+  } catch {
+    response.status(400).json({ message: 'Invalid Paystack webhook payload.' })
+    return
+  }
+
+  if (eventPayload?.event !== 'charge.success' || !eventPayload?.data?.reference) {
+    response.status(200).json({ message: 'Webhook received and ignored.' })
+    return
+  }
+
+  try {
+    const processed = processPaystackSettlement({
+      reference: eventPayload.data.reference,
+      status: eventPayload.data.status,
+      amountMinor: eventPayload.data.amount,
+      paidAt: eventPayload.data.paid_at || new Date().toISOString(),
+      adminNote: 'Verified by Paystack webhook.',
+    })
+    logPaymentEvent({
+      payment: processed.payment,
+      paymentRequest: paymentRequests.find((entry) => entry.id === processed.payment?.paymentRequestId) || null,
+      eventType: 'paystack-webhook-processed',
+      provider: 'paystack',
+      reference: eventPayload.data.reference,
+      status: eventPayload.data.status,
+      actorType: 'system',
+      note: 'Paystack webhook processed successfully.',
+    })
+    saveDatabase()
+    response.status(200).json({ message: 'Webhook processed.' })
+  } catch (error) {
+    response.status(400).json({ message: error.message || 'Webhook processing failed.' })
+  }
 })
 
 app.post('/api/payments', requireSignedIn, (request, response) => {
@@ -748,44 +1310,101 @@ app.post('/api/payments', requireSignedIn, (request, response) => {
     }
   }
 
-  const payment = {
-    id: nextId('pay', payments),
+  const payment = createPaymentRecord({
     userId,
     carId: resolvedCarId,
+    paymentRequestId,
     type,
     method,
-    amountUsd: Number(amountUsd),
-    createdAt: new Date().toISOString(),
-    receiptNumber: `RCPT-${Date.now()}`,
-    status: 'Confirmed',
+    amountUsd,
     proofAttachment: proofAttachment || null,
-    proofUploadedAt: proofAttachment ? new Date().toISOString() : '',
-  }
+    status: paymentNeedsManualVerification(method) ? 'Pending Verification' : 'Confirmed',
+  })
   payments.unshift(payment)
-  paymentRequest.status = 'Confirmed'
   paymentRequest.paymentId = payment.id
-  paymentRequest.confirmedAt = payment.createdAt
   paymentRequest.proofAttachment = proofAttachment || null
-  paymentRequest.proofUploadedAt = proofAttachment ? payment.createdAt : ''
-  pushNotification(userId, 'Payment received', `Receipt ${payment.receiptNumber} was generated for your ${type} payment on ${car.brand} ${car.model}.`)
+  paymentRequest.proofUploadedAt = payment.proofUploadedAt
+  logPaymentEvent({
+    payment,
+    paymentRequest,
+    eventType: 'payment-submitted',
+    provider: method,
+    reference: payment.providerReference || paymentRequest.referenceCode || '',
+    status: payment.status,
+    actorType: 'user',
+    actorId: userId,
+    note: paymentNeedsManualVerification(method) ? 'Buyer uploaded proof for manual verification.' : 'Payment recorded from approved instructions.',
+  })
+
+  if (paymentNeedsManualVerification(method)) {
+    paymentRequest.status = 'Pending Verification'
+    pushNotification(userId, 'Payment submitted for verification', `Your ${type} payment proof for ${car.brand} ${car.model} is pending admin verification.`)
+  } else {
+    const confirmed = confirmPayment(payment, paymentRequest, { verifiedAt: payment.createdAt })
+    pushNotification(userId, 'Payment received', `Receipt ${confirmed.receipt.receiptNumber} was generated for your ${type} payment on ${car.brand} ${car.model}.`)
+  }
+
   saveDatabase()
 
-  response.status(201).json({
-    message: 'Payment recorded and receipt generated.',
-    payment: { ...payment, car },
-    receipt: { receiptNumber: payment.receiptNumber, amountUsd: payment.amountUsd, method: payment.method, issuedAt: payment.createdAt },
-  })
+  response.status(201).json(payment.status === 'Confirmed'
+    ? {
+      message: 'Payment recorded and receipt generated.',
+      payment: { ...payment, car },
+      receipt: { receiptNumber: payment.receiptNumber, amountUsd: payment.amountUsd, method: payment.method, issuedAt: payment.verifiedAt || payment.createdAt },
+    }
+    : {
+      message: 'Payment proof uploaded. Admin verification is now pending.',
+      payment: { ...payment, car },
+      receipt: null,
+    })
 })
 
-app.post('/api/delivery-requests', (request, response) => {
-  const { userId, carId, address, trigger } = request.body
-  const car = getCar(carId)
-  const user = getUser(userId)
+app.patch('/api/admin/payments/:paymentId', requireAdmin, (request, response) => {
+  const payment = payments.find((entry) => entry.id === request.params.paymentId)
 
-  if (!user) {
-    response.status(401).json({ message: 'Please create an account or log in before requesting delivery.' })
+  if (!payment) {
+    response.status(404).json({ message: 'Payment not found.' })
     return
   }
+
+  const paymentRequest = paymentRequests.find((entry) => entry.id === payment.paymentRequestId)
+
+  if (!paymentRequest) {
+    response.status(404).json({ message: 'Linked payment request not found.' })
+    return
+  }
+
+  const { status, adminNote = '' } = request.body || {}
+
+  if (!['Pending Verification', 'Confirmed', 'Declined', 'Failed'].includes(status)) {
+    response.status(400).json({ message: 'Invalid payment status.' })
+    return
+  }
+
+  if (status === 'Confirmed') {
+    const confirmed = confirmPayment(payment, paymentRequest, {
+      adminNote,
+      verifiedAt: new Date().toISOString(),
+      actorType: 'admin',
+      actorId: request.actor.id,
+    })
+    pushNotification(payment.userId, 'Payment confirmed', `Receipt ${confirmed.receipt.receiptNumber} was issued for ${getCar(payment.carId).brand} ${getCar(payment.carId).model}.`)
+    saveDatabase()
+    response.json({ message: 'Payment confirmed.', ...confirmed })
+    return
+  }
+
+  failPayment(payment, paymentRequest, status, adminNote)
+  pushNotification(payment.userId, `Payment ${status.toLowerCase()}`, `Your payment for ${getCar(payment.carId).brand} ${getCar(payment.carId).model} is now ${status.toLowerCase()}.`)
+  saveDatabase()
+  response.json({ message: `Payment ${status.toLowerCase()}.`, payment: { ...payment, car: getCar(payment.carId) }, paymentRequest: decoratePaymentRequest(paymentRequest) })
+})
+
+app.post('/api/delivery-requests', requireSignedIn, (request, response) => {
+  const { carId, address, trigger } = request.body
+  const car = getCar(carId)
+  const user = request.actor
+  const userId = user.id
 
   if (!car) {
     response.status(404).json({ message: 'Vehicle not found.' })
@@ -813,14 +1432,10 @@ app.post('/api/delivery-requests', (request, response) => {
   response.status(201).json({ message: 'Delivery request received. Dispatch review is pending.', deliveryRequest: { ...deliveryRequest, car } })
 })
 
-app.post('/api/service-requests', (request, response) => {
-  const { userId, type, title, fullName, email, phone, location, assetDetails, desiredOutcome, budgetUsd, notes } = request.body
-  const user = getUser(userId)
-
-  if (!user) {
-    response.status(401).json({ message: 'Please create an account or log in before submitting a service request.' })
-    return
-  }
+app.post('/api/service-requests', requireSignedIn, (request, response) => {
+  const { type, title, fullName, email, phone, location, assetDetails, desiredOutcome, budgetUsd, notes } = request.body
+  const user = request.actor
+  const userId = user.id
 
   const validationError = validateServiceRequest({ type, title, fullName, email, phone, location, assetDetails, desiredOutcome })
 
@@ -1020,7 +1635,7 @@ app.post('/api/admin/cars', requireAdmin, (request, response) => {
     return
   }
 
-  const record = createCarRecord({ ...payload, id: `${String(payload.brand).toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Date.now()}`, gallery: payload.gallery?.filter(Boolean) || [payload.heroImage].filter(Boolean), features: payload.features?.filter(Boolean) || [], highlights: payload.highlights?.filter(Boolean) || [], paymentTypes: payload.paymentTypes?.length ? payload.paymentTypes : ['full', 'installment'] })
+  const record = createCarRecord({ ...payload, catalogManaged: false, id: `${String(payload.brand).toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Date.now()}`, gallery: payload.gallery?.filter(Boolean) || [payload.heroImage].filter(Boolean), features: payload.features?.filter(Boolean) || [], highlights: payload.highlights?.filter(Boolean) || [], paymentTypes: payload.paymentTypes?.length ? payload.paymentTypes : ['full', 'installment'] })
   cars.unshift(record)
   refreshMetaCollections()
   saveDatabase()
@@ -1038,7 +1653,7 @@ app.put('/api/admin/cars/:carId', requireAdmin, (request, response) => {
 
   const previous = cars[index]
   const payload = request.body
-  cars[index] = createCarRecord({ ...previous, ...payload, id: previous.id, gallery: payload.gallery?.filter(Boolean) || previous.gallery, features: payload.features?.filter(Boolean) || previous.features, highlights: payload.highlights?.filter(Boolean) || previous.highlights, paymentTypes: payload.paymentTypes?.length ? payload.paymentTypes : previous.paymentTypes })
+  cars[index] = createCarRecord({ ...previous, ...payload, catalogManaged: false, id: previous.id, gallery: payload.gallery?.filter(Boolean) || previous.gallery, features: payload.features?.filter(Boolean) || previous.features, highlights: payload.highlights?.filter(Boolean) || previous.highlights, paymentTypes: payload.paymentTypes?.length ? payload.paymentTypes : previous.paymentTypes })
   refreshMetaCollections()
   saveDatabase()
 

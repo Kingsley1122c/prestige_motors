@@ -10,6 +10,7 @@ const COLLECTION_NAMES = [
   'users',
   'financingApplications',
   'payments',
+  'paymentEvents',
   'paymentRequests',
   'deliveryRequests',
   'serviceRequests',
@@ -21,6 +22,7 @@ const cars = []
 const users = []
 const financingApplications = []
 const payments = []
+const paymentEvents = []
 const paymentRequests = []
 const deliveryRequests = []
 const serviceRequests = []
@@ -51,6 +53,7 @@ const createSnapshot = () => ({
   users,
   financingApplications,
   payments,
+  paymentEvents,
   paymentRequests,
   deliveryRequests,
   serviceRequests,
@@ -65,12 +68,17 @@ const applySnapshot = (snapshot) => {
   replaceCollection(users, snapshot.users)
   replaceCollection(financingApplications, snapshot.financingApplications)
   replaceCollection(payments, snapshot.payments)
+  replaceCollection(paymentEvents, snapshot.paymentEvents)
   replaceCollection(paymentRequests, snapshot.paymentRequests)
   replaceCollection(deliveryRequests, snapshot.deliveryRequests)
   replaceCollection(serviceRequests, snapshot.serviceRequests)
   replaceCollection(rentalRequests, snapshot.rentalRequests)
   refreshMetaCollections()
 }
+
+const usesBlockedImageSource = (value) => String(value || '').includes('source.unsplash.com')
+const galleryUsesBlockedImageSource = (gallery) => Array.isArray(gallery) && gallery.some((image) => usesBlockedImageSource(image))
+const usesPlaceholderEmail = (value) => /(?:example\.com|prestigemotors\.example)$/i.test(String(value || ''))
 
 const syncSeedCars = () => {
   let didChange = false
@@ -123,14 +131,19 @@ const syncSeedCars = () => {
       didChange = true
     }
 
-    if ((seedCar.mediaVerified && existingCar.heroImage !== seedCar.heroImage) || (!existingCar.heroImage && seedCar.heroImage)) {
+    if (
+      (seedCar.mediaVerified && existingCar.heroImage !== seedCar.heroImage) ||
+      (!existingCar.heroImage && seedCar.heroImage) ||
+      (usesBlockedImageSource(existingCar.heroImage) && existingCar.heroImage !== seedCar.heroImage)
+    ) {
       existingCar.heroImage = seedCar.heroImage
       didChange = true
     }
 
     if (
       (seedCar.mediaVerified && !arraysMatch(existingCar.gallery, seedCar.gallery)) ||
-      ((!Array.isArray(existingCar.gallery) || !existingCar.gallery.length) && Array.isArray(seedCar.gallery) && seedCar.gallery.length)
+      ((!Array.isArray(existingCar.gallery) || !existingCar.gallery.length) && Array.isArray(seedCar.gallery) && seedCar.gallery.length) ||
+      (galleryUsesBlockedImageSource(existingCar.gallery) && !arraysMatch(existingCar.gallery, seedCar.gallery))
     ) {
       existingCar.gallery = cloneValue(seedCar.gallery)
       didChange = true
@@ -147,6 +160,40 @@ const syncSeedCars = () => {
 
   if (didChange) {
     refreshMetaCollections()
+  }
+
+  return didChange
+}
+
+const syncSeedUsers = () => {
+  let didChange = false
+  const existingById = new Map(users.map((user) => [user.id, user]))
+
+  seedData.users.forEach((seedUser) => {
+    const existingUser = existingById.get(seedUser.id)
+
+    if (!existingUser) {
+      return
+    }
+
+    if (!usesPlaceholderEmail(existingUser.email) && existingUser.email) {
+      return
+    }
+
+    ;['fullName', 'email', 'phone', 'role', 'country', 'location'].forEach((field) => {
+      if (existingUser[field] !== seedUser[field]) {
+        existingUser[field] = cloneValue(seedUser[field])
+        didChange = true
+      }
+    })
+  })
+
+  const existingIds = new Set(users.map((user) => user.id))
+  const missingSeedUsers = seedData.users.filter((user) => !existingIds.has(user.id))
+
+  if (missingSeedUsers.length) {
+    users.push(...cloneValue(missingSeedUsers))
+    didChange = true
   }
 
   return didChange
@@ -195,7 +242,10 @@ const initializeDatabase = () => {
 
   if (sqliteSnapshot) {
     applySnapshot(sqliteSnapshot)
-    if (syncSeedCars()) {
+    const didSyncCars = syncSeedCars()
+    const didSyncUsers = syncSeedUsers()
+
+    if (didSyncCars || didSyncUsers) {
       saveDatabase()
     }
     return
@@ -204,8 +254,12 @@ const initializeDatabase = () => {
   if (fs.existsSync(LEGACY_DATABASE_FILE_PATH)) {
     const legacySnapshot = JSON.parse(fs.readFileSync(LEGACY_DATABASE_FILE_PATH, 'utf8'))
     applySnapshot(legacySnapshot)
-    syncSeedCars()
-    saveDatabase()
+    const didSyncCars = syncSeedCars()
+    const didSyncUsers = syncSeedUsers()
+
+    if (didSyncCars || didSyncUsers) {
+      saveDatabase()
+    }
     return
   }
 
@@ -221,6 +275,7 @@ module.exports = {
   users,
   financingApplications,
   payments,
+  paymentEvents,
   paymentRequests,
   deliveryRequests,
   serviceRequests,

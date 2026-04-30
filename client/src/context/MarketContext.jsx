@@ -32,7 +32,9 @@ const emptyAdminDashboard = {
   users: [],
   applications: [],
   payments: [],
+  pendingVerificationPayments: [],
   paymentRequests: [],
+  paymentEvents: [],
   deliveryRequests: [],
   serviceRequests: [],
   rentalRequests: [],
@@ -59,7 +61,9 @@ const requestJson = async (path, options = {}) => {
   }
 
   if (!response.ok) {
-    throw new Error(data?.message || 'Something went wrong.')
+    const error = new Error(data?.message || 'Something went wrong.')
+    error.status = response.status
+    throw error
   }
 
   return data
@@ -73,7 +77,17 @@ const readStoredSession = () => {
   }
 
   try {
-    return JSON.parse(stored)
+    const parsedSession = JSON.parse(stored)
+
+    if (!parsedSession?.token || !parsedSession?.user?.id) {
+      window.localStorage.removeItem(SESSION_STORAGE_KEY)
+      return null
+    }
+
+    return {
+      token: parsedSession.token,
+      user: parsedSession.user,
+    }
   } catch {
     window.localStorage.removeItem(SESSION_STORAGE_KEY)
     return null
@@ -93,7 +107,7 @@ export function MarketProvider({ children }) {
     countries: [],
     defaultCountry: 'US',
   })
-  const [currentUser, setCurrentUser] = useState(() => readStoredSession())
+  const [session, setSession] = useState(() => readStoredSession())
   const [userDashboard, setUserDashboard] = useState(emptyUserDashboard)
   const [adminDashboard, setAdminDashboard] = useState(emptyAdminDashboard)
   const [loading, setLoading] = useState(true)
@@ -101,20 +115,29 @@ export function MarketProvider({ children }) {
   const [submitting, setSubmitting] = useState(false)
   const [flash, setFlash] = useState('')
   const [lastReceipt, setLastReceipt] = useState(null)
+  const currentUser = session?.user || null
+  const authToken = session?.token || ''
 
-  const isAuthenticated = Boolean(currentUser?.id)
+  const isAuthenticated = Boolean(currentUser?.id && authToken)
   const isAdmin = currentUser?.role === 'admin'
 
+  const clearSession = useCallback(() => {
+    setSession(null)
+    setLastReceipt(null)
+    setUserDashboard(emptyUserDashboard)
+    setAdminDashboard(emptyAdminDashboard)
+  }, [])
+
   const authHeaders = useMemo(
-    () => (currentUser?.id ? { 'x-user-id': currentUser.id } : {}),
-    [currentUser],
+    () => (authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+    [authToken],
   )
 
   const ensureSignedIn = useCallback(() => {
-    if (!currentUser?.id) {
+    if (!currentUser?.id || !authToken) {
       throw new Error('Please log in or create an account to continue.')
     }
-  }, [currentUser?.id])
+  }, [authToken, currentUser?.id])
 
   const ensureAdmin = useCallback(() => {
     if (currentUser?.role !== 'admin') {
@@ -129,24 +152,52 @@ export function MarketProvider({ children }) {
   }, [])
 
   const refreshDashboards = useCallback(async () => {
-    if (!currentUser?.id) {
+    if (!currentUser?.id || !authToken) {
       setUserDashboard(emptyUserDashboard)
       setAdminDashboard(emptyAdminDashboard)
       return
     }
 
-    const requests = [
-      requestJson(`/api/dashboard/user/${currentUser.id}`, { headers: authHeaders }),
-    ]
+    try {
+      const requests = [
+        requestJson(`/api/dashboard/user/${currentUser.id}`, { headers: authHeaders }),
+      ]
 
-    if (currentUser.role === 'admin') {
-      requests.push(requestJson('/api/dashboard/admin', { headers: authHeaders }))
+      if (currentUser.role === 'admin') {
+        requests.push(requestJson('/api/dashboard/admin', { headers: authHeaders }))
+      }
+
+      const [userData, adminData] = await Promise.all(requests)
+      setUserDashboard(userData)
+      setAdminDashboard(adminData || emptyAdminDashboard)
+
+      if (userData?.profile?.id === currentUser.id) {
+        const nextUser = {
+          ...currentUser,
+          ...userData.profile,
+        }
+
+        const didUserChange = ['fullName', 'email', 'phone', 'country', 'location', 'role'].some(
+          (field) => currentUser?.[field] !== nextUser?.[field],
+        )
+
+        if (didUserChange) {
+          setSession((previousSession) => (
+            previousSession
+              ? { ...previousSession, user: nextUser }
+              : previousSession
+          ))
+        }
+      }
+    } catch (dashboardError) {
+      if (dashboardError.status === 401 || dashboardError.status === 403) {
+        clearSession()
+        return
+      }
+
+      throw dashboardError
     }
-
-    const [userData, adminData] = await Promise.all(requests)
-    setUserDashboard(userData)
-    setAdminDashboard(adminData || emptyAdminDashboard)
-  }, [authHeaders, currentUser])
+  }, [authHeaders, authToken, clearSession, currentUser])
 
   const loadInitialData = useCallback(async () => {
     setLoading(true)
@@ -166,12 +217,12 @@ export function MarketProvider({ children }) {
   }, [loadInitialData])
 
   useEffect(() => {
-    if (currentUser) {
-      window.localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(currentUser))
+    if (session) {
+      window.localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session))
     } else {
       window.localStorage.removeItem(SESSION_STORAGE_KEY)
     }
-  }, [currentUser])
+  }, [session])
 
   useEffect(() => {
     if (!flash) {
@@ -193,12 +244,16 @@ export function MarketProvider({ children }) {
       }
       return result
     } catch (mutationError) {
+      if (mutationError.status === 401 || mutationError.status === 403) {
+        clearSession()
+      }
+
       setError(mutationError.message)
       throw mutationError
     } finally {
       setSubmitting(false)
     }
-  }, [])
+  }, [clearSession])
 
   const login = useCallback(
     async (payload) =>
@@ -207,7 +262,7 @@ export function MarketProvider({ children }) {
           method: 'POST',
           body: JSON.stringify(payload),
         })
-        setCurrentUser(result.user)
+        setSession({ user: result.user, token: result.token })
         return result
       }, 'Login successful.'),
     [runMutation],
@@ -220,19 +275,16 @@ export function MarketProvider({ children }) {
           method: 'POST',
           body: JSON.stringify(payload),
         })
-        setCurrentUser(result.user)
+        setSession({ user: result.user, token: result.token })
         return result
       }, 'Account created successfully.'),
     [runMutation],
   )
 
   const logout = useCallback(() => {
-    setCurrentUser(null)
-    setLastReceipt(null)
-    setUserDashboard(emptyUserDashboard)
-    setAdminDashboard(emptyAdminDashboard)
+    clearSession()
     setFlash('You have been logged out.')
-  }, [])
+  }, [clearSession])
 
   const toggleFavorite = useCallback(
     async (carId) =>
@@ -240,7 +292,8 @@ export function MarketProvider({ children }) {
         ensureSignedIn()
         const result = await requestJson('/api/favorites', {
           method: 'POST',
-          body: JSON.stringify({ userId: currentUser.id, carId }),
+          headers: authHeaders,
+          body: JSON.stringify({ carId }),
         })
         setUserDashboard(result)
 
@@ -251,7 +304,7 @@ export function MarketProvider({ children }) {
 
         return result
       }, 'Favorites updated.'),
-    [authHeaders, currentUser, ensureSignedIn, isAdmin, runMutation],
+    [authHeaders, ensureSignedIn, isAdmin, runMutation],
   )
 
   const applyForFinancing = useCallback(
@@ -260,12 +313,13 @@ export function MarketProvider({ children }) {
         ensureSignedIn()
         const result = await requestJson('/api/financing-applications', {
           method: 'POST',
-          body: JSON.stringify({ ...payload, userId: currentUser.id }),
+          headers: authHeaders,
+          body: JSON.stringify(payload),
         })
         await refreshDashboards()
         return result
       }, 'Financing application submitted.'),
-    [currentUser, ensureSignedIn, refreshDashboards, runMutation],
+    [authHeaders, ensureSignedIn, refreshDashboards, runMutation],
   )
 
   const requestPaymentInstructions = useCallback(
@@ -292,10 +346,41 @@ export function MarketProvider({ children }) {
           headers: authHeaders,
           body: JSON.stringify(payload),
         })
-        setLastReceipt(result.receipt)
+        setLastReceipt(result.receipt || null)
         await refreshDashboards()
         return result
-      }, 'Payment recorded and receipt generated.'),
+      }, result => result?.receipt ? 'Payment recorded and receipt generated.' : 'Payment submitted for verification.'),
+    [authHeaders, ensureSignedIn, refreshDashboards, runMutation],
+  )
+
+  const initializePaystackPayment = useCallback(
+    async (payload) =>
+      runMutation(async () => {
+        ensureSignedIn()
+        const result = await requestJson('/api/payments/paystack/initialize', {
+          method: 'POST',
+          headers: authHeaders,
+          body: JSON.stringify(payload),
+        })
+        await refreshDashboards()
+        return result
+      }, 'Paystack checkout initialized.'),
+    [authHeaders, ensureSignedIn, refreshDashboards, runMutation],
+  )
+
+  const verifyPaystackPayment = useCallback(
+    async (payload) =>
+      runMutation(async () => {
+        ensureSignedIn()
+        const result = await requestJson('/api/payments/paystack/verify', {
+          method: 'POST',
+          headers: authHeaders,
+          body: JSON.stringify(payload),
+        })
+        setLastReceipt(result.receipt || null)
+        await refreshDashboards()
+        return result
+      }, 'Paystack payment verified.'),
     [authHeaders, ensureSignedIn, refreshDashboards, runMutation],
   )
 
@@ -305,12 +390,13 @@ export function MarketProvider({ children }) {
         ensureSignedIn()
         const result = await requestJson('/api/delivery-requests', {
           method: 'POST',
-          body: JSON.stringify({ ...payload, userId: currentUser.id }),
+          headers: authHeaders,
+          body: JSON.stringify(payload),
         })
         await refreshDashboards()
         return result
       }, 'Delivery request submitted.'),
-    [currentUser, ensureSignedIn, refreshDashboards, runMutation],
+    [authHeaders, ensureSignedIn, refreshDashboards, runMutation],
   )
 
   const submitServiceRequest = useCallback(
@@ -319,12 +405,13 @@ export function MarketProvider({ children }) {
         ensureSignedIn()
         const result = await requestJson('/api/service-requests', {
           method: 'POST',
-          body: JSON.stringify({ ...payload, userId: currentUser.id }),
+          headers: authHeaders,
+          body: JSON.stringify(payload),
         })
         await refreshDashboards()
         return result
       }, 'Service request submitted.'),
-    [currentUser, ensureSignedIn, refreshDashboards, runMutation],
+    [authHeaders, ensureSignedIn, refreshDashboards, runMutation],
   )
 
   const submitRentalRequest = useCallback(
@@ -400,6 +487,22 @@ export function MarketProvider({ children }) {
         await refreshDashboards()
         return result
       }, 'Payment instructions updated.'),
+    [authHeaders, ensureAdmin, refreshDashboards, runMutation],
+  )
+
+  const updatePaymentStatus = useCallback(
+    async (paymentId, payload) =>
+      runMutation(async () => {
+        ensureAdmin()
+        const requestBody = typeof payload === 'string' ? { status: payload } : payload
+        const result = await requestJson(`/api/admin/payments/${paymentId}`, {
+          method: 'PATCH',
+          headers: authHeaders,
+          body: JSON.stringify(requestBody),
+        })
+        await refreshDashboards()
+        return result
+      }, `Payment ${String(typeof payload === 'string' ? payload : payload?.status || 'updated').toLowerCase()}.`),
     [authHeaders, ensureAdmin, refreshDashboards, runMutation],
   )
 
@@ -504,6 +607,8 @@ export function MarketProvider({ children }) {
     applyForFinancing,
     requestPaymentInstructions,
     createPayment,
+    initializePaystackPayment,
+    verifyPaystackPayment,
     requestDelivery,
     submitServiceRequest,
     submitRentalRequest,
@@ -513,10 +618,11 @@ export function MarketProvider({ children }) {
     deleteUser,
     updateApplicationStatus,
     updatePaymentRequestInstructions,
+    updatePaymentStatus,
     updateServiceRequestStatus,
     updateRentalRequestStatus,
     clearFlash: () => setFlash(''),
-  }), [adminDashboard, addCar, applyForFinancing, cars, createPayment, currentUser, deleteCar, deleteUser, error, favoriteIds, featuredCars, flash, getLocalizedPrice, isAdmin, isAuthenticated, lastReceipt, loadInitialData, loading, login, logout, meta, register, requestDelivery, requestPaymentInstructions, selectedCountry, submitRentalRequest, submitServiceRequest, submitting, toggleFavorite, updateApplicationStatus, updateCar, updatePaymentRequestInstructions, updateRentalRequestStatus, updateServiceRequestStatus, userDashboard])
+  }), [adminDashboard, addCar, applyForFinancing, cars, createPayment, currentUser, deleteCar, deleteUser, error, favoriteIds, featuredCars, flash, getLocalizedPrice, initializePaystackPayment, isAdmin, isAuthenticated, lastReceipt, loadInitialData, loading, login, logout, meta, register, requestDelivery, requestPaymentInstructions, selectedCountry, submitRentalRequest, submitServiceRequest, submitting, toggleFavorite, updateApplicationStatus, updateCar, updatePaymentRequestInstructions, updatePaymentStatus, updateRentalRequestStatus, updateServiceRequestStatus, userDashboard, verifyPaystackPayment])
 
   return <MarketContext.Provider value={value}>{children}</MarketContext.Provider>
 }

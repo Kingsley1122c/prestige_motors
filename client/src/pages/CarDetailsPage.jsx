@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { VehicleImageLightbox } from '../components/VehicleImageLightbox'
 import { SectionTitle } from '../components/SectionTitle'
 import { useMarket } from '../context/MarketContext'
+import { trackLead, trackPurchase } from '../utils/marketing'
 import { getVehicleGalleryItems } from '../utils/media'
 import { formatDate, formatLocal, formatMileage, formatUsd } from '../utils/format'
 
@@ -29,6 +30,8 @@ export function CarDetailsPage() {
     userDashboard,
     requestPaymentInstructions,
     createPayment,
+    initializePaystackPayment,
+    verifyPaystackPayment,
     requestDelivery,
     submitRentalRequest,
     submitting,
@@ -37,6 +40,7 @@ export function CarDetailsPage() {
     isAuthenticated,
   } = useMarket()
   const car = useMemo(() => cars.find((entry) => entry.id === carId), [carId, cars])
+  const [searchParams, setSearchParams] = useSearchParams()
   const [paymentDraft, setPaymentDraft] = useState({
     carId: '',
     method: 'bank-transfer',
@@ -44,34 +48,26 @@ export function CarDetailsPage() {
     amount: 0,
   })
   const [delivery, setDelivery] = useState({ address: '', trigger: 'deposit' })
-  const [rentalDraft, setRentalDraft] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    pickupLocation: '',
+  const [rentalOverrides, setRentalOverrides] = useState({})
+  const [paymentProof, setPaymentProof] = useState(null)
+  const [activeGalleryIndex, setActiveGalleryIndex] = useState(0)
+  const [galleryLightboxOpen, setGalleryLightboxOpen] = useState(false)
+
+  const rentalProfile = userDashboard.profile || currentUser
+  const rentalDefaults = useMemo(() => ({
+    fullName: rentalProfile?.fullName || '',
+    email: rentalProfile?.email || '',
+    phone: rentalProfile?.phone || '',
+    pickupLocation: rentalProfile?.location || '',
     dropoffLocation: '',
     pickupDate: '',
     returnDate: '',
     driverLicenseNumber: '',
     chauffeurRequired: false,
     notes: '',
-  })
-  const [paymentProof, setPaymentProof] = useState(null)
-  const [activeGalleryIndex, setActiveGalleryIndex] = useState(0)
-  const [galleryLightboxOpen, setGalleryLightboxOpen] = useState(false)
-
-  if (!car) {
-    return (
-      <section className="page-shell section-spaced">
-        <div className="surface-card empty-state">
-          <h2>Vehicle not found</h2>
-          <Link className="button button-primary" to="/listings">
-            Return to listings
-          </Link>
-        </div>
-      </section>
-    )
-  }
+  }), [rentalProfile?.email, rentalProfile?.fullName, rentalProfile?.location, rentalProfile?.phone])
+  const rentalDraft = useMemo(() => ({ ...rentalDefaults, ...rentalOverrides }), [rentalDefaults, rentalOverrides])
+  const galleryItems = useMemo(() => (car ? getVehicleGalleryItems(car) : []), [car])
 
   const activePaymentType = paymentDraft.carId === car.id ? paymentDraft.type : 'deposit'
   const activePaymentMethod = paymentDraft.carId === car.id ? paymentDraft.method : 'bank-transfer'
@@ -87,23 +83,14 @@ export function CarDetailsPage() {
   const latestPaymentRequest = paymentRequests[0]
   const latestApprovedAmount = latestPaymentRequest?.approvedAmountUsd || latestPaymentRequest?.requestedAmountUsd || car.minimumDepositUsd
   const needsProofUpload = ['bank-transfer', 'wire-transfer'].includes(latestPaymentRequest?.approvedMethod)
-  const galleryItems = useMemo(() => getVehicleGalleryItems(car), [car])
+  const usesPaystack = latestPaymentRequest?.approvedMethod === 'payment-link' && latestPaymentRequest?.paymentLink === 'paystack'
+  const callbackReference = searchParams.get('reference')
+  const callbackPaymentRequestId = searchParams.get('paymentRequestId')
+  const callbackAction = searchParams.get('payment')
 
-  useEffect(() => {
-    if (!currentUser && !userDashboard.profile) {
-      return
-    }
-
-    const profile = userDashboard.profile || currentUser
-
-    setRentalDraft((current) => ({
-      ...current,
-      fullName: current.fullName || profile?.fullName || '',
-      email: current.email || profile?.email || '',
-      phone: current.phone || profile?.phone || '',
-      pickupLocation: current.pickupLocation || profile?.location || '',
-    }))
-  }, [currentUser, userDashboard.profile])
+  const updateRentalField = (key, value) => {
+    setRentalOverrides((current) => ({ ...current, [key]: value }))
+  }
 
   const openGalleryLightbox = (index) => {
     setActiveGalleryIndex(index)
@@ -129,6 +116,27 @@ export function CarDetailsPage() {
       requestedAmountUsd: activePaymentAmount,
       type: activePaymentType,
     })
+
+    trackLead({
+      contentName: `${car.brand} ${car.model}`,
+      contentCategory: activePaymentType,
+      value: activePaymentAmount,
+    })
+  }
+
+  const launchPaystackCheckout = async () => {
+    if (!latestPaymentRequest || latestPaymentRequest.status !== 'Instructions Sent') {
+      return
+    }
+
+    const result = await initializePaystackPayment({
+      paymentRequestId: latestPaymentRequest.id,
+      carId: car.id,
+    })
+
+    if (result?.authorizationUrl) {
+      window.location.assign(result.authorizationUrl)
+    }
   }
 
   const recordApprovedPayment = async () => {
@@ -157,13 +165,8 @@ export function CarDetailsPage() {
   const submitRental = async (event) => {
     event.preventDefault()
     await submitRentalRequest({ carId: car.id, ...rentalDraft })
-    setRentalDraft((current) => ({
+    setRentalOverrides((current) => ({
       ...current,
-      fullName: current.fullName,
-      email: current.email,
-      phone: current.phone,
-      pickupLocation: current.pickupLocation,
-      dropoffLocation: current.dropoffLocation,
       pickupDate: '',
       returnDate: '',
       driverLicenseNumber: '',
@@ -172,9 +175,60 @@ export function CarDetailsPage() {
     }))
   }
 
+  useEffect(() => {
+    if (!car || !isAuthenticated || callbackAction !== 'verify' || !callbackReference || !callbackPaymentRequestId) {
+      return
+    }
+
+    let cancelled = false
+
+    verifyPaystackPayment({
+      paymentRequestId: callbackPaymentRequestId,
+      reference: callbackReference,
+    }).then((result) => {
+      if (cancelled || !result?.payment) {
+        return
+      }
+
+      trackPurchase({
+        transactionId: result.receipt?.receiptNumber || result.payment.providerReference || callbackReference,
+        contentName: `${car.brand} ${car.model}`,
+        value: result.payment.amountUsd,
+      })
+    }).finally(() => {
+      if (cancelled) {
+        return
+      }
+
+      const nextParams = new URLSearchParams(searchParams)
+      nextParams.delete('payment')
+      nextParams.delete('paymentRequestId')
+      nextParams.delete('reference')
+      setSearchParams(nextParams, { replace: true })
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [callbackAction, callbackPaymentRequestId, callbackReference, car, isAuthenticated, searchParams, setSearchParams, verifyPaystackPayment])
+
+  if (!car) {
+    return (
+      <section className="page-shell section-spaced">
+        <div className="surface-card empty-state">
+          <h2>Vehicle not found</h2>
+          <Link className="button button-primary" to="/listings">
+            Return to listings
+          </Link>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section className="page-shell section-spaced car-details-page">
       <div className="details-hero">
+
         <div>
           <span className="eyebrow">{car.badge}</span>
           <h1 className="details-title">{car.brand} {car.model}</h1>
@@ -247,16 +301,13 @@ export function CarDetailsPage() {
         onSelectIndex={setActiveGalleryIndex}
       />
 
-      <div className="details-grid">
+      <div className="details-layout">
         <div>
           <SectionTitle
             eyebrow="Vehicle details"
-            title="Specifications and verified highlights"
             description="Core details, features, and release conditions are visible before financing or payment."
           />
-          <div className="surface-card detail-list-card">
             <div className="spec-grid">
-              <span><strong>Fuel:</strong> {car.fuelType}</span>
               <span><strong>Drive:</strong> {car.drivetrain}</span>
               <span><strong>Exterior:</strong> {car.exteriorColor}</span>
               <span><strong>Interior:</strong> {car.interiorColor}</span>
@@ -271,7 +322,6 @@ export function CarDetailsPage() {
                 <li key={highlight}>{highlight}</li>
               ))}
             </ul>
-          </div>
 
           {isRentable ? (
             <>
@@ -402,25 +452,25 @@ export function CarDetailsPage() {
                 description={isAuthenticated ? 'Submit the core rental brief and the desk will confirm availability, release checks, and next contact steps.' : 'Login or create an account before sending a rental request.'}
               />
               <label htmlFor="rental-full-name">Full name</label>
-              <input id="rental-full-name" value={rentalDraft.fullName} onChange={(event) => setRentalDraft((current) => ({ ...current, fullName: event.target.value }))} />
+              <input id="rental-full-name" value={rentalDraft.fullName} onChange={(event) => updateRentalField('fullName', event.target.value)} />
               <label htmlFor="rental-email">Email</label>
-              <input id="rental-email" type="email" value={rentalDraft.email} onChange={(event) => setRentalDraft((current) => ({ ...current, email: event.target.value }))} />
+              <input id="rental-email" type="email" value={rentalDraft.email} onChange={(event) => updateRentalField('email', event.target.value)} />
               <label htmlFor="rental-phone">Phone</label>
-              <input id="rental-phone" value={rentalDraft.phone} onChange={(event) => setRentalDraft((current) => ({ ...current, phone: event.target.value }))} />
+              <input id="rental-phone" value={rentalDraft.phone} onChange={(event) => updateRentalField('phone', event.target.value)} />
               <label htmlFor="rental-pickup-location">Pickup location</label>
-              <input id="rental-pickup-location" value={rentalDraft.pickupLocation} onChange={(event) => setRentalDraft((current) => ({ ...current, pickupLocation: event.target.value }))} />
+              <input id="rental-pickup-location" value={rentalDraft.pickupLocation} onChange={(event) => updateRentalField('pickupLocation', event.target.value)} />
               <label htmlFor="rental-dropoff-location">Drop-off location</label>
-              <input id="rental-dropoff-location" value={rentalDraft.dropoffLocation} onChange={(event) => setRentalDraft((current) => ({ ...current, dropoffLocation: event.target.value }))} />
+              <input id="rental-dropoff-location" value={rentalDraft.dropoffLocation} onChange={(event) => updateRentalField('dropoffLocation', event.target.value)} />
               <label htmlFor="rental-pickup-date">Pickup date</label>
-              <input id="rental-pickup-date" type="date" value={rentalDraft.pickupDate} onChange={(event) => setRentalDraft((current) => ({ ...current, pickupDate: event.target.value }))} />
+              <input id="rental-pickup-date" type="date" value={rentalDraft.pickupDate} onChange={(event) => updateRentalField('pickupDate', event.target.value)} />
               <label htmlFor="rental-return-date">Return date</label>
-              <input id="rental-return-date" type="date" value={rentalDraft.returnDate} onChange={(event) => setRentalDraft((current) => ({ ...current, returnDate: event.target.value }))} />
+              <input id="rental-return-date" type="date" value={rentalDraft.returnDate} onChange={(event) => updateRentalField('returnDate', event.target.value)} />
               <label htmlFor="rental-license">Driver license or passport number</label>
-              <input id="rental-license" value={rentalDraft.driverLicenseNumber} onChange={(event) => setRentalDraft((current) => ({ ...current, driverLicenseNumber: event.target.value }))} />
+              <input id="rental-license" value={rentalDraft.driverLicenseNumber} onChange={(event) => updateRentalField('driverLicenseNumber', event.target.value)} />
               <label htmlFor="rental-notes">Notes</label>
-              <textarea id="rental-notes" rows="4" value={rentalDraft.notes} onChange={(event) => setRentalDraft((current) => ({ ...current, notes: event.target.value }))} placeholder="Arrival timing, chauffeur preferences, or any other release details" />
+              <textarea id="rental-notes" rows="4" value={rentalDraft.notes} onChange={(event) => updateRentalField('notes', event.target.value)} placeholder="Arrival timing, chauffeur preferences, or any other release details" />
               <label htmlFor="rental-chauffeur" className="checkbox-row">
-                <input id="rental-chauffeur" checked={rentalDraft.chauffeurRequired} onChange={(event) => setRentalDraft((current) => ({ ...current, chauffeurRequired: event.target.checked }))} type="checkbox" />
+                <input id="rental-chauffeur" checked={rentalDraft.chauffeurRequired} onChange={(event) => updateRentalField('chauffeurRequired', event.target.checked)} type="checkbox" />
                 Request chauffeur support
               </label>
               <button className="button button-secondary button-block" disabled={submitting || ['Pending Review', 'Approved for contact', 'Vehicle reserved'].includes(latestRentalRequest?.status)} type="submit">
@@ -465,11 +515,12 @@ export function CarDetailsPage() {
                 {latestPaymentRequest.accountName ? <p>Account name: {latestPaymentRequest.accountName}</p> : null}
                 {latestPaymentRequest.accountNumber ? <p>Account number: {latestPaymentRequest.accountNumber}</p> : null}
                 {latestPaymentRequest.referenceCode ? <p>Reference code: {latestPaymentRequest.referenceCode}</p> : null}
-                {latestPaymentRequest.paymentLink ? (
+                {latestPaymentRequest.paymentLink && latestPaymentRequest.paymentLink !== 'paystack' ? (
                   <p>
                     Payment link: <a href={latestPaymentRequest.paymentLink} rel="noreferrer" target="_blank">Open secure payment link</a>
                   </p>
                 ) : null}
+                {usesPaystack ? <p>Hosted checkout: Paystack secure payment flow is enabled for this request.</p> : null}
                 {latestPaymentRequest.proofAttachment ? (
                   <p>
                     Proof uploaded: <a href={latestPaymentRequest.proofAttachment.dataUrl} download={latestPaymentRequest.proofAttachment.name}>{latestPaymentRequest.proofAttachment.name}</a>
@@ -489,9 +540,15 @@ export function CarDetailsPage() {
                       </p>
                     </>
                   ) : null}
-                  <button className="button button-primary button-block" disabled={submitting || (needsProofUpload && !paymentProof)} onClick={recordApprovedPayment} type="button">
-                    {needsProofUpload ? 'Upload proof and record payment' : 'Record payment after using these instructions'}
-                  </button>
+                  {usesPaystack ? (
+                    <button className="button button-primary button-block" disabled={submitting} onClick={launchPaystackCheckout} type="button">
+                      Pay with Paystack
+                    </button>
+                  ) : (
+                    <button className="button button-primary button-block" disabled={submitting || (needsProofUpload && !paymentProof)} onClick={recordApprovedPayment} type="button">
+                      {needsProofUpload ? 'Upload proof and submit for verification' : 'Record payment after using these instructions'}
+                    </button>
+                  )}
                 </>
               ) : null}
             </div>

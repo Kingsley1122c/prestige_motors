@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { SectionTitle } from '../components/SectionTitle'
 import { useMarket } from '../context/MarketContext'
@@ -51,18 +51,11 @@ export function ServicesPage() {
   const { currentUser, submitting, submitServiceRequest, userDashboard, isAuthenticated } = useMarket()
   const [searchParams, setSearchParams] = useSearchParams()
   const activeType = serviceModes[searchParams.get('type')] ? searchParams.get('type') : 'concierge'
-  const [draft, setDraft] = useState(() => createDraft(currentUser, activeType))
-
-  useEffect(() => {
-    setDraft((current) => ({
-      ...createDraft(currentUser, activeType),
-      title: current.type === activeType ? current.title : '',
-      assetDetails: current.type === activeType ? current.assetDetails : '',
-      desiredOutcome: current.type === activeType ? current.desiredOutcome : '',
-      budgetUsd: current.type === activeType ? current.budgetUsd : '',
-      notes: current.type === activeType ? current.notes : '',
-    }))
-  }, [activeType, currentUser])
+  const [draftByType, setDraftByType] = useState({})
+  const draft = useMemo(
+    () => ({ ...createDraft(currentUser, activeType), ...(draftByType[activeType] || {}), type: activeType }),
+    [activeType, currentUser, draftByType],
+  )
 
   const activeMode = serviceModes[activeType]
   const recentBriefs = useMemo(() => userDashboard.serviceRequests.slice(0, 4), [userDashboard.serviceRequests])
@@ -74,7 +67,13 @@ export function ServicesPage() {
   }
 
   const updateField = (key, value) => {
-    setDraft((current) => ({ ...current, [key]: value }))
+    setDraftByType((current) => ({
+      ...current,
+      [activeType]: {
+        ...(current[activeType] || {}),
+        [key]: value,
+      },
+    }))
   }
 
   const submitBrief = async (event) => {
@@ -83,7 +82,7 @@ export function ServicesPage() {
       ...draft,
       budgetUsd: draft.budgetUsd ? Number(draft.budgetUsd) : undefined,
     })
-    setDraft(createDraft(currentUser, activeType))
+    setDraftByType((current) => ({ ...current, [activeType]: {} }))
   }
 
   return (

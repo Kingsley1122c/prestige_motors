@@ -1,5 +1,6 @@
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useMemo, useState } from 'react'
+import { BrandLogo } from '../components/BrandLogo'
 import { SectionTitle } from '../components/SectionTitle'
 import { useMarket } from '../context/MarketContext'
 
@@ -31,6 +32,11 @@ export function RegisterPage() {
     <section className="page-shell section-spaced auth-page">
       <div className="auth-layout">
         <div>
+          <div className="surface-card auth-brand-card">
+            <BrandLogo showLocation={false} variant="light" />
+            <p className="muted-label">Buyer onboarding</p>
+            <p>Open your client profile to save inventory, request payment instructions, track receipts, and manage financing activity in one place.</p>
+          </div>
           <SectionTitle
             eyebrow="Create account"
             title="Register with valid buyer credentials"

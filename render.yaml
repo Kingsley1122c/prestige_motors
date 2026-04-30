@@ -5,13 +5,22 @@ services:
     rootDir: server
     buildCommand: npm install
     startCommand: npm start
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION
         value: 22.16.0
       - key: DATABASE_FILE_PATH
         value: /var/data/database.sqlite
-      - key: FRONTEND_ORIGIN
+      - key: AUTH_TOKEN_SECRET
         sync: false
+      - key: FRONTEND_ORIGIN
+        value: https://prestige-motors-web.onrender.com
+      - key: PAYSTACK_SECRET_KEY
+        sync: false
+      - key: PAYSTACK_PUBLIC_KEY
+        sync: false
+      - key: PAYSTACK_CURRENCY
+        value: USD
     disk:
       name: prestige-motors-data
       mountPath: /var/data
@@ -28,6 +37,14 @@ services:
       - key: NODE_VERSION
         value: 22.16.0
       - key: VITE_API_BASE_URL
+        sync: false
+      - key: VITE_META_PIXEL_ID
+        sync: false
+      - key: VITE_TIKTOK_PIXEL_ID
+        sync: false
+      - key: VITE_GOOGLE_TAG_ID
+        sync: false
+      - key: VITE_GOOGLE_ADS_ID
         sync: false
     routes:
       - type: rewrite

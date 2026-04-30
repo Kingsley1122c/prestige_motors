@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { SectionTitle } from '../components/SectionTitle'
 import { useMarket } from '../context/MarketContext'
 import { getVehicleHeroImage, sortVehiclesForMerchandising } from '../utils/media'
+import { formatUsd } from '../utils/format'
 
 const processSteps = [
   'Browse verified listings with full pricing, deposit, and monthly plan visibility.',
@@ -90,22 +91,19 @@ export function HomePage() {
   }, [adSignals.matchedBodyStyle, adSignals.matchedBrand, cars, featuredCars])
 
   const landingSliderCars = useMemo(() => landingInventory.slice(0, 8), [landingInventory])
+  const activeLandingCarId = useMemo(
+    () => landingSliderCars.find((car) => car.id === selectedLandingCarId)?.id || landingSliderCars[0]?.id || '',
+    [landingSliderCars, selectedLandingCarId],
+  )
 
   const selectedLandingCar = useMemo(
-    () => landingSliderCars.find((car) => car.id === selectedLandingCarId) || landingSliderCars[0] || null,
-    [landingSliderCars, selectedLandingCarId],
+    () => landingSliderCars.find((car) => car.id === activeLandingCarId) || null,
+    [activeLandingCarId, landingSliderCars],
   )
 
   useEffect(() => {
     if (!landingSliderCars.length) {
-      setSelectedLandingCarId('')
-      setIsLandingCarVisible(true)
       return undefined
-    }
-
-    if (!landingSliderCars.some((car) => car.id === selectedLandingCarId)) {
-      setSelectedLandingCarId(landingSliderCars[0].id)
-      setIsLandingCarVisible(true)
     }
 
     let switchTimer
@@ -113,7 +111,8 @@ export function HomePage() {
       setIsLandingCarVisible(false)
       switchTimer = window.setTimeout(() => {
         setSelectedLandingCarId((currentId) => {
-          const currentIndex = landingSliderCars.findIndex((car) => car.id === currentId)
+          const resolvedCurrentId = landingSliderCars.find((car) => car.id === currentId)?.id || landingSliderCars[0].id
+          const currentIndex = landingSliderCars.findIndex((car) => car.id === resolvedCurrentId)
           const nextIndex = currentIndex >= 0 ? (currentIndex + 1) % landingSliderCars.length : 0
           return landingSliderCars[nextIndex].id
         })
@@ -127,7 +126,7 @@ export function HomePage() {
         window.clearTimeout(switchTimer)
       }
     }
-  }, [landingSliderCars, landingTransitionDurationMs, selectedLandingCarId])
+  }, [landingSliderCars, landingTransitionDurationMs])
 
   const landingInventoryHref = useMemo(() => {
     const params = new URLSearchParams()
@@ -189,6 +188,55 @@ export function HomePage() {
       { value: `$${Math.round(topPrice / 1000)}k`, label: 'Top exotic ticket' },
     ]
   }, [cars, meta.locations.length])
+
+  const lexusSpotlightCars = useMemo(
+    () => sortVehiclesForMerchandising(cars.filter((car) => car.brand === 'Lexus')).slice(0, 3),
+    [cars],
+  )
+
+  const supercarSpotlightCars = useMemo(
+    () => sortVehiclesForMerchandising(
+      cars.filter((car) => ['Ferrari', 'Lamborghini', 'McLaren', 'Porsche'].includes(car.brand) && ['Coupe', 'Performance SUV', 'Sportback'].includes(car.bodyStyle)),
+    ).slice(0, 3),
+    [cars],
+  )
+
+  const suvSpotlightCars = useMemo(
+    () => sortVehiclesForMerchandising(cars.filter((car) => ['SUV', 'Performance SUV'].includes(car.bodyStyle))).slice(0, 3),
+    [cars],
+  )
+
+  const sedanSpotlightCars = useMemo(
+    () => sortVehiclesForMerchandising(cars.filter((car) => car.bodyStyle === 'Sedan')).slice(0, 3),
+    [cars],
+  )
+
+  const categorySpotlights = useMemo(() => ([
+    {
+      key: 'suv',
+      eyebrow: 'SUV row',
+      title: 'Luxury and performance SUVs',
+      href: '/listings?bodyStyle=SUV',
+      cta: 'View SUVs',
+      cars: suvSpotlightCars,
+    },
+    {
+      key: 'sedan',
+      eyebrow: 'Sedan row',
+      title: 'Executive sedans and daily flagships',
+      href: '/listings?bodyStyle=Sedan',
+      cta: 'View sedans',
+      cars: sedanSpotlightCars,
+    },
+    {
+      key: 'supercar',
+      eyebrow: 'Supercar row',
+      title: 'Coupes and halo exotics',
+      href: '/listings?minPrice=150000',
+      cta: 'View supercars',
+      cars: supercarSpotlightCars,
+    },
+  ]), [sedanSpotlightCars, supercarSpotlightCars, suvSpotlightCars])
 
   const submitSearch = (event) => {
     event.preventDefault()
@@ -351,6 +399,134 @@ export function HomePage() {
             <span>Showings are arranged with ID verification, finance desk prep, and route-based delivery planning.</span>
           </div>
         </form>
+      </section>
+
+      <section className="page-shell section-spaced signature-section">
+        <SectionTitle
+          eyebrow="Category spotlights"
+          title="Separate rows for SUVs, sedans, and supercars"
+          description="Jump into the main inventory groups from the homepage before narrowing down by brand or budget."
+        />
+        <div className="info-stack">
+          {categorySpotlights.map((group) => (
+            <div className="category-spotlight-block" key={group.key}>
+              <div className="landing-inventory-header category-spotlight-header">
+                <div className="landing-inventory-copy">
+                  <span className="eyebrow">{group.eyebrow}</span>
+                  <h2>{group.title}</h2>
+                </div>
+                <Link className="button button-secondary" to={group.href}>
+                  {group.cta}
+                </Link>
+              </div>
+              <div className="listing-editorial-grid">
+                {group.cars.map((car) => (
+                  <article className="surface-card listing-editorial-card" key={car.id}>
+                    <img alt={`${car.brand} ${car.model}`} src={getVehicleHeroImage(car)} />
+                    <div className="listing-editorial-copy">
+                      <p className="muted-label">{car.location} {group.key} lane</p>
+                      <h3>{car.brand} {car.model}</h3>
+                      <p>{car.description}</p>
+                      <div className="finance-chip-row">
+                        <span>{formatUsd(car.priceUsd)}</span>
+                        <span>Deposit {formatUsd(car.minimumDepositUsd)}</span>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="page-shell section-spaced signature-section">
+        <SectionTitle
+          eyebrow="Lexus lane"
+          title="Fresh RX, ES, TX, GX, LS, and LC inventory now live"
+          description="Use the shortcut filters or go straight into the newest Lexus stock with updated pricing and model-specific verified photography."
+        />
+        <div className="service-lane-grid">
+          <article className="surface-card service-lane-card">
+            <p className="muted-label">Quick filter</p>
+            <h3>Lexus inventory</h3>
+            <p>Browse every Lexus listing currently live, from RX and ES daily drivers to LC and LS halo cars.</p>
+            <Link className="button button-primary" to="/listings?brand=Lexus">
+              View all Lexus cars
+            </Link>
+          </article>
+          <article className="surface-card service-lane-card">
+            <p className="muted-label">Quick filter</p>
+            <h3>Lexus SUVs</h3>
+            <p>Jump directly into RX, GX, LX, and TX models if the search starts with Lexus utility and family comfort.</p>
+            <Link className="button button-secondary" to="/listings?brand=Lexus&bodyStyle=SUV">
+              View Lexus SUVs
+            </Link>
+          </article>
+          <article className="surface-card service-lane-card">
+            <p className="muted-label">Quick filter</p>
+            <h3>Lexus sedans</h3>
+            <p>Open the ES, IS, and LS sedan lane for buyers focused on executive comfort, traction, and quieter long-distance use.</p>
+            <Link className="button button-secondary" to="/listings?brand=Lexus&bodyStyle=Sedan">
+              View Lexus sedans
+            </Link>
+          </article>
+        </div>
+        <div className="listing-editorial-grid">
+          {lexusSpotlightCars.map((car) => (
+            <article className="surface-card listing-editorial-card" key={car.id}>
+              <img alt={`${car.brand} ${car.model}`} src={getVehicleHeroImage(car)} />
+              <div className="listing-editorial-copy">
+                <p className="muted-label">{car.location} Lexus stock</p>
+                <h3>{car.brand} {car.model}</h3>
+                <p>{car.description}</p>
+                <div className="finance-chip-row">
+                  <span>{formatUsd(car.priceUsd)}</span>
+                  <span>Deposit {formatUsd(car.minimumDepositUsd)}</span>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="page-shell section-spaced split-section">
+        <div>
+          <SectionTitle
+            eyebrow="Supercar desk"
+            title="More halo and track-led exotics are on the floor"
+            description="The supercar lane now includes more Ferrari, Lamborghini, McLaren, and Porsche halo inventory with higher-visibility merchandising."
+          />
+          <div className="listing-editorial-grid">
+            {supercarSpotlightCars.map((car) => (
+              <article className="surface-card listing-editorial-card" key={car.id}>
+                <img alt={`${car.brand} ${car.model}`} src={getVehicleHeroImage(car)} />
+                <div className="listing-editorial-copy">
+                  <p className="muted-label">{car.location} exotic lane</p>
+                  <h3>{car.brand} {car.model}</h3>
+                  <p>{car.description}</p>
+                  <div className="finance-chip-row">
+                    <span>{formatUsd(car.priceUsd)}</span>
+                    <span>Deposit {formatUsd(car.minimumDepositUsd)}</span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+        <div className="surface-card policy-card">
+          <p className="muted-label">Exotic filters</p>
+          <h3>Jump straight into the fast end of the showroom</h3>
+          <ul className="plain-list">
+            <li><Link to="/listings?brand=Ferrari">Ferrari inventory</Link></li>
+            <li><Link to="/listings?brand=Lamborghini">Lamborghini inventory</Link></li>
+            <li><Link to="/listings?brand=McLaren">McLaren inventory</Link></li>
+            <li><Link to="/listings?brand=Porsche&bodyStyle=Coupe">Porsche coupe inventory</Link></li>
+          </ul>
+          <Link className="button button-primary" to="/listings?minPrice=200000">
+            View supercar-priced stock
+          </Link>
+        </div>
       </section>
 
       <section className="page-shell section-spaced signature-section">

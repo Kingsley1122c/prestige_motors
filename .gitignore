@@ -12,6 +12,7 @@ server/.env
 server/data/database.sqlite
 server/data/database.sqlite-shm
 server/data/database.sqlite-wal
+server/tmp-render-db/
 
 .DS_Store
 Thumbs.db

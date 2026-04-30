@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="500" fill="none" viewBox="0 0 1500 500">
+  <rect width="1500" height="500" fill="#090909"/>
+  <path d="M0 500V320c170-92.7 364.3-139 583-139 239 0 454 58.3 645 175v144H0Z" fill="url(#glow)" opacity=".18"/>
+  <image href="/prestige-motors-logo.svg" x="120" y="120" width="420" height="112" preserveAspectRatio="xMinYMin meet"/>
+  <text fill="#f1ece0" font-family="Georgia, 'Times New Roman', serif" font-size="58" letter-spacing="3" x="120" y="310">Luxury Inventory. Verified Buying.</text>
+  <text fill="#9d937a" font-family="Georgia, 'Times New Roman', serif" font-size="24" letter-spacing="2.4" x="122" y="360">SUVs • Lexus • Supercars • Financing • Rentals</text>
+  <text fill="#d4af37" font-family="Georgia, 'Times New Roman', serif" font-size="22" letter-spacing="5.8" x="123" y="404">PRESTIGE MOTORS MIAMI</text>
+  <defs>
+    <linearGradient id="glow" x1="750" x2="750" y1="181" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d4af37"/>
+      <stop offset="1" stop-color="#d4af37" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>

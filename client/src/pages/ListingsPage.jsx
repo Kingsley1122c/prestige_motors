@@ -203,8 +203,7 @@ export function ListingsPage() {
         />
         <div className="listing-results">
           <div className="listing-toolbar surface-card">
-            <strong>{filteredCars.length} vehicles available</strong>
-            <span>Showing transparent pricing in USD and local currency across US-led and Asia import stock.</span>
+            <strong>Available cars</strong>
           </div>
           <div className="card-grid">
             {filteredCars.map((car) => (

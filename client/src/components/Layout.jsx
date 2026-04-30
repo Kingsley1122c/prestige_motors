@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, NavLink, Outlet } from 'react-router-dom'
+import { BrandLogo } from './BrandLogo'
 import { useMarket } from '../context/MarketContext'
 
 export function Layout() {
@@ -20,12 +21,7 @@ export function Layout() {
   return (
     <div className="app-shell">
       <header className="site-header">
-        <Link className="brand-mark" to="/">
-          <span className="brand-icon">PM</span>
-          <span>
-            Prestige <strong>Motors</strong>
-          </span>
-        </Link>
+        <BrandLogo showLocation={false} variant="header" />
         <button className="menu-toggle" type="button" onClick={() => setMenuOpen((value) => !value)}>
           Menu
         </button>
@@ -97,7 +93,8 @@ export function Layout() {
       </main>
 
       <footer className="site-footer">
-        <div>
+        <div className="site-footer-brand">
+          <BrandLogo showLocation={false} variant="footer" />
           <p className="muted-label">Flagship showroom</p>
           <strong>{meta.company?.name}</strong>
           <p>{meta.company?.address}</p>

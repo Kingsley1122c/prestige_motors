@@ -340,6 +340,9 @@ const attachVehicleDisplayMedia = (vehicle) => {
   }
 }
 
+const buildCommonsFilePath = (fileName) =>
+  `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(fileName)}`
+
 const VERIFIED_MEDIA_LIBRARY = {
   'lexus-lx-600-2023': {
     heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/2018_Lexus_LX_570_%28facelift%29%2C_front_3.24.23.jpg/1280px-2018_Lexus_LX_570_%28facelift%29%2C_front_3.24.23.jpg',
@@ -357,6 +360,16 @@ const VERIFIED_MEDIA_LIBRARY = {
       'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Ferrari_Purosangue_DSC_7008.jpg/1280px-Ferrari_Purosangue_DSC_7008.jpg',
       'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/2023_Ferrari_Purosangue_1.jpg/1280px-2023_Ferrari_Purosangue_1.jpg',
       'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/2023_Ferrari_Purosangue_2.jpg/1280px-2023_Ferrari_Purosangue_2.jpg',
+    ],
+    mediaVerified: true,
+  },
+  'ferrari-296-gtb-2025': {
+    heroImage: buildCommonsFilePath('2024 Ferrari 296 GTB.jpg'),
+    gallery: [
+      buildCommonsFilePath('2024 Ferrari 296 GTB.jpg'),
+      buildCommonsFilePath('Ferrari 296 GTB (7LA-171K) front.jpg'),
+      buildCommonsFilePath('Ferrari 296 GTB (7LA-171K) right.jpg'),
+      buildCommonsFilePath('Ferrari 296 GTB (7LA-171K) rear.jpg'),
     ],
     mediaVerified: true,
   },
@@ -423,9 +436,79 @@ const VERIFIED_MEDIA_LIBRARY = {
     ],
     mediaVerified: true,
   },
+  'lamborghini-revuelto-2025': {
+    heroImage: buildCommonsFilePath('2023 Lamborghini Revuelto 1.jpg'),
+    gallery: [
+      buildCommonsFilePath('2023 Lamborghini Revuelto 1.jpg'),
+      buildCommonsFilePath('2023 Lamborghini Revuelto 2.jpg'),
+      buildCommonsFilePath('2023 Lamborghini Revuelto Rear.jpg'),
+      buildCommonsFilePath('Lamborghini Revuelto intérieur 01.jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'maserati-mc20-2024': {
+    heroImage: buildCommonsFilePath('Maserati MC20 (7BA-MC30) front.jpg'),
+    gallery: [
+      buildCommonsFilePath('Maserati MC20 (7BA-MC30) front.jpg'),
+      buildCommonsFilePath('Maserati MC20 (7BA-MC30) rear.jpg'),
+      buildCommonsFilePath('2023 Maserati MC20 in Digital Mint, front right.jpg'),
+      buildCommonsFilePath('2022 Maserati MC20 in Grigio Misterio, rear right.jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'mclaren-artura-2025': {
+    heroImage: buildCommonsFilePath('2023 McLaren Artura in Supernova Silver, front left.jpg'),
+    gallery: [
+      buildCommonsFilePath('2023 McLaren Artura in Supernova Silver, front left.jpg'),
+      buildCommonsFilePath('The frontview of McLaren ARTURA.jpg'),
+      buildCommonsFilePath('The rearview of McLaren ARTURA.jpg'),
+      buildCommonsFilePath('McLaren Artura McLaren Orange (1).jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'mclaren-720s-spider-2024': {
+    heroImage: buildCommonsFilePath('2020 McLaren 720S front.jpg'),
+    gallery: [
+      buildCommonsFilePath('2020 McLaren 720S front.jpg'),
+      buildCommonsFilePath('2020 McLaren 720S rear.jpg'),
+      buildCommonsFilePath('McLaren 720S Performance Spider (2022) (52451897301).jpg'),
+      buildCommonsFilePath('McLaren 720S Spider (2022) (53331176462).jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'porsche-911-gt3-rs-2025': {
+    heroImage: buildCommonsFilePath('Porsche 911 GT3 RS 992.jpg'),
+    gallery: [
+      buildCommonsFilePath('Porsche 911 GT3 RS 992.jpg'),
+      buildCommonsFilePath('Porsche 911 GT3 RS 992 1.jpg'),
+      buildCommonsFilePath('Porsche 911 GT3 RS 992 3.jpg'),
+      buildCommonsFilePath('Porsche 911 GT3 RS 992 5.jpg'),
+    ],
+    mediaVerified: true,
+  },
   'porsche-911-turbo-s-2024': {
     heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/2025_Porsche_992_Carrera_convertible_DSC_7026.jpg/1280px-2025_Porsche_992_Carrera_convertible_DSC_7026.jpg',
     gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/2025_Porsche_992_Carrera_convertible_DSC_7026.jpg/1280px-2025_Porsche_992_Carrera_convertible_DSC_7026.jpg'],
+    mediaVerified: true,
+  },
+  'mercedes-amg-gt63-se-2025': {
+    heroImage: buildCommonsFilePath('Mercedes-AMG GT 63 S E Performance Coupé (C192) front.jpg'),
+    gallery: [
+      buildCommonsFilePath('Mercedes-AMG GT 63 S E Performance Coupé (C192) front.jpg'),
+      buildCommonsFilePath('Mercedes-AMG GT 63 S E Performance Coupé (C192) rear.jpg'),
+      buildCommonsFilePath('Mercedes-AMG GT 63 S E Performance Coupé (C192) right.jpg'),
+      buildCommonsFilePath('Mercedes-AMG C192 GT 63 S E Performance IMG 9251.jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'chevrolet-corvette-z06-2025': {
+    heroImage: buildCommonsFilePath('Chevrolet Corvette Z06 Coupé (C8, 2025) (54873883018).jpg'),
+    gallery: [
+      buildCommonsFilePath('Chevrolet Corvette Z06 Coupé (C8, 2025) (54873883018).jpg'),
+      buildCommonsFilePath('Chevrolet Corvette Z06 Coupé (C8, 2024) (54090514722).jpg'),
+      buildCommonsFilePath('Chevrolet Corvette Z06 (C8) Washington DC Metro Area, USA (1).jpg'),
+      buildCommonsFilePath('Chevrolet Corvette Z06 (C8) Washington DC Metro Area, USA (4).jpg'),
+    ],
     mediaVerified: true,
   },
   'lucid-air-sapphire-2024': {
@@ -456,6 +539,125 @@ const VERIFIED_MEDIA_LIBRARY = {
   'lexus-lm-500h-2024': {
     heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Lexus_LM_350h_AWD_AAWH15_Sonic_Quartz_with_cargo_box_%2B_roof_rack_01_%28cropped%29.jpg/1280px-Lexus_LM_350h_AWD_AAWH15_Sonic_Quartz_with_cargo_box_%2B_roof_rack_01_%28cropped%29.jpg',
     gallery: ['https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Lexus_LM_350h_AWD_AAWH15_Sonic_Quartz_with_cargo_box_%2B_roof_rack_01_%28cropped%29.jpg/1280px-Lexus_LM_350h_AWD_AAWH15_Sonic_Quartz_with_cargo_box_%2B_roof_rack_01_%28cropped%29.jpg'],
+    mediaVerified: true,
+  },
+  'lexus-rx-350-f-sport-2024': {
+    heroImage: buildCommonsFilePath('Lexus RX 350"F SPORT" (5BA-TALA15-AWZGT(F)) front.jpg'),
+    gallery: [
+      buildCommonsFilePath('Lexus RX 350"F SPORT" (5BA-TALA15-AWZGT(F)) front.jpg'),
+      buildCommonsFilePath('Lexus RX 350"F SPORT" (5BA-TALA15-AWZGT(F)) rear.jpg'),
+      buildCommonsFilePath('LEXUS RX F-SPORT (AL10, 2022) China.jpg'),
+      buildCommonsFilePath('LEXUS RX F-SPORT (AL10, 2022) China (2).jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'lexus-rx-500h-f-sport-2024': {
+    heroImage: buildCommonsFilePath('Lexus RX 500h F Sport.jpg'),
+    gallery: [
+      buildCommonsFilePath('Lexus RX 500h F Sport.jpg'),
+      buildCommonsFilePath('Lexus RX 500h F Sport Lights.jpg'),
+      buildCommonsFilePath('LEXUS RX F-SPORT (AL10, 2022) China.jpg'),
+      buildCommonsFilePath('LEXUS RX F-SPORT (AL10, 2022) China (2).jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'lexus-rx-350h-luxury-2025': {
+    heroImage: buildCommonsFilePath('2023 Denver Auto Show Lexus RX front quarter.jpg'),
+    gallery: [
+      buildCommonsFilePath('2023 Denver Auto Show Lexus RX front quarter.jpg'),
+      buildCommonsFilePath('Lexus RX (AL10, 2022) Auto Zuerich 2023 1X7A1483.jpg'),
+      buildCommonsFilePath('Lexus RX (AL10, 2022) Auto Zuerich 2023 1X7A1484.jpg'),
+      buildCommonsFilePath('Lexus RX350 (ALA10) Washington DC Metro Area, USA (7).jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'lexus-gx-550-overtrail-2025': {
+    heroImage: buildCommonsFilePath('2024 Lexus GX 550 Overtrail (United States) front view 01.jpg'),
+    gallery: [
+      buildCommonsFilePath('2024 Lexus GX 550 Overtrail (United States) front view 01.jpg'),
+      buildCommonsFilePath('2024 Lexus GX 550 Overtrail (United States) front view 02.jpg'),
+      buildCommonsFilePath('2024 Lexus GX 550 Overtrail (United States) rear view.jpg'),
+      buildCommonsFilePath('Lexus GX550 Overtrail Plus.jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'lexus-tx-500h-f-sport-2025': {
+    heroImage: buildCommonsFilePath('2024 Lexus TX 500h F Sport (United States) front view.png'),
+    gallery: [
+      buildCommonsFilePath('2024 Lexus TX 500h F Sport (United States) front view.png'),
+      buildCommonsFilePath('25 Lexus TX 500h F Sport Performance Premium.jpg'),
+      buildCommonsFilePath('Lexus TX 500h (2023) (53492076926).jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'lexus-es-350-ultra-luxury-2024': {
+    heroImage: buildCommonsFilePath('2022 Lexus ES 350 Premier GSZ10 in Sonic Titanium, front right, 06-15-2024.jpg'),
+    gallery: [
+      buildCommonsFilePath('2022 Lexus ES 350 Premier GSZ10 in Sonic Titanium, front right, 06-15-2024.jpg'),
+      buildCommonsFilePath('2022 Lexus ES 350 Premier GSZ10 in Sonic Titanium, rear right, 06-15-2024.jpg'),
+      buildCommonsFilePath('19 Lexus ES 350 Ultra Luxury.jpg'),
+      buildCommonsFilePath('Lexus ES 350 (GSZ10) IMG 4332.jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'lexus-es-300h-luxury-2025': {
+    heroImage: buildCommonsFilePath('2024 Lexus ES 300h Executive in Sonic Chrome, front left.jpg'),
+    gallery: [
+      buildCommonsFilePath('2024 Lexus ES 300h Executive in Sonic Chrome, front left.jpg'),
+      buildCommonsFilePath('2024 Lexus ES 300h Executive in Sonic Chrome, rear right.jpg'),
+      buildCommonsFilePath('2025 Lexus ES 300h Sports luxury front.jpg'),
+      buildCommonsFilePath('2025 Lexus ES 300h Sports luxury rear.jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'lexus-es-250-awd-2024': {
+    heroImage: buildCommonsFilePath('2022 Lexus ES 250 front view.jpg'),
+    gallery: [
+      buildCommonsFilePath('2022 Lexus ES 250 front view.jpg'),
+      buildCommonsFilePath('2020 Lexus ES250 rear view in Brunei.jpg'),
+      buildCommonsFilePath('LEXUS ES 250(ES 260) (XZ10) China (1).jpg'),
+      buildCommonsFilePath('LEXUS ES 250(ES 260) (XZ10) China (3).jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'lexus-is-500-f-sport-2024': {
+    heroImage: buildCommonsFilePath('Lexus IS 500"F SPORT Performance" (5BA-USE30-BEZLH) front.jpg'),
+    gallery: [
+      buildCommonsFilePath('Lexus IS 500"F SPORT Performance" (5BA-USE30-BEZLH) front.jpg'),
+      buildCommonsFilePath('Lexus IS 500"F SPORT Performance" (5BA-USE30-BEZLH) rear.jpg'),
+      buildCommonsFilePath('Lexus IS 500 F Sport (2024) (54092771172).jpg'),
+      buildCommonsFilePath('Lexus IS 500 F Sport (2024) (54093637941).jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'lexus-lc-500-convertible-2024': {
+    heroImage: buildCommonsFilePath('Lexus LC 500 Convertible (5BA-URZ100-AKUBH) front.jpg'),
+    gallery: [
+      buildCommonsFilePath('Lexus LC 500 Convertible (5BA-URZ100-AKUBH) front.jpg'),
+      buildCommonsFilePath('Lexus LC 500 Convertible (5BA-URZ100-AKUBH) rear.jpg'),
+      buildCommonsFilePath('Lexus LC 500 Cabriolet (2024) (53625472202).jpg'),
+      buildCommonsFilePath('Lexus LC 500 Cabriolet (2024) (53626810660).jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'lexus-ls-500-awd-2025': {
+    heroImage: buildCommonsFilePath('Lexus LS 500 AWD VXFA50 FL Black (1).jpg'),
+    gallery: [
+      buildCommonsFilePath('Lexus LS 500 AWD VXFA50 FL Black (1).jpg'),
+      buildCommonsFilePath('Lexus LS 500 AWD VXFA50 FL Black (2).jpg'),
+      buildCommonsFilePath('Lexus LS 500 AWD VXFA50 FL Black (3).jpg'),
+      buildCommonsFilePath('Lexus LS 500 AWD VXFA50 FL Black (4).jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'bmw-m5-touring-2025': {
+    heroImage: buildCommonsFilePath('BMW M5 Touring (G99) Washington DC Metro Area, USA.jpg'),
+    gallery: [
+      buildCommonsFilePath('BMW M5 Touring (G99) Washington DC Metro Area, USA.jpg'),
+      buildCommonsFilePath('BMW M5 Touring (G99) Washington DC Metro Area, USA (1).jpg'),
+      buildCommonsFilePath('BMW M5 G99 Touring Marina Bay Blue Metallic.jpg'),
+      buildCommonsFilePath('2024 BMW M5 Touring 1.jpg'),
+    ],
     mediaVerified: true,
   },
   'lincoln-navigator-black-label-2024': {
@@ -543,26 +745,388 @@ const attachVerifiedMedia = (input) => {
   }
 }
 
+const STOCK_PHOTO_SETS = {
+  lexusSuv: [
+    'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=80',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/BMW_G07_1X7A1696.jpg/1280px-BMW_G07_1X7A1696.jpg',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/2021_Aston_Martin_DBX_in_Midnight_Blue%2C_front_left.jpg/1280px-2021_Aston_Martin_DBX_in_Midnight_Blue%2C_front_left.jpg',
+  ],
+  lexusSedan: [
+    'https://images.unsplash.com/photo-1494905998402-395d579af36f?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1200&q=80',
+  ],
+  lexusCoupe: [
+    'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80',
+  ],
+  premiumSuv: [
+    'https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?auto=format&fit=crop&w=1200&q=80',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/2021_Aston_Martin_DBX_in_Midnight_Blue%2C_front_left.jpg/1280px-2021_Aston_Martin_DBX_in_Midnight_Blue%2C_front_left.jpg',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/2015_Land_Rover_Range_Rover_Sport_HSE_3.0_Front.jpg/1280px-2015_Land_Rover_Range_Rover_Sport_HSE_3.0_Front.jpg',
+  ],
+  performanceSedan: [
+    'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1494905998402-395d579af36f?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80',
+  ],
+  ferrari: [
+    'https://images.unsplash.com/photo-1502161254066-6c74afbf07aa?auto=format&fit=crop&w=1200&q=80',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/2023_Ferrari_Purosangue_1.jpg/1280px-2023_Ferrari_Purosangue_1.jpg',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/2023_Ferrari_Purosangue_2.jpg/1280px-2023_Ferrari_Purosangue_2.jpg',
+  ],
+  lamborghini: [
+    'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/2018_01_31_Lancement_Urus_Lamborghini_Paris_%C2%A9Laurine_Paumard_Photographe.jpg/1280px-2018_01_31_Lancement_Urus_Lamborghini_Paris_%C2%A9Laurine_Paumard_Photographe.jpg',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/2018_01_31_Lancement_Urus_Lamborghini_Paris%282%29_%C2%A9Laurine_Paumard_Photographe.jpg/1280px-2018_01_31_Lancement_Urus_Lamborghini_Paris%282%29_%C2%A9Laurine_Paumard_Photographe.jpg',
+  ],
+  porsche: [
+    'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80',
+  ],
+  exotic: [
+    'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1200&q=80',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/2009-2010_Nissan_GT-R_%28R35%29_coupe_01.jpg/1280px-2009-2010_Nissan_GT-R_%28R35%29_coupe_01.jpg',
+    'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80',
+  ],
+  americanPerformance: [
+    'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1517026575980-3e1e2dedeab4?auto=format&fit=crop&w=1200&q=80',
+  ],
+}
+
+const resolveStockPhotoSet = (query = '') => {
+  const normalizedQuery = String(query).toLowerCase()
+
+  if (normalizedQuery.includes('ferrari')) {
+    return STOCK_PHOTO_SETS.ferrari
+  }
+
+  if (normalizedQuery.includes('lamborghini')) {
+    return STOCK_PHOTO_SETS.lamborghini
+  }
+
+  if (normalizedQuery.includes('porsche')) {
+    return STOCK_PHOTO_SETS.porsche
+  }
+
+  if (normalizedQuery.includes('mclaren') || normalizedQuery.includes('maserati')) {
+    return STOCK_PHOTO_SETS.exotic
+  }
+
+  if (normalizedQuery.includes('corvette')) {
+    return STOCK_PHOTO_SETS.americanPerformance
+  }
+
+  if (normalizedQuery.includes('bmw') || normalizedQuery.includes('amg') || normalizedQuery.includes('mercedes')) {
+    return STOCK_PHOTO_SETS.performanceSedan
+  }
+
+  if (normalizedQuery.includes('lexus lc')) {
+    return STOCK_PHOTO_SETS.lexusCoupe
+  }
+
+  if (normalizedQuery.includes('lexus es') || normalizedQuery.includes('lexus is') || normalizedQuery.includes('lexus ls')) {
+    return STOCK_PHOTO_SETS.lexusSedan
+  }
+
+  if (normalizedQuery.includes('lexus') || normalizedQuery.includes('acura mdx')) {
+    return STOCK_PHOTO_SETS.lexusSuv
+  }
+
+  return STOCK_PHOTO_SETS.premiumSuv
+}
+
+const buildStockPhotoUrl = (query, variant = 1, brand = '') => {
+  const photoSet = buildDistinctCatalogPhotoPool(query, brand)
+
+  return photoSet[(variant - 1) % photoSet.length]
+}
+
+const CURATED_MULTI_IMAGE_GALLERIES = {
+  'lamborghini-revuelto-2025': {
+    heroImage: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1200&q=80',
+    ],
+  },
+  'ferrari-296-gtb-2025': {
+    heroImage: 'https://images.unsplash.com/photo-1502161254066-6c74afbf07aa?auto=format&fit=crop&w=1200&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1502161254066-6c74afbf07aa?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80',
+    ],
+  },
+  'ferrari-purosangue-2024': {
+    heroImage: 'https://images.unsplash.com/photo-1502161254066-6c74afbf07aa?auto=format&fit=crop&w=1200&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1502161254066-6c74afbf07aa?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1200&q=80',
+    ],
+  },
+  'maserati-mc20-2024': {
+    heroImage: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1489824904134-891ab64532f1?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80',
+    ],
+  },
+  'mclaren-artura-2025': {
+    heroImage: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1200&q=80',
+    ],
+  },
+  'mclaren-720s-spider-2024': {
+    heroImage: 'https://images.unsplash.com/photo-1502161254066-6c74afbf07aa?auto=format&fit=crop&w=1200&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1502161254066-6c74afbf07aa?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1200&q=80',
+    ],
+  },
+  'rolls-royce-ghost-2023': {
+    heroImage: 'https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&w=1200&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1200&q=80',
+    ],
+  },
+  'lamborghini-urus-2024': {
+    heroImage: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?auto=format&fit=crop&w=1200&q=80',
+    ],
+  },
+  'porsche-911-gt3-rs-2025': {
+    heroImage: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1489824904134-891ab64532f1?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1502161254066-6c74afbf07aa?auto=format&fit=crop&w=1200&q=80',
+    ],
+  },
+  'mercedes-amg-gt63-se-2025': {
+    heroImage: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1502161254066-6c74afbf07aa?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80',
+    ],
+  },
+  'chevrolet-corvette-z06-2025': {
+    heroImage: 'https://images.unsplash.com/photo-1517026575980-3e1e2dedeab4?auto=format&fit=crop&w=1200&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1517026575980-3e1e2dedeab4?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1200&q=80',
+    ],
+  },
+  'porsche-911-turbo-s-2024': {
+    heroImage: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1489824904134-891ab64532f1?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1502161254066-6c74afbf07aa?auto=format&fit=crop&w=1200&q=80',
+    ],
+  },
+  'bentley-flying-spur-speed-2024': {
+    heroImage: 'https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&w=1200&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1200&q=80',
+    ],
+  },
+}
+
+const usesBlockedCatalogMediaSource = (value) => String(value || '').includes('upload.wikimedia.org')
+
+const buildCatalogMediaQuery = (input) =>
+  String(input?.stockPhotoQuery || `${input?.brand || ''} ${input?.model || ''} ${input?.bodyStyle || ''} ${input?.fuelType || ''}`)
+    .trim()
+
+const galleryUsesBlockedCatalogMediaSource = (gallery = []) =>
+  Array.isArray(gallery) && gallery.some((image) => usesBlockedCatalogMediaSource(image))
+
+const dedupeGalleryImages = (gallery = []) => Array.from(new Set((gallery || []).filter(Boolean)))
+
+const BRAND_IMAGE_KEYWORDS = {
+  Acura: ['acura', 'mdx'],
+  'Aston Martin': ['aston-martin', 'aston_martin', 'dbx'],
+  Audi: ['audi', 'rs7'],
+  Bentley: ['bentley', 'bentayga', 'flying_spur'],
+  BMW: ['bmw', 'x7', 'm5', 'm8'],
+  Cadillac: ['cadillac', 'escalade'],
+  Chevrolet: ['chevrolet', 'corvette', 'silverado'],
+  Ferrari: ['ferrari', 'purosangue', '296'],
+  Ford: ['ford', 'raptor', 'f-150'],
+  GMC: ['gmc', 'hummer', 'yukon'],
+  Honda: ['honda', 'nsx'],
+  Jeep: ['jeep', 'wagoneer'],
+  Lamborghini: ['lamborghini', 'urus', 'revuelto'],
+  'Land Rover': ['land_rover', 'land-rover', 'range_rover', 'range-rover', 'defender'],
+  Lexus: ['lexus', 'rx', 'es', 'gx', 'tx', 'lc', 'ls', 'lx', 'lm'],
+  Lincoln: ['lincoln', 'navigator'],
+  Lucid: ['lucid', 'air'],
+  Maserati: ['maserati', 'mc20'],
+  'Mercedes-Benz': ['mercedes', 'amg', 'maybach', 'g_63', 'gls', 'w223'],
+  McLaren: ['mclaren', 'artura', '720s'],
+  Nissan: ['nissan', 'gt-r', 'gtr'],
+  Porsche: ['porsche', '911', 'cayenne'],
+  Ram: ['ram', 'trx'],
+  'Rolls-Royce': ['rolls-royce', 'rolls_royce', 'ghost'],
+  Rivian: ['rivian', 'r1t'],
+  Tesla: ['tesla', 'model_x'],
+  Toyota: ['toyota', 'land_cruiser', 'alphard', 'tundra', 'century'],
+}
+
+const imageMatchesVehicleBrand = (brand, imageUrl) => {
+  const normalizedUrl = String(imageUrl || '').toLowerCase()
+
+  if (!normalizedUrl || normalizedUrl.includes('images.unsplash.com')) {
+    return true
+  }
+
+  const brandKeywords = BRAND_IMAGE_KEYWORDS[String(brand || '')]
+
+  if (!brandKeywords?.length) {
+    return true
+  }
+
+  return brandKeywords.some((keyword) => normalizedUrl.includes(keyword))
+}
+
+const filterBrandCompatibleImages = (brand, images = []) =>
+  (images || []).filter((image) => imageMatchesVehicleBrand(brand, image))
+
+const buildDistinctCatalogPhotoPool = (query = '', brand = '') =>
+  dedupeGalleryImages(filterBrandCompatibleImages(brand, [
+    ...resolveStockPhotoSet(query),
+    ...STOCK_PHOTO_SETS.premiumSuv,
+    ...STOCK_PHOTO_SETS.performanceSedan,
+    ...STOCK_PHOTO_SETS.exotic,
+    ...STOCK_PHOTO_SETS.americanPerformance,
+  ]))
+
+const buildCatalogFallbackGallery = (query, preferredLength = 4, brand = '') => {
+  const count = Math.max(3, Math.min(Number(preferredLength) || 3, 4))
+  const photoPool = buildDistinctCatalogPhotoPool(query, brand)
+
+  if (!query || !photoPool.length) {
+    return []
+  }
+
+  return photoPool.slice(0, count)
+}
+
+const sanitizeCatalogMedia = (input) => {
+  const curatedGallery = CURATED_MULTI_IMAGE_GALLERIES[input?.id]
+  const preferredGallery = Array.isArray(input?.gallery) ? input.gallery.filter(Boolean) : []
+  const mediaQuery = buildCatalogMediaQuery(input)
+  const fallbackGallery = buildCatalogFallbackGallery(mediaQuery, preferredGallery.length || 4, input?.brand)
+  const fallbackHero = fallbackGallery[0] || buildStockPhotoUrl(mediaQuery, 1, input?.brand)
+  const trustedVerifiedGallery = input?.mediaVerified
+    ? dedupeGalleryImages([input?.heroImage, ...preferredGallery])
+    : []
+  const trustedVerifiedHero = trustedVerifiedGallery[0] || String(input?.heroImage || '')
+
+  if (trustedVerifiedGallery.length) {
+    const curatedBrandGallery = curatedGallery
+      ? dedupeGalleryImages(filterBrandCompatibleImages(input?.brand, curatedGallery.gallery))
+      : []
+
+    return {
+      ...input,
+      mediaVerified: true,
+      heroImage: trustedVerifiedHero,
+      gallery: dedupeGalleryImages([...trustedVerifiedGallery, ...curatedBrandGallery]).slice(0, 4),
+    }
+  }
+
+  if (curatedGallery) {
+    return {
+      ...input,
+      mediaVerified: true,
+      heroImage: curatedGallery.heroImage,
+      gallery: curatedGallery.gallery,
+    }
+  }
+  const hasSafePreferredGallery = preferredGallery.length && !galleryUsesBlockedCatalogMediaSource(preferredGallery)
+  const dedupedPreferredGallery = hasSafePreferredGallery ? dedupeGalleryImages(preferredGallery) : []
+  const nextGallery = hasSafePreferredGallery
+    ? dedupeGalleryImages([...dedupedPreferredGallery, ...fallbackGallery]).slice(0, Math.max(3, Math.min(preferredGallery.length || 3, 4)))
+    : fallbackGallery
+  const nextHero = input?.heroImage && !usesBlockedCatalogMediaSource(input.heroImage)
+    ? input.heroImage
+    : nextGallery[0] || fallbackHero
+
+  return {
+    ...input,
+    mediaVerified: true,
+    heroImage: nextHero,
+    gallery: nextGallery.length ? nextGallery : [nextHero].filter(Boolean),
+  }
+}
+
+const withStockPhotos = (query, input) => ({
+  ...input,
+  stockPhotoQuery: query,
+  heroImage: buildStockPhotoUrl(query, 1, input?.brand),
+  gallery: [
+    buildStockPhotoUrl(query, 1, input?.brand),
+    buildStockPhotoUrl(query, 2, input?.brand),
+    buildStockPhotoUrl(query, 3, input?.brand),
+  ],
+})
+
 const createCarRecord = (input) => {
   const resolvedInput = attachVerifiedMedia(input)
-  const priceUsd = Number(resolvedInput.priceUsd)
-  const minimumDepositUsd = Number(resolvedInput.minimumDepositUsd)
-  const bodyStyle = resolvedInput.bodyStyle
-  const durations = resolvedInput.installmentDurations?.length
-    ? resolvedInput.installmentDurations.map((value) => Number(value))
+  const mediaInput = resolvedInput.catalogManaged === false ? resolvedInput : sanitizeCatalogMedia(resolvedInput)
+  const priceUsd = Number(mediaInput.priceUsd)
+  const minimumDepositUsd = Number(mediaInput.minimumDepositUsd)
+  const bodyStyle = mediaInput.bodyStyle
+  const durations = mediaInput.installmentDurations?.length
+    ? mediaInput.installmentDurations.map((value) => Number(value))
     : [6, 12, 18, 24]
   const defaultCountry = getCountrySettings(DEFAULT_COUNTRY_CODE)
-  const paymentTypes = Array.from(new Set(resolvedInput.paymentTypes?.length ? resolvedInput.paymentTypes : ['full', 'installment']))
+  const paymentTypes = Array.from(new Set(mediaInput.paymentTypes?.length ? mediaInput.paymentTypes : ['full', 'installment']))
 
   return attachVehicleDisplayMedia({
-    id: resolvedInput.id,
-    badge: resolvedInput.badge || 'Featured',
-    brand: resolvedInput.brand,
-    model: resolvedInput.model,
-    year: Number(resolvedInput.year),
-    mileage: Number(resolvedInput.mileage),
-    location: resolvedInput.location,
-    condition: resolvedInput.condition,
+    id: mediaInput.id,
+    badge: mediaInput.badge || 'Featured',
+    brand: mediaInput.brand,
+    model: mediaInput.model,
+    year: Number(mediaInput.year),
+    mileage: Number(mediaInput.mileage),
+    location: mediaInput.location,
+    condition: mediaInput.condition,
     priceUsd,
     priceLocal: Math.round(priceUsd * defaultCountry.exchangeRate),
     currencyCode: defaultCountry.currencyCode,
@@ -570,23 +1134,23 @@ const createCarRecord = (input) => {
     installmentDurations: durations,
     monthlyPlans: buildPlans(priceUsd, minimumDepositUsd, durations),
     paymentTypes,
-    rentable: resolvedInput.rentable ?? true,
-    rentalTerms: normalizeRentalTerms(resolvedInput.rentalTerms, priceUsd, bodyStyle),
+    rentable: mediaInput.rentable ?? true,
+    rentalTerms: normalizeRentalTerms(mediaInput.rentalTerms, priceUsd, bodyStyle),
     bodyStyle,
-    fuelType: resolvedInput.fuelType,
-    transmission: resolvedInput.transmission,
-    drivetrain: resolvedInput.drivetrain,
-    exteriorColor: resolvedInput.exteriorColor,
-    interiorColor: resolvedInput.interiorColor,
-    description: resolvedInput.description,
-    mediaVerified: Boolean(resolvedInput.mediaVerified),
-    heroImage: resolvedInput.heroImage || '',
-    gallery: resolvedInput.gallery || [],
-    features: resolvedInput.features || [],
-    highlights: resolvedInput.highlights || [],
+    fuelType: mediaInput.fuelType,
+    transmission: mediaInput.transmission,
+    drivetrain: mediaInput.drivetrain,
+    exteriorColor: mediaInput.exteriorColor,
+    interiorColor: mediaInput.interiorColor,
+    description: mediaInput.description,
+    mediaVerified: Boolean(mediaInput.mediaVerified),
+    heroImage: mediaInput.heroImage || '',
+    gallery: mediaInput.gallery || [],
+    features: mediaInput.features || [],
+    highlights: mediaInput.highlights || [],
     delivery: {
-      feeUsd: Number(resolvedInput.delivery?.feeUsd || 0),
-      eta: resolvedInput.delivery?.eta || '2-5 business days',
+      feeUsd: Number(mediaInput.delivery?.feeUsd || 0),
+      eta: mediaInput.delivery?.eta || '2-5 business days',
     },
   })
 }
@@ -715,6 +1279,195 @@ const cars = [
     highlights: ['Japan-market luxury import', 'Asia documentation reviewed before release', 'High-comfort chauffeur configuration'],
     delivery: { feeUsd: 700, eta: '7-12 business days after approval' },
   }),
+  createCarRecord(withStockPhotos('lexus rx 350 f sport handling suv', {
+    id: 'lexus-rx-350-f-sport-2024', badge: 'Fresh Arrival', brand: 'Lexus', model: 'RX 350 F SPORT Handling', year: 2024, mileage: 3900,
+    location: 'Miami', condition: 'Certified used', priceUsd: 64800, minimumDepositUsd: 8500, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'SUV', fuelType: 'Petrol', transmission: '8-speed automatic', drivetrain: 'AWD', exteriorColor: 'Ultra White', interiorColor: 'Black NuLuxe',
+    description: 'A sharp RX configured in F SPORT Handling trim for buyers who want Lexus comfort with a firmer chassis, clean design, and straightforward monthly planning.',
+    features: ['Panoramic roof', '14-inch touchscreen', 'Head-up display', 'Adaptive variable suspension'],
+    highlights: ['Miami showroom handover available', 'Clean Carfax available on request', 'Deposit and installment options active'],
+    delivery: { feeUsd: 290, eta: '2-4 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('lexus rx 500h f sport performance suv', {
+    id: 'lexus-rx-500h-f-sport-2024', badge: 'Hybrid Performance', brand: 'Lexus', model: 'RX 500h F SPORT Performance', year: 2024, mileage: 2100,
+    location: 'Los Angeles', condition: 'Brand new', priceUsd: 76200, minimumDepositUsd: 9800, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'SUV', fuelType: 'Hybrid', transmission: '6-speed automatic', drivetrain: 'AWD', exteriorColor: 'Copper Crest', interiorColor: 'Dark Rose Leather',
+    description: 'A range-topping RX hybrid with stronger mid-range response, rich interior trim, and premium crossover practicality for buyers who want a more current Lexus spec.',
+    features: ['DIRECT4 AWD', 'Mark Levinson surround audio', 'Dynamic rear steering', 'Advanced Park assist'],
+    highlights: ['West Coast delivery lane open', 'Hybrid flagship RX allocation', 'Full inspection before release'],
+    delivery: { feeUsd: 340, eta: '3-5 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('lexus rx 350h luxury suv', {
+    id: 'lexus-rx-350h-luxury-2025', badge: 'Luxury Hybrid', brand: 'Lexus', model: 'RX 350h Luxury', year: 2025, mileage: 1200,
+    location: 'Seattle', condition: 'Brand new', priceUsd: 69800, minimumDepositUsd: 9000, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'SUV', fuelType: 'Hybrid', transmission: 'eCVT', drivetrain: 'AWD', exteriorColor: 'Nightfall Mica', interiorColor: 'Macadamia Leather',
+    description: 'This RX 350h Luxury is positioned for buyers who want Lexus efficiency, softer long-distance comfort, and a polished cabin rather than aggressive trim styling.',
+    features: ['Semi-aniline leather', 'Digital rearview mirror', 'Panoramic view monitor', 'Triple-beam LED headlamps'],
+    highlights: ['New-model hybrid inventory', 'Seattle-origin inspection slot available', 'Ideal for executive city use'],
+    delivery: { feeUsd: 360, eta: '3-5 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('lexus es 350 ultra luxury sedan', {
+    id: 'lexus-es-350-ultra-luxury-2024', badge: 'Executive Sedan', brand: 'Lexus', model: 'ES 350 Ultra Luxury', year: 2024, mileage: 4300,
+    location: 'Atlanta', condition: 'Certified used', priceUsd: 52900, minimumDepositUsd: 7200, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Sedan', fuelType: 'Petrol', transmission: '8-speed automatic', drivetrain: 'FWD', exteriorColor: 'Caviar', interiorColor: 'Acorn Leather',
+    description: 'A comfort-first ES with the softer ride quality, quiet cabin, and rear-seat friendliness that make it an easy step into premium executive transport.',
+    features: ['17-speaker Mark Levinson audio', 'Power rear sunshade', 'Heated wood-trim steering wheel', 'Panoramic glass roof'],
+    highlights: ['Atlanta executive stock', 'Well-suited to chauffeur or owner-driver use', 'Low-mile Ultra Luxury trim'],
+    delivery: { feeUsd: 250, eta: '2-4 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('lexus es 300h luxury sedan', {
+    id: 'lexus-es-300h-luxury-2025', badge: 'Fuel Saver', brand: 'Lexus', model: 'ES 300h Luxury', year: 2025, mileage: 1600,
+    location: 'Chicago', condition: 'Brand new', priceUsd: 54800, minimumDepositUsd: 7500, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Sedan', fuelType: 'Hybrid', transmission: 'eCVT', drivetrain: 'FWD', exteriorColor: 'Iridium', interiorColor: 'Palomino Leather',
+    description: 'A new ES 300h configured for buyers who want lower running costs, quiet cruising, and the classic Lexus sedan format without stepping into a large flagship.',
+    features: ['Hybrid efficiency system', '12.3-inch multimedia display', 'Blind spot monitor', 'Lexus Safety System+ 3.0'],
+    highlights: ['Chicago metro inventory', 'Strong commuter and executive value', 'Soft-touch Lexus cabin finish'],
+    delivery: { feeUsd: 260, eta: '2-4 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('lexus es 250 awd sedan', {
+    id: 'lexus-es-250-awd-2024', badge: 'All Weather', brand: 'Lexus', model: 'ES 250 AWD', year: 2024, mileage: 5800,
+    location: 'New York', condition: 'Certified used', priceUsd: 47100, minimumDepositUsd: 6500, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Sedan', fuelType: 'Petrol', transmission: '8-speed automatic', drivetrain: 'AWD', exteriorColor: 'Cloudburst Grey', interiorColor: 'Black Leather',
+    description: 'An ES 250 AWD for buyers who want Lexus sedan refinement with extra year-round traction and a cleaner monthly entry point than the larger SUV inventory.',
+    features: ['AWD traction', 'Wireless Apple CarPlay', 'Blind spot monitor', 'Heated front seats'],
+    highlights: ['New York handover possible', 'Lower-entry Lexus executive sedan', 'Strong winter-market fit'],
+    delivery: { feeUsd: 240, eta: '2-4 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('lexus gx 550 overtrail suv', {
+    id: 'lexus-gx-550-overtrail-2025', badge: 'Trail Luxe', brand: 'Lexus', model: 'GX 550 Overtrail+', year: 2025, mileage: 1800,
+    location: 'Dallas', condition: 'Brand new', priceUsd: 84300, minimumDepositUsd: 11000, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'SUV', fuelType: 'Petrol', transmission: '10-speed automatic', drivetrain: '4WD', exteriorColor: 'Incognito', interiorColor: 'Black Leather',
+    description: 'A new GX 550 Overtrail+ blending Lexus cabin quality with a more squared-off body and proper off-road hardware for buyers who want a tougher premium SUV.',
+    features: ['E-KDSS suspension', '33-inch all-terrain package', 'Crawl control', 'Panoramic monitor'],
+    highlights: ['Dallas off-road luxury stock', 'New GX body style', 'Suitable for adventure-led family use'],
+    delivery: { feeUsd: 330, eta: '3-5 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('acura mdx type s advance suv', {
+    id: 'acura-mdx-type-s-2025', badge: 'Performance Family', brand: 'Acura', model: 'MDX Type S Advance', year: 2025, mileage: 2400,
+    location: 'Scottsdale', condition: 'Brand new', priceUsd: 79200, minimumDepositUsd: 10200, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'SUV', fuelType: 'Petrol', transmission: '10-speed automatic', drivetrain: 'AWD', exteriorColor: 'Liquid Carbon Metallic', interiorColor: 'Red Leather',
+    description: 'A sharper three-row SUV added for buyers cross-shopping Lexus RX and GX inventory but wanting a more aggressive steering and suspension setup.',
+    features: ['ELS Studio 3D audio', 'Air suspension', 'Massaging front seats', '360 surround camera'],
+    highlights: ['Scottsdale premium family stock', 'Strong RX/GX alternative', 'Deposit and finance plans available'],
+    delivery: { feeUsd: 315, eta: '3-5 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('lexus tx 500h f sport premium suv', {
+    id: 'lexus-tx-500h-f-sport-2025', badge: 'Three-Row Hybrid', brand: 'Lexus', model: 'TX 500h F SPORT Premium', year: 2025, mileage: 1400,
+    location: 'Miami', condition: 'Brand new', priceUsd: 74200, minimumDepositUsd: 9600, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'SUV', fuelType: 'Hybrid', transmission: '6-speed automatic', drivetrain: 'AWD', exteriorColor: 'Wind Chill Pearl', interiorColor: 'Black Leather',
+    description: 'A current TX hybrid added for buyers who want Lexus three-row practicality without leaving the premium comfort lane or the brand’s cleaner cabin design language.',
+    features: ['Three-row seating', 'DIRECT4 AWD', 'Mark Levinson audio', 'Panoramic view monitor'],
+    highlights: ['Miami family-luxury stock', 'Current three-row Lexus allocation', 'Strong RX upgrade path'],
+    delivery: { feeUsd: 320, eta: '2-4 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('lexus is 500 f sport performance sedan', {
+    id: 'lexus-is-500-f-sport-2024', badge: 'V8 Sport Sedan', brand: 'Lexus', model: 'IS 500 F SPORT Performance', year: 2024, mileage: 3200,
+    location: 'Los Angeles', condition: 'Certified used', priceUsd: 64600, minimumDepositUsd: 8400, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Sedan', fuelType: 'Petrol', transmission: '8-speed automatic', drivetrain: 'RWD', exteriorColor: 'Infrared', interiorColor: 'Black NuLuxe',
+    description: 'A compact Lexus sports sedan with the naturally aspirated V8 character enthusiasts still want, added for buyers cross-shopping executive sedans and lighter performance cars.',
+    features: ['5.0-liter V8', 'Torsen limited-slip differential', 'Adaptive variable suspension', 'Performance exhaust'],
+    highlights: ['West Coast enthusiast stock', 'Low-mile V8 Lexus sedan', 'Clean sports-sedan price point'],
+    delivery: { feeUsd: 295, eta: '3-5 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('lexus lc 500 convertible coupe', {
+    id: 'lexus-lc-500-convertible-2024', badge: 'Grand Touring', brand: 'Lexus', model: 'LC 500 Convertible', year: 2024, mileage: 2100,
+    location: 'Scottsdale', condition: 'Brand new', priceUsd: 108500, minimumDepositUsd: 14200, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Coupe', fuelType: 'Petrol', transmission: '10-speed automatic', drivetrain: 'RWD', exteriorColor: 'Structural Blue', interiorColor: 'Toast Leather',
+    description: 'An LC 500 Convertible for buyers who want a more emotional Lexus flagship with grand touring pace, premium finish, and a higher-visibility weekend profile.',
+    features: ['Convertible soft top', 'Mark Levinson audio', 'Limited-slip differential', 'Adaptive dampers'],
+    highlights: ['Scottsdale open-top GT stock', 'Lexus halo two-door added', 'Ideal for collector-style weekend ownership'],
+    delivery: { feeUsd: 410, eta: '3-5 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('lexus ls 500 awd sedan', {
+    id: 'lexus-ls-500-awd-2025', badge: 'Flagship Sedan', brand: 'Lexus', model: 'LS 500 AWD', year: 2025, mileage: 1100,
+    location: 'New York', condition: 'Brand new', priceUsd: 93400, minimumDepositUsd: 12600, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Sedan', fuelType: 'Petrol', transmission: '10-speed automatic', drivetrain: 'AWD', exteriorColor: 'Manganese Luster', interiorColor: 'White and Art Wood',
+    description: 'A full-size Lexus flagship sedan aimed at buyers who want a softer luxury alternative to German executive cars without dropping out of the top-tier cabin class.',
+    features: ['Executive rear package', '28-way front seats', 'Kiriko glass trim', 'Air suspension'],
+    highlights: ['New York executive inventory', 'Large-cabin Lexus flagship', 'Suitable for owner-driver or chauffeured use'],
+    delivery: { feeUsd: 340, eta: '2-4 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('ferrari 296 gtb supercar coupe', {
+    id: 'ferrari-296-gtb-2025', badge: 'Hybrid Supercar', brand: 'Ferrari', model: '296 GTB', year: 2025, mileage: 900,
+    location: 'Miami', condition: 'Brand new', priceUsd: 372000, minimumDepositUsd: 61000, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Coupe', fuelType: 'Hybrid', transmission: '8-speed dual clutch', drivetrain: 'RWD', exteriorColor: 'Rosso Corsa', interiorColor: 'Nero Alcantara',
+    description: 'A mid-engine Ferrari hybrid supercar positioned for buyers who want cleaner current-era Maranello performance with transparent release steps and premium finance screening.',
+    features: ['Plug-in hybrid V6', 'Assetto Fiorano package', 'Carbon racing seats', 'Digital telemetry'],
+    highlights: ['Miami exotic lane allocation', 'Current Ferrari hybrid flagship feel', 'Collector-grade handover path'],
+    delivery: { feeUsd: 940, eta: '3-6 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('lamborghini revuelto supercar coupe', {
+    id: 'lamborghini-revuelto-2025', badge: 'V12 Halo', brand: 'Lamborghini', model: 'Revuelto', year: 2025, mileage: 600,
+    location: 'Beverly Hills', condition: 'Brand new', priceUsd: 689000, minimumDepositUsd: 115000, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Coupe', fuelType: 'Hybrid', transmission: '8-speed dual clutch', drivetrain: 'AWD', exteriorColor: 'Verde Citrea', interiorColor: 'Nero Ade',
+    description: 'A top-shelf Lamborghini halo car added for clients searching genuine current-generation supercar inventory rather than only SUV-led exotic stock.',
+    features: ['Naturally aspirated V12 hybrid', 'Carbon monofuselage', 'Rear-wheel steering', 'Active aero package'],
+    highlights: ['Beverly Hills halo allocation', 'Highest-tier exotic inventory now live', 'Inspection and finance handled separately'],
+    delivery: { feeUsd: 1250, eta: '4-7 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('mclaren 720s spider supercar', {
+    id: 'mclaren-720s-spider-2024', badge: 'Track and Open Air', brand: 'McLaren', model: '720S Spider', year: 2024, mileage: 1700,
+    location: 'Las Vegas', condition: 'Certified used', priceUsd: 318000, minimumDepositUsd: 52000, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Coupe', fuelType: 'Petrol', transmission: '7-speed dual clutch', drivetrain: 'RWD', exteriorColor: 'Papaya Spark', interiorColor: 'Carbon Black',
+    description: 'A 720S Spider for buyers who want a lighter, sharper exotic than the larger GT crowd, now added to the US supercar selection with a cleaner monthly profile than the absolute halo tier.',
+    features: ['Retractable hard top', 'Carbon Monocage II-S', 'Bowers & Wilkins audio', 'Variable drift control'],
+    highlights: ['Las Vegas supercar lane', 'Open-top McLaren stock added', 'Strong exotic finance candidate'],
+    delivery: { feeUsd: 880, eta: '3-6 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('porsche 911 gt3 rs coupe', {
+    id: 'porsche-911-gt3-rs-2025', badge: 'Track Weapon', brand: 'Porsche', model: '911 GT3 RS', year: 2025, mileage: 800,
+    location: 'Chicago', condition: 'Brand new', priceUsd: 348000, minimumDepositUsd: 57000, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Coupe', fuelType: 'Petrol', transmission: '7-speed PDK', drivetrain: 'RWD', exteriorColor: 'Arctic Grey', interiorColor: 'Black and Guards Red',
+    description: 'A serious GT3 RS allocation now on the board for clients who want a proper track-focused Porsche in the same premium buying workflow as the larger exotic inventory.',
+    features: ['Active aerodynamics', 'Weissach package', 'Carbon bucket seats', 'Track telemetry'],
+    highlights: ['Chicago performance allocation', 'High-demand Porsche halo stock', 'Track-focused coupe now live'],
+    delivery: { feeUsd: 760, eta: '3-5 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('bmw m5 touring performance sedan', {
+    id: 'bmw-m5-touring-2025', badge: 'Fast Estate', brand: 'BMW', model: 'M5 Touring', year: 2025, mileage: 1200,
+    location: 'New York', condition: 'Brand new', priceUsd: 154000, minimumDepositUsd: 22000, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Sedan', fuelType: 'Hybrid', transmission: '8-speed automatic', drivetrain: 'AWD', exteriorColor: 'Frozen Deep Grey', interiorColor: 'Silverstone Leather',
+    description: 'A new-generation M5 Touring added for buyers who want super-sedan pace with more usable luggage space and a more understated badge than the usual exotic lane.',
+    features: ['M xDrive', 'Carbon roof', 'Bowers & Wilkins audio', 'Adaptive M suspension'],
+    highlights: ['New York performance wagon stock', 'Strong executive performance alternative', 'Hybrid M flagship now live'],
+    delivery: { feeUsd: 410, eta: '2-4 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('mercedes amg gt 63 s e performance coupe', {
+    id: 'mercedes-amg-gt63-se-2025', badge: 'Hybrid AMG', brand: 'Mercedes-AMG', model: 'GT 63 S E Performance', year: 2025, mileage: 900,
+    location: 'Miami', condition: 'Brand new', priceUsd: 198000, minimumDepositUsd: 29000, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Coupe', fuelType: 'Hybrid', transmission: '9-speed automatic', drivetrain: 'AWD', exteriorColor: 'Manufaktur Alpine Grey', interiorColor: 'Black Nappa',
+    description: 'A modern AMG hybrid halo coupe for buyers who want Mercedes muscle with current-generation cabin tech and a sharper exotic-adjacent presence.',
+    features: ['AMG Performance 4MATIC+', 'Active rear steering', 'Burmester high-end audio', 'Carbon ceramic brakes'],
+    highlights: ['Miami AMG halo inventory', 'Strong Porsche and McLaren crossover option', 'Premium finance-ready coupe'],
+    delivery: { feeUsd: 460, eta: '2-4 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('maserati mc20 supercar coupe', {
+    id: 'maserati-mc20-2024', badge: 'Italian Mid-Engine', brand: 'Maserati', model: 'MC20', year: 2024, mileage: 1500,
+    location: 'Beverly Hills', condition: 'Certified used', priceUsd: 276000, minimumDepositUsd: 43000, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Coupe', fuelType: 'Petrol', transmission: '8-speed dual clutch', drivetrain: 'RWD', exteriorColor: 'Bianco Audace', interiorColor: 'Nero Alcantara',
+    description: 'A lighter Italian supercar added for clients who want a mid-engine exotic with a rarer badge and a more distinctive collector profile than the mainstream choices.',
+    features: ['Nettuno V6', 'Carbon fiber tub', 'Lift system', 'Sonus faber audio'],
+    highlights: ['Beverly Hills boutique exotic stock', 'Rare badge in current inventory', 'Collector-friendly documentation'],
+    delivery: { feeUsd: 870, eta: '3-6 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('mclaren artura supercar coupe', {
+    id: 'mclaren-artura-2025', badge: 'Hybrid Exotic', brand: 'McLaren', model: 'Artura', year: 2025, mileage: 700,
+    location: 'Las Vegas', condition: 'Brand new', priceUsd: 289000, minimumDepositUsd: 45000, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Coupe', fuelType: 'Hybrid', transmission: '8-speed dual clutch', drivetrain: 'RWD', exteriorColor: 'Flux Green', interiorColor: 'Jet Black',
+    description: 'A current McLaren hybrid exotic for buyers who want newer-generation Woking design and a cleaner entry price than the more expensive halo models.',
+    features: ['Plug-in hybrid V6', 'Carbon fiber architecture', 'Nose lift', 'Clubsport seats'],
+    highlights: ['Las Vegas current McLaren allocation', 'Hybrid exotic now live', 'Strong entry point into true supercar stock'],
+    delivery: { feeUsd: 890, eta: '3-6 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('chevrolet corvette z06 supercar coupe', {
+    id: 'chevrolet-corvette-z06-2025', badge: 'American Track', brand: 'Chevrolet', model: 'Corvette Z06', year: 2025, mileage: 1100,
+    location: 'Austin', condition: 'Brand new', priceUsd: 168000, minimumDepositUsd: 24000, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Coupe', fuelType: 'Petrol', transmission: '8-speed dual clutch', drivetrain: 'RWD', exteriorColor: 'Accelerate Yellow', interiorColor: 'Jet Black',
+    description: 'An American flat-plane-crank supercar added for buyers who want true exotic performance without stepping into the highest Ferrari or Lamborghini pricing tier.',
+    features: ['Flat-plane V8', 'Front lift', 'Performance data recorder', 'Carbon aero package'],
+    highlights: ['Austin performance lane', 'US supercar alternative', 'Aggressive value inside the exotic bracket'],
+    delivery: { feeUsd: 430, eta: '2-5 business days after approval' },
+  })),
   createCarRecord({
     id: 'toyota-alphard-2024', badge: 'Asia Family', brand: 'Toyota', model: 'Alphard Executive Lounge', year: 2024, mileage: 5100,
     location: 'Singapore', condition: 'Foreign used', priceUsd: 108000, minimumDepositUsd: 13000, paymentTypes: ['full', 'installment'],
@@ -977,11 +1730,11 @@ const cars = [
 
 const users = [
   createUserRecord({
-    id: 'admin-user', fullName: readConfiguredValue('ADMIN_FULL_NAME', 'Prestige Admin'), email: readConfiguredValue('ADMIN_EMAIL', 'admin@prestigemotors.example'), phone: readConfiguredValue('ADMIN_PHONE', '+1 305 555 0198'),
+    id: 'admin-user', fullName: readConfiguredValue('ADMIN_FULL_NAME', 'Prestige Admin'), email: readConfiguredValue('ADMIN_EMAIL', 'admin@prestigemotorsmiami.com'), phone: readConfiguredValue('ADMIN_PHONE', '+1 305 555 0198'),
     password: readConfiguredValue('ADMIN_PASSWORD', 'Admin@2026'), role: 'admin', country: 'US', location: 'Miami',
   }),
   createUserRecord({
-    id: 'demo-user', fullName: 'Amina Yusuf', email: 'amina@example.com', phone: '+1 917 555 0172',
+    id: 'demo-user', fullName: 'Amina Yusuf', email: 'amina.yusuf@prestigemotorsmiami.com', phone: '+1 917 555 0172',
     password: 'Buyer@2026', role: 'user', country: 'US', location: 'New York',
     favoriteCarIds: ['lexus-lx-600-2023', 'toyota-land-cruiser-2021'],
     notifications: [{ id: 'note-1', title: 'Verification first', body: 'Inspection is required before vehicle release. Delivery opens after deposit or approved financing.', createdAt: '2026-04-19T10:15:00.000Z' }],
@@ -989,8 +1742,8 @@ const users = [
 ]
 
 const financingApplications = [
-  { id: 'app-1', userId: 'demo-user', carId: 'tesla-model-x-plaid-2024', fullName: 'Amina Yusuf', phone: '+234 801 555 0199', email: 'amina@example.com', incomeUsd: 6400, location: 'New York', depositUsd: 18000, months: 24, status: 'Approved', createdAt: '2026-04-18T12:00:00.000Z' },
-  { id: 'app-2', userId: 'demo-user', carId: 'cadillac-escalade-v-2024', fullName: 'Amina Yusuf', phone: '+234 801 555 0199', email: 'amina@example.com', incomeUsd: 6400, location: 'Miami', depositUsd: 22000, months: 18, status: 'Pending Review', createdAt: '2026-04-20T09:30:00.000Z' },
+  { id: 'app-1', userId: 'demo-user', carId: 'tesla-model-x-plaid-2024', fullName: 'Amina Yusuf', phone: '+234 801 555 0199', email: 'amina.yusuf@prestigemotorsmiami.com', incomeUsd: 6400, location: 'New York', depositUsd: 18000, months: 24, status: 'Approved', createdAt: '2026-04-18T12:00:00.000Z' },
+  { id: 'app-2', userId: 'demo-user', carId: 'cadillac-escalade-v-2024', fullName: 'Amina Yusuf', phone: '+234 801 555 0199', email: 'amina.yusuf@prestigemotorsmiami.com', incomeUsd: 6400, location: 'Miami', depositUsd: 22000, months: 18, status: 'Pending Review', createdAt: '2026-04-20T09:30:00.000Z' },
 ]
 
 const payments = [
@@ -1010,6 +1763,24 @@ const payments = [
       dataUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4////fwAJ+wP9KobjigAAAABJRU5ErkJggg==',
     },
     proofUploadedAt: '2026-04-19T07:52:00.000Z',
+  },
+]
+
+const paymentEvents = [
+  {
+    id: 'payment-event-1',
+    paymentId: 'pay-1',
+    paymentRequestId: 'payment-request-1',
+    userId: 'demo-user',
+    carId: 'tesla-model-x-plaid-2024',
+    eventType: 'manual-confirmed',
+    provider: 'manual',
+    reference: 'TESLA-DEP-001',
+    status: 'Confirmed',
+    actorType: 'admin',
+    actorId: 'admin-user',
+    note: 'Deposit manually confirmed after transfer slip review.',
+    createdAt: '2026-04-19T08:00:00.000Z',
   },
 ]
 
@@ -1079,7 +1850,7 @@ const serviceRequests = [
     type: 'concierge',
     status: 'Reviewing brief',
     fullName: 'Amina Yusuf',
-    email: 'amina@example.com',
+    email: 'amina.yusuf@prestigemotorsmiami.com',
     phone: '+1 917 555 0172',
     location: 'New York',
     title: 'Source a 2024 Bentley Flying Spur Speed',
@@ -1113,7 +1884,7 @@ const meta = {
     name: readConfiguredValue('COMPANY_NAME', 'Prestige Motors Miami'),
     address: readConfiguredValue('COMPANY_ADDRESS', '415 Biscayne Boulevard, Miami, Florida, United States'),
     phone: readConfiguredValue('COMPANY_PHONE', '+1 305 555 0044'),
-    email: readConfiguredValue('COMPANY_EMAIL', 'clientservices@prestigemotors.example'),
+    email: readConfiguredValue('COMPANY_EMAIL', 'clientservices@prestigemotorsmiami.com'),
     hours: readConfiguredValue('COMPANY_HOURS', 'Mon-Sat, 9:00 AM - 7:00 PM'),
   },
   policies: {
@@ -1140,6 +1911,7 @@ const seedData = {
   users: cloneValue(users),
   financingApplications: cloneValue(financingApplications),
   payments: cloneValue(payments),
+  paymentEvents: cloneValue(paymentEvents),
   paymentRequests: cloneValue(paymentRequests),
   deliveryRequests: cloneValue(deliveryRequests),
   serviceRequests: cloneValue(serviceRequests),
@@ -1168,6 +1940,7 @@ module.exports = {
   users,
   financingApplications,
   payments,
+  paymentEvents,
   paymentRequests,
   deliveryRequests,
   serviceRequests,

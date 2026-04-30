@@ -1,5 +1,6 @@
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { BrandLogo } from '../components/BrandLogo'
 import { SectionTitle } from '../components/SectionTitle'
 import { useMarket } from '../context/MarketContext'
 
@@ -26,6 +27,11 @@ export function LoginPage() {
     <section className="page-shell section-spaced auth-page">
       <div className="auth-layout">
         <div>
+          <div className="surface-card auth-brand-card">
+            <BrandLogo showLocation={false} variant="light" />
+            <p className="muted-label">Client access</p>
+            <p>Secure showroom access for saved cars, receipts, financing progress, and payment instruction history.</p>
+          </div>
           <SectionTitle
             eyebrow="Login required"
             title="Sign in before viewing your dashboard"
