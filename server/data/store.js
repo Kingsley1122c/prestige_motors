@@ -620,6 +620,26 @@ const VERIFIED_MEDIA_LIBRARY = {
     ],
     mediaVerified: true,
   },
+  'lexus-rx-350-premium-2023': {
+    heroImage: buildCommonsFilePath('Lexus RX 350"F SPORT" (5BA-TALA15-AWZGT(F)) front.jpg'),
+    gallery: [
+      buildCommonsFilePath('Lexus RX 350"F SPORT" (5BA-TALA15-AWZGT(F)) front.jpg'),
+      buildCommonsFilePath('Lexus RX 350"F SPORT" (5BA-TALA15-AWZGT(F)) rear.jpg'),
+      buildCommonsFilePath('Lexus RX (AL10, 2022) Auto Zuerich 2023 1X7A1483.jpg'),
+      buildCommonsFilePath('Lexus RX350 (ALA10) Washington DC Metro Area, USA (7).jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'lexus-rx-350h-premium-plus-2024': {
+    heroImage: buildCommonsFilePath('2023 Denver Auto Show Lexus RX front quarter.jpg'),
+    gallery: [
+      buildCommonsFilePath('2023 Denver Auto Show Lexus RX front quarter.jpg'),
+      buildCommonsFilePath('Lexus RX (AL10, 2022) Auto Zuerich 2023 1X7A1483.jpg'),
+      buildCommonsFilePath('Lexus RX (AL10, 2022) Auto Zuerich 2023 1X7A1484.jpg'),
+      buildCommonsFilePath('Lexus RX350 (ALA10) Washington DC Metro Area, USA (7).jpg'),
+    ],
+    mediaVerified: true,
+  },
   'lexus-is-500-f-sport-2024': {
     heroImage: buildCommonsFilePath('Lexus IS 500"F SPORT Performance" (5BA-USE30-BEZLH) front.jpg'),
     gallery: [
@@ -650,6 +670,26 @@ const VERIFIED_MEDIA_LIBRARY = {
     ],
     mediaVerified: true,
   },
+  'lexus-es-350-f-sport-2023': {
+    heroImage: buildCommonsFilePath('2022 Lexus ES 350 Premier GSZ10 in Sonic Titanium, front right, 06-15-2024.jpg'),
+    gallery: [
+      buildCommonsFilePath('2022 Lexus ES 350 Premier GSZ10 in Sonic Titanium, front right, 06-15-2024.jpg'),
+      buildCommonsFilePath('2022 Lexus ES 350 Premier GSZ10 in Sonic Titanium, rear right, 06-15-2024.jpg'),
+      buildCommonsFilePath('19 Lexus ES 350 Ultra Luxury.jpg'),
+      buildCommonsFilePath('Lexus ES 350 (GSZ10) IMG 4332.jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'lexus-es-250-luxury-2022': {
+    heroImage: buildCommonsFilePath('2022 Lexus ES 250 front view.jpg'),
+    gallery: [
+      buildCommonsFilePath('2022 Lexus ES 250 front view.jpg'),
+      buildCommonsFilePath('2020 Lexus ES250 rear view in Brunei.jpg'),
+      buildCommonsFilePath('LEXUS ES 250(ES 260) (XZ10) China (1).jpg'),
+      buildCommonsFilePath('LEXUS ES 250(ES 260) (XZ10) China (3).jpg'),
+    ],
+    mediaVerified: true,
+  },
   'bmw-m5-touring-2025': {
     heroImage: buildCommonsFilePath('BMW M5 Touring (G99) Washington DC Metro Area, USA.jpg'),
     gallery: [
@@ -657,6 +697,93 @@ const VERIFIED_MEDIA_LIBRARY = {
       buildCommonsFilePath('BMW M5 Touring (G99) Washington DC Metro Area, USA (1).jpg'),
       buildCommonsFilePath('BMW M5 G99 Touring Marina Bay Blue Metallic.jpg'),
       buildCommonsFilePath('2024 BMW M5 Touring 1.jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'toyota-camry-xse-2023': {
+    heroImage: buildCommonsFilePath('2020 Toyota Camry XSE front.jpg'),
+    gallery: [
+      buildCommonsFilePath('2020 Toyota Camry XSE front.jpg'),
+      buildCommonsFilePath('2020 Toyota Camry XSE rear.jpg'),
+      buildCommonsFilePath('Toyota Camry Hybrid XSE XV70 FL Precious Metal (4).jpg'),
+      buildCommonsFilePath('Toyota Camry Hybrid XSE XV70 FL Precious Metal (5).jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'toyota-rav4-xle-premium-2022': {
+    heroImage: buildCommonsFilePath('19 Toyota RAV4 XLE Premium.jpg'),
+    gallery: [
+      buildCommonsFilePath('19 Toyota RAV4 XLE Premium.jpg'),
+      buildCommonsFilePath('22 Toyota RAV4 Hybrid XLE Premium.jpg'),
+      buildCommonsFilePath('2019 Toyota Rav4 XLE Premium Package AWD in Silver Sky Metallic, rear left, 2024-11-01.jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'toyota-corolla-cross-xle-2023': {
+    heroImage: buildCommonsFilePath('2023 Toyota Corolla Cross XLE 4WD in Wind Chill Pearl, front left.jpg'),
+    gallery: [
+      buildCommonsFilePath('2023 Toyota Corolla Cross XLE 4WD in Wind Chill Pearl, front left.jpg'),
+      buildCommonsFilePath('2022 Toyota Corolla Cross XLE front.jpg'),
+      buildCommonsFilePath('2022 Toyota Corolla Cross XLE rear.jpg'),
+      buildCommonsFilePath('22 Toyota Corolla Cross XLE.jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'honda-civic-ex-2023': {
+    heroImage: buildCommonsFilePath('Honda Civic Turbo EX 2023 (52901257239).jpg'),
+    gallery: [
+      buildCommonsFilePath('Honda Civic Turbo EX 2023 (52901257239).jpg'),
+      buildCommonsFilePath('2019 Honda Civic EX hatchback, rear right, 08-27-2023.jpg'),
+      buildCommonsFilePath('2022 Honda Civic Hatchback EX-L in Platinum White Pearl, front right (cropped).jpg'),
+      buildCommonsFilePath('2022 Honda Civic Hatchback EX-L in Platinum White Pearl, rear right (cropped).jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'acura-mdx-type-s-2025': {
+    heroImage: buildCommonsFilePath('23 Acura MDX SH-AWD Type S Advance.jpg'),
+    gallery: [
+      buildCommonsFilePath('23 Acura MDX SH-AWD Type S Advance.jpg'),
+      buildCommonsFilePath('2022 Acura MDX Type S.jpg'),
+      buildCommonsFilePath('Acura MDX Type-S (2023) (53488853272).jpg'),
+      buildCommonsFilePath('2022 Acura MDX Type-S.jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'toyota-tacoma-trd-off-road-2023': {
+    heroImage: buildCommonsFilePath('Toyota Tacoma TRD Off Road (N400) IMG 9735.jpg'),
+    gallery: [
+      buildCommonsFilePath('Toyota Tacoma TRD Off Road (N400) IMG 9735.jpg'),
+      buildCommonsFilePath('Toyota Tacoma TRD Off Road (N400) IMG 9727 (cropped).jpg'),
+      buildCommonsFilePath('Toyota Tacoma TRD Off Road (N400) IMG 9727.jpg'),
+      buildCommonsFilePath('Toyota Tacoma TRD Off Road (N400) DSC 7353.jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'ford-ranger-lariat-2023': {
+    heroImage: buildCommonsFilePath('24 Ford Ranger Lariat.jpg'),
+    gallery: [
+      buildCommonsFilePath('24 Ford Ranger Lariat.jpg'),
+      buildCommonsFilePath('2019 Ford Ranger Lariat crew cab.jpg'),
+      buildCommonsFilePath('Ford Ranger LARIAT 4WD SuperCrew (2024) (53620395647).jpg'),
+      buildCommonsFilePath('Ford Ranger LARIAT 4WD SuperCrew (2024) (53620395657).jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'nissan-frontier-pro-4x-2023': {
+    heroImage: buildCommonsFilePath('Nissan Frontier (D41) Pro-4X Automesse Ludwigsburg 2022 1X7A5885.jpg'),
+    gallery: [
+      buildCommonsFilePath('Nissan Frontier (D41) Pro-4X Automesse Ludwigsburg 2022 1X7A5885.jpg'),
+      buildCommonsFilePath('Nissan Frontier (D41) Pro-4X Automesse Ludwigsburg 2022 1X7A5942.jpg'),
+      buildCommonsFilePath('Nissan Frontier (D41) Pro-4X 1X7A7196.jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'toyota-hilux-invincible-2022': {
+    heroImage: buildCommonsFilePath('Toyota Hilux Invincible 50 (38438265462).jpg'),
+    gallery: [
+      buildCommonsFilePath('Toyota Hilux Invincible 50 (38438265462).jpg'),
+      buildCommonsFilePath('2021 Toyota Hilux Invincible D-4D 4WD 2.4.jpg'),
+      buildCommonsFilePath('2016 Toyota HiLux Invincible D-4D 4WD 2.4 Front.jpg'),
     ],
     mediaVerified: true,
   },
@@ -1058,15 +1185,11 @@ const sanitizeCatalogMedia = (input) => {
   const trustedVerifiedHero = trustedVerifiedGallery[0] || String(input?.heroImage || '')
 
   if (trustedVerifiedGallery.length) {
-    const curatedBrandGallery = curatedGallery
-      ? dedupeGalleryImages(filterBrandCompatibleImages(input?.brand, curatedGallery.gallery))
-      : []
-
     return {
       ...input,
       mediaVerified: true,
       heroImage: trustedVerifiedHero,
-      gallery: dedupeGalleryImages([...trustedVerifiedGallery, ...curatedBrandGallery]).slice(0, 4),
+      gallery: trustedVerifiedGallery.slice(0, 4),
     }
   }
 
