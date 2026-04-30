@@ -42,6 +42,30 @@ export const getVehicleGalleryItems = (vehicle, maxItems = 4) => {
 }
 
 const MERCHANDISING_PRIORITY = [
+  'toyota-tacoma-trd-off-road-2023',
+  'toyota-hilux-invincible-2022',
+  'ford-ranger-lariat-2023',
+  'nissan-frontier-pro-4x-2023',
+  'toyota-tundra-capstone-2024',
+  'chevrolet-silverado-hd-2024',
+  'ford-f150-raptor-r-2024',
+  'ram-1500-trx-2024',
+  'rivian-r1t-quad-motor-2024',
+  'gmc-hummer-ev-pickup-2025',
+  'lexus-rx-350-premium-2023',
+  'lexus-rx-350h-premium-plus-2024',
+  'lexus-rx-350-f-sport-2024',
+  'lexus-rx-500h-f-sport-2024',
+  'lexus-rx-350h-luxury-2025',
+  'lexus-es-250-luxury-2022',
+  'lexus-es-350-f-sport-2023',
+  'lexus-es-250-awd-2024',
+  'lexus-es-350-ultra-luxury-2024',
+  'lexus-es-300h-luxury-2025',
+  'toyota-camry-xse-2023',
+  'toyota-rav4-xle-premium-2022',
+  'toyota-corolla-cross-xle-2023',
+  'honda-civic-ex-2023',
   'lamborghini-revuelto-2025',
   'ferrari-296-gtb-2025',
   'ferrari-purosangue-2024',
@@ -74,7 +98,6 @@ const MERCHANDISING_PRIORITY = [
   'lincoln-navigator-black-label-2024',
   'land-rover-defender-130-2025',
   'tesla-model-x-plaid-2024',
-  'rivian-r1t-quad-motor-2024',
 ]
 
 const merchandisingPriorityIndex = new Map(MERCHANDISING_PRIORITY.map((id, index) => [id, index]))

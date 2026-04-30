@@ -9,7 +9,10 @@ export function CarCard({ car }) {
   const { favoriteIds, toggleFavorite, submitting, getLocalizedPrice } = useMarket()
   const leadPlan = car.monthlyPlans[0]
   const rentalTerms = car.rentalTerms
-  const isRentable = Boolean(car.rentable)
+  const isRentable = Boolean(car.rentable || car.paymentTypes.includes('rental'))
+  const supportsInstallment = car.paymentTypes.includes('installment')
+  const supportsFullPurchase = car.paymentTypes.includes('full')
+  const supportsSale = supportsInstallment || supportsFullPurchase
   const localPrice = getLocalizedPrice(car.priceUsd)
   const highlightPreview = car.highlights.slice(0, 2)
   const cardImage = getVehicleHeroImage(car)
@@ -65,7 +68,13 @@ export function CarCard({ car }) {
           <span>{car.location}</span>
         </div>
         <p className="car-card-marketline">
-          {car.bodyStyle} collection with {isRentable ? 'rental and ' : ''}{car.paymentTypes.includes('installment') ? 'installment-ready' : 'full-payment'} release terms.
+          {supportsSale && isRentable
+            ? `${car.bodyStyle} inventory with purchase and rental release options.`
+            : isRentable
+              ? `${car.bodyStyle} inventory reserved for approved rental bookings only.`
+              : supportsInstallment
+                ? `${car.bodyStyle} inventory with full-payment and installment purchase options.`
+                : `${car.bodyStyle} inventory with direct-purchase release terms.`}
         </p>
         <p className="card-description">{car.description}</p>
         <div className="car-highlight-row">
@@ -74,8 +83,8 @@ export function CarCard({ car }) {
           ))}
         </div>
         <div className="finance-chip-row">
-          <span>Deposit from {formatUsd(car.minimumDepositUsd)}</span>
-          <span>{leadPlan.months} months from {formatUsd(leadPlan.monthlyUsd)}/mo</span>
+          {supportsSale ? <span>Deposit from {formatUsd(car.minimumDepositUsd)}</span> : null}
+          {supportsInstallment ? <span>{leadPlan.months} months from {formatUsd(leadPlan.monthlyUsd)}/mo</span> : null}
           {isRentable ? <span>Rent from {formatUsd(rentalTerms.dailyUsd)}/day</span> : null}
         </div>
         <div className="card-actions">
@@ -83,7 +92,7 @@ export function CarCard({ car }) {
             View details
           </Link>
           <Link className="button button-secondary" to={isRentable ? `/cars/${car.id}#rental-terms` : `/financing?carId=${car.id}`}>
-            {isRentable ? 'Rent options' : 'Apply for loan'}
+            {isRentable ? 'Rent options' : supportsInstallment ? 'Apply for loan' : 'Purchase review'}
           </Link>
         </div>
       </div>

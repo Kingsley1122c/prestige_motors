@@ -75,7 +75,10 @@ export function CarDetailsPage() {
   const activePaymentAmount =
     paymentDraft.carId === car.id && paymentDraft.amount ? paymentDraft.amount : defaultAmount
   const localPrice = getLocalizedPrice(car.priceUsd)
-  const isRentable = Boolean(car.rentable)
+  const supportsInstallment = car.paymentTypes.includes('installment')
+  const supportsFullPurchase = car.paymentTypes.includes('full')
+  const supportsSale = supportsInstallment || supportsFullPurchase
+  const isRentable = Boolean(car.rentable || car.paymentTypes.includes('rental'))
   const rentalTerms = car.rentalTerms
   const paymentRequests = userDashboard.paymentRequests.filter((entry) => entry.carId === car.id)
   const rentalRequests = userDashboard.rentalRequests.filter((entry) => entry.carId === car.id)
@@ -252,11 +255,13 @@ export function CarDetailsPage() {
           <strong>{formatUsd(car.priceUsd)}</strong>
           <span>{formatLocal(localPrice.amount, localPrice.currencyCode, localPrice.locale)}</span>
           <p>Local market view: {selectedCountry.name}</p>
-          <p>Minimum deposit: {formatUsd(car.minimumDepositUsd)}</p>
+          {supportsSale ? <p>Minimum deposit: {formatUsd(car.minimumDepositUsd)}</p> : <p>Rental-only flagship above the purchase threshold.</p>}
           {isRentable ? <p>Rental from {formatUsd(rentalTerms.dailyUsd)}/day or {formatUsd(rentalTerms.monthlyUsd)}/month</p> : null}
-          <Link className="button button-primary button-block" to={`/financing?carId=${car.id}`}>
-            Apply for financing
-          </Link>
+          {supportsInstallment ? (
+            <Link className="button button-primary button-block" to={`/financing?carId=${car.id}`}>
+              Apply for financing
+            </Link>
+          ) : null}
           {isRentable ? (
             <Link className="button button-secondary button-block" to="#rental-terms">
               See rental terms
@@ -367,82 +372,88 @@ export function CarDetailsPage() {
             </>
           ) : null}
 
-          <SectionTitle
-            eyebrow="Installment plans"
-            title="Monthly payment breakdown"
-            description="Choose a tenure from 6 to 24 months based on the deposit requirement for this vehicle."
-          />
-          <div className="surface-card payment-plan-table">
-            {car.monthlyPlans.map((plan) => (
-              <div className="plan-row" key={plan.months}>
-                <strong>{plan.months} months</strong>
-                <span>{formatUsd(plan.monthlyUsd)} per month</span>
+          {supportsInstallment ? (
+            <>
+              <SectionTitle
+                eyebrow="Installment plans"
+                title="Monthly payment breakdown"
+                description="Choose a tenure from 6 to 24 months based on the deposit requirement for this vehicle."
+              />
+              <div className="surface-card payment-plan-table">
+                {car.monthlyPlans.map((plan) => (
+                  <div className="plan-row" key={plan.months}>
+                    <strong>{plan.months} months</strong>
+                    <span>{formatUsd(plan.monthlyUsd)} per month</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          ) : null}
         </div>
 
         <div className="sidebar-stack">
-          <form className="surface-card action-form" onSubmit={submitPaymentRequest}>
-            <SectionTitle
-              eyebrow="Deposit approval"
-              title="Choose how you want to make the deposit first"
-              description={isAuthenticated ? 'Submit your preferred method and amount. Admin will approve it and send bank details, a payment link, or escrow guidance before you pay.' : 'Login or create an account before requesting deposit instructions.'}
-            />
-            <label htmlFor="payment-type">Payment type</label>
-            <select
-              id="payment-type"
-              value={activePaymentType}
-              onChange={(event) => {
-                const nextType = event.target.value
-                setPaymentDraft({
-                  carId: car.id,
-                  method: activePaymentMethod,
-                  type: nextType,
-                  amount: nextType === 'deposit' ? car.minimumDepositUsd : car.priceUsd,
-                })
-              }}
-            >
-              <option value="deposit">Deposit</option>
-              <option value="full">Full payment</option>
-            </select>
-            <label htmlFor="payment-method">Preferred method</label>
-            <select
-              id="payment-method"
-              value={activePaymentMethod}
-              onChange={(event) =>
-                setPaymentDraft({
-                  carId: car.id,
-                  method: event.target.value,
-                  type: activePaymentType,
-                  amount: activePaymentAmount,
-                })
-              }
-            >
-              <option value="bank-transfer">Bank transfer</option>
-              <option value="wire-transfer">Wire transfer</option>
-              <option value="payment-link">Payment link</option>
-              <option value="escrow">Escrow</option>
-            </select>
-            <label htmlFor="payment-amount">Requested amount (USD)</label>
-            <input
-              id="payment-amount"
-              type="number"
-              min={car.minimumDepositUsd}
-              value={activePaymentAmount}
-              onChange={(event) =>
-                setPaymentDraft({
-                  carId: car.id,
-                  method: activePaymentMethod,
-                  type: activePaymentType,
-                  amount: Number(event.target.value),
-                })
-              }
-            />
-            <button className="button button-primary button-block" disabled={submitting || ['Pending Approval', 'Instructions Sent'].includes(latestPaymentRequest?.status)} type="submit">
-              Request payment instructions
-            </button>
-          </form>
+          {supportsSale ? (
+            <form className="surface-card action-form" onSubmit={submitPaymentRequest}>
+              <SectionTitle
+                eyebrow="Purchase approval"
+                title="Choose how you want to start the purchase"
+                description={isAuthenticated ? 'Submit your preferred method and amount. Admin will approve it and send bank details, a payment link, or escrow guidance before you pay.' : 'Login or create an account before requesting purchase instructions.'}
+              />
+              <label htmlFor="payment-type">Payment type</label>
+              <select
+                id="payment-type"
+                value={activePaymentType}
+                onChange={(event) => {
+                  const nextType = event.target.value
+                  setPaymentDraft({
+                    carId: car.id,
+                    method: activePaymentMethod,
+                    type: nextType,
+                    amount: nextType === 'deposit' ? car.minimumDepositUsd : car.priceUsd,
+                  })
+                }}
+              >
+                <option value="deposit">Deposit</option>
+                <option value="full">Full payment</option>
+              </select>
+              <label htmlFor="payment-method">Preferred method</label>
+              <select
+                id="payment-method"
+                value={activePaymentMethod}
+                onChange={(event) =>
+                  setPaymentDraft({
+                    carId: car.id,
+                    method: event.target.value,
+                    type: activePaymentType,
+                    amount: activePaymentAmount,
+                  })
+                }
+              >
+                <option value="bank-transfer">Bank transfer</option>
+                <option value="wire-transfer">Wire transfer</option>
+                <option value="payment-link">Payment link</option>
+                <option value="escrow">Escrow</option>
+              </select>
+              <label htmlFor="payment-amount">Requested amount (USD)</label>
+              <input
+                id="payment-amount"
+                type="number"
+                min={car.minimumDepositUsd}
+                value={activePaymentAmount}
+                onChange={(event) =>
+                  setPaymentDraft({
+                    carId: car.id,
+                    method: activePaymentMethod,
+                    type: activePaymentType,
+                    amount: Number(event.target.value),
+                  })
+                }
+              />
+              <button className="button button-primary button-block" disabled={submitting || ['Pending Approval', 'Instructions Sent'].includes(latestPaymentRequest?.status)} type="submit">
+                Request purchase instructions
+              </button>
+            </form>
+          ) : null}
 
           {isRentable ? (
             <form className="surface-card action-form" onSubmit={submitRental}>

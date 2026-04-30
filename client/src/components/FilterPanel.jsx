@@ -61,7 +61,7 @@ export function FilterPanel({ filters, onChange, brands, locations, bodyStyles }
           id="maxPrice"
           type="range"
           min="50000"
-          max="500000"
+          max="800000"
           step="5000"
           value={filters.maxPrice}
           onChange={(event) => onChange('maxPrice', event.target.value)}

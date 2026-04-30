@@ -7,7 +7,7 @@ import { useMarket } from '../context/MarketContext'
 import { getVehicleHeroImage, sortVehiclesForMerchandising } from '../utils/media'
 import { formatUsd } from '../utils/format'
 
-const AMERICA_LOCATIONS = new Set(['Houston', 'Atlanta', 'Dallas', 'Chicago', 'San Francisco', 'Los Angeles', 'New York', 'Miami', 'Las Vegas'])
+const DEFAULT_MAX_PRICE = '800000'
 
 const serviceCards = [
   {
@@ -44,13 +44,13 @@ export function ListingsPage() {
     paymentType: searchParams.get('paymentType') || 'All',
     bodyStyle: searchParams.get('bodyStyle') || 'All',
     minPrice: searchParams.get('minPrice') || '0',
-    maxPrice: searchParams.get('maxPrice') || '500000',
+    maxPrice: searchParams.get('maxPrice') || DEFAULT_MAX_PRICE,
   }
 
   const updateFilter = (key, value) => {
     const nextParams = new URLSearchParams(searchParams)
 
-    if (!value || value === 'All' || (key === 'minPrice' && value === '0') || (key === 'maxPrice' && value === '500000')) {
+    if (!value || value === 'All' || (key === 'minPrice' && value === '0') || (key === 'maxPrice' && value === DEFAULT_MAX_PRICE)) {
       nextParams.delete(key)
     } else {
       nextParams.set(key, value)
@@ -92,13 +92,15 @@ export function ListingsPage() {
   )
 
   const inventorySnapshot = useMemo(() => {
-    const americaCount = cars.filter((car) => AMERICA_LOCATIONS.has(car.location)).length
-    const asiaCount = cars.length - americaCount
+    const truckCount = cars.filter((car) => car.bodyStyle === 'Truck').length
+    const usedCount = cars.filter((car) => /used/i.test(car.condition)).length
+    const rentalOnlyCount = cars.filter((car) => car.rentable && !car.paymentTypes.includes('full') && !car.paymentTypes.includes('installment')).length
     const topPrice = cars.reduce((highest, car) => Math.max(highest, car.priceUsd), 0)
 
     return {
-      americaCount,
-      asiaCount,
+      truckCount,
+      usedCount,
+      rentalOnlyCount,
       topPrice,
     }
   }, [cars])
@@ -109,23 +111,22 @@ export function ListingsPage() {
     <section className="page-shell section-spaced">
       <div className="listings-intro">
         <div className="surface-card listings-hero-card">
-          <p className="eyebrow">America-led inventory</p>
+          <p className="eyebrow">Worldwide used inventory</p>
           <div className="hero-ribbon listings-ribbon">
-            <span>Private showroom releases</span>
-            <span>Route-based delivery</span>
-            <span>Client services desk</span>
+            <span>Truck-led selling</span>
+            <span>Used-car purchase and rental</span>
+            <span>Rental-only halo exotics</span>
           </div>
-          <h1>Luxury stock positioned across key US cities with selective Asia imports.</h1>
+          <h1>Used trucks, used Lexus, and budget cars positioned for worldwide buyers.</h1>
           <p>
-            This collection now centers on Miami, New York, Los Angeles, Houston, Chicago,
-            and other US delivery hubs, with a smaller Asia pipeline for specialty vans,
-            performance cars, and rare executive models.
+            The catalog now leans into used trucks for direct selling, neatly used Lexus RX and ES stock,
+            lower-budget used daily cars, and rental-only halo machines above $300,000 for premium clients.
           </p>
           <div className="listings-hero-chips">
-            <span>US handover ready</span>
-            <span>Asia import verified</span>
-            <span>Exotic financing profile</span>
-            <span>Luxury rental terms</span>
+            <span>Worldwide export support</span>
+            <span>Used truck desk</span>
+            <span>Used Lexus lane</span>
+            <span>Rental-only exotics</span>
           </div>
           <div className="hero-actions">
             <Link className="button button-primary" to="/services?type=concierge">
@@ -140,20 +141,20 @@ export function ListingsPage() {
           <p className="muted-label">Market snapshot</p>
           <div className="listing-snapshot-grid">
             <div>
-              <strong>{inventorySnapshot.americaCount}</strong>
-              <span>Vehicles in US hubs</span>
+              <strong>{inventorySnapshot.truckCount}</strong>
+              <span>Truck listings live</span>
             </div>
             <div>
-              <strong>{inventorySnapshot.asiaCount}</strong>
-              <span>Asia import specials</span>
+              <strong>{inventorySnapshot.usedCount}</strong>
+              <span>Used vehicles ready</span>
             </div>
             <div>
-              <strong>{meta.brands.length}</strong>
-              <span>Luxury brands live</span>
+              <strong>{inventorySnapshot.rentalOnlyCount}</strong>
+              <span>Rental-only halo cars</span>
             </div>
             <div>
               <strong>{formatUsd(inventorySnapshot.topPrice)}</strong>
-              <span>Top-tier flagship pricing</span>
+              <span>Highest rental-only ticket</span>
             </div>
           </div>
         </div>
@@ -178,8 +179,8 @@ export function ListingsPage() {
 
       <SectionTitle
         eyebrow="Inventory"
-        title="Browse America-based luxury inventory with purchase and rental visibility"
-        description="Filter by US or Asia location, brand, price, or payment type and move directly into inspection, financing, or rental review when the right vehicle appears."
+        title="Browse used trucks, used Lexus, budget cars, and rental-only halo exotics"
+        description="Filter by region, brand, body style, price, or payment type and move straight into purchase, rental, inspection, or delivery planning once the right vehicle appears."
       />
       <div className="service-lane-grid">
         {serviceCards.map((card) => (

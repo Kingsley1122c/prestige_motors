@@ -6,23 +6,23 @@ import { getVehicleHeroImage, sortVehiclesForMerchandising } from '../utils/medi
 import { formatUsd } from '../utils/format'
 
 const processSteps = [
-  'Browse verified listings with full pricing, deposit, and monthly plan visibility.',
-  'Schedule inspection or test drive before making any release payment.',
-  'Apply for financing, wait for admin review, then request delivery after approval or deposit confirmation.',
+  'Browse used trucks, neatly used Lexus RX and ES stock, and lower-budget daily cars with full pricing visibility.',
+  'Schedule inspection or a remote walkaround before making any release payment or rental booking.',
+  'Used vehicles support purchase and rental, while halo exotics above $300,000 stay rental-only with worldwide coordination.',
 ]
 
 const showroomLanes = [
   {
-    title: 'Miami flagship desk',
-    text: 'White-glove client service for local handover, finance review, and enclosed transport scheduling.',
+    title: 'Global truck desk',
+    text: 'Used pickups and utility trucks sourced for work, family, towing, and export buyers across multiple continents.',
   },
   {
-    title: 'US showroom network',
-    text: 'Inventory placed across Miami, Los Angeles, New York, Houston, Chicago, Scottsdale, Seattle, and Beverly Hills.',
+    title: 'Worldwide delivery network',
+    text: 'Inventory now spans the Americas, Europe, the Middle East, Asia, and Africa with export paperwork support before release.',
   },
   {
-    title: 'Asia sourcing office',
-    text: 'Selective Japan, Singapore, Thailand, and Korea vehicles with export paperwork and inspection support before release.',
+    title: 'Luxury rental desk',
+    text: 'Super-luxury and halo cars above $300,000 are positioned as rental-only units with premium client handling.',
   },
 ]
 
@@ -180,63 +180,64 @@ export function HomePage() {
   }, [adSignals.matchedBodyStyle, adSignals.matchedBrand, meta.company?.phone])
 
   const heroStats = useMemo(() => {
-    const topPrice = cars.reduce((highest, car) => Math.max(highest, car.priceUsd), 0)
+    const truckCount = cars.filter((car) => car.bodyStyle === 'Truck').length
+    const rentalOnlyCount = cars.filter((car) => car.rentable && !car.paymentTypes.includes('full') && !car.paymentTypes.includes('installment')).length
 
     return [
-      { value: `${cars.length}`, label: 'Curated vehicles live' },
-      { value: `${meta.locations.length}`, label: 'Showroom and sourcing hubs' },
-      { value: `$${Math.round(topPrice / 1000)}k`, label: 'Top exotic ticket' },
+      { value: `${cars.length}`, label: 'Used and rental units live' },
+      { value: `${truckCount}`, label: 'Truck listings ready' },
+      { value: `${rentalOnlyCount}`, label: 'Rental-only halo cars' },
     ]
-  }, [cars, meta.locations.length])
+  }, [cars])
 
-  const lexusSpotlightCars = useMemo(
-    () => sortVehiclesForMerchandising(cars.filter((car) => car.brand === 'Lexus')).slice(0, 3),
+  const truckSpotlightCars = useMemo(
+    () => sortVehiclesForMerchandising(cars.filter((car) => car.bodyStyle === 'Truck')).slice(0, 3),
     [cars],
   )
 
-  const supercarSpotlightCars = useMemo(
+  const lexusSpotlightCars = useMemo(
     () => sortVehiclesForMerchandising(
-      cars.filter((car) => ['Ferrari', 'Lamborghini', 'McLaren', 'Porsche'].includes(car.brand) && ['Coupe', 'Performance SUV', 'Sportback'].includes(car.bodyStyle)),
+      cars.filter((car) => car.brand === 'Lexus' && /^(RX|ES)\b/.test(car.model) && /used/i.test(car.condition)),
     ).slice(0, 3),
     [cars],
   )
 
-  const suvSpotlightCars = useMemo(
-    () => sortVehiclesForMerchandising(cars.filter((car) => ['SUV', 'Performance SUV'].includes(car.bodyStyle))).slice(0, 3),
+  const budgetSpotlightCars = useMemo(
+    () => sortVehiclesForMerchandising(cars.filter((car) => /used/i.test(car.condition) && car.priceUsd <= 40000)).slice(0, 3),
     [cars],
   )
 
-  const sedanSpotlightCars = useMemo(
-    () => sortVehiclesForMerchandising(cars.filter((car) => car.bodyStyle === 'Sedan')).slice(0, 3),
+  const rentalHaloCars = useMemo(
+    () => sortVehiclesForMerchandising(cars.filter((car) => car.rentable && !car.paymentTypes.includes('full') && !car.paymentTypes.includes('installment'))).slice(0, 3),
     [cars],
   )
 
   const categorySpotlights = useMemo(() => ([
     {
-      key: 'suv',
-      eyebrow: 'SUV row',
-      title: 'Luxury and performance SUVs',
-      href: '/listings?bodyStyle=SUV',
-      cta: 'View SUVs',
-      cars: suvSpotlightCars,
+      key: 'truck',
+      eyebrow: 'Truck row',
+      title: 'Used trucks positioned for sale and rental',
+      href: '/listings?bodyStyle=Truck',
+      cta: 'View trucks',
+      cars: truckSpotlightCars,
     },
     {
-      key: 'sedan',
-      eyebrow: 'Sedan row',
-      title: 'Executive sedans and daily flagships',
-      href: '/listings?bodyStyle=Sedan',
-      cta: 'View sedans',
-      cars: sedanSpotlightCars,
+      key: 'lexus',
+      eyebrow: 'Lexus row',
+      title: 'Neatly used Lexus RX and ES inventory',
+      href: '/listings?brand=Lexus',
+      cta: 'View Lexus',
+      cars: lexusSpotlightCars,
     },
     {
-      key: 'supercar',
-      eyebrow: 'Supercar row',
-      title: 'Coupes and halo exotics',
-      href: '/listings?minPrice=150000',
-      cta: 'View supercars',
-      cars: supercarSpotlightCars,
+      key: 'budget',
+      eyebrow: 'Budget row',
+      title: 'Lower-budget used cars for global buyers',
+      href: '/listings?maxPrice=40000',
+      cta: 'View budget cars',
+      cars: budgetSpotlightCars,
     },
-  ]), [sedanSpotlightCars, supercarSpotlightCars, suvSpotlightCars])
+  ]), [budgetSpotlightCars, lexusSpotlightCars, truckSpotlightCars])
 
   const submitSearch = (event) => {
     event.preventDefault()
@@ -384,19 +385,20 @@ export function HomePage() {
             <option value="All">All</option>
             <option value="full">Full payment</option>
             <option value="installment">Installment</option>
+            <option value="rental">Rental</option>
           </select>
           <button className="button button-primary button-block" type="submit">
             Search inventory
           </button>
           <div className="search-tags">
-            <span>Maybach</span>
-            <span>Rolls-Royce</span>
-            <span>Ferrari</span>
-            <span>Bentley</span>
+            <span>Tacoma</span>
+            <span>Hilux</span>
+            <span>Lexus RX</span>
+            <span>Toyota Camry</span>
           </div>
           <div className="hero-search-note">
             <strong>Client services</strong>
-            <span>Showings are arranged with ID verification, finance desk prep, and route-based delivery planning.</span>
+            <span>Showings are arranged with ID verification, worldwide delivery planning, and rental-only handling for halo cars above $300,000.</span>
           </div>
         </form>
       </section>
@@ -404,8 +406,8 @@ export function HomePage() {
       <section className="page-shell section-spaced signature-section">
         <SectionTitle
           eyebrow="Category spotlights"
-          title="Separate rows for SUVs, sedans, and supercars"
-          description="Jump into the main inventory groups from the homepage before narrowing down by brand or budget."
+          title="Used trucks first, then used Lexus and lower-budget daily cars"
+          description="Jump straight into the main truck, Lexus RX/ES, and budget-used groups before narrowing by region, brand, or rental preference."
         />
         <div className="info-stack">
           {categorySpotlights.map((group) => (
@@ -493,21 +495,21 @@ export function HomePage() {
       <section className="page-shell section-spaced split-section">
         <div>
           <SectionTitle
-            eyebrow="Supercar desk"
-            title="More halo and track-led exotics are on the floor"
-            description="The supercar lane now includes more Ferrari, Lamborghini, McLaren, and Porsche halo inventory with higher-visibility merchandising."
+            eyebrow="Rental-only halo desk"
+            title="Halo exotics above $300,000 stay rental only"
+            description="The top exotic lane now stays focused on premium rental handling for Ferrari, Lamborghini, Bentley, and similar halo inventory above the purchase threshold."
           />
           <div className="listing-editorial-grid">
-            {supercarSpotlightCars.map((car) => (
+            {rentalHaloCars.map((car) => (
               <article className="surface-card listing-editorial-card" key={car.id}>
                 <img alt={`${car.brand} ${car.model}`} src={getVehicleHeroImage(car)} />
                 <div className="listing-editorial-copy">
-                  <p className="muted-label">{car.location} exotic lane</p>
+                  <p className="muted-label">{car.location} rental-only lane</p>
                   <h3>{car.brand} {car.model}</h3>
                   <p>{car.description}</p>
                   <div className="finance-chip-row">
                     <span>{formatUsd(car.priceUsd)}</span>
-                    <span>Deposit {formatUsd(car.minimumDepositUsd)}</span>
+                    <span>Rental only</span>
                   </div>
                 </div>
               </article>
@@ -515,8 +517,8 @@ export function HomePage() {
           </div>
         </div>
         <div className="surface-card policy-card">
-          <p className="muted-label">Exotic filters</p>
-          <h3>Jump straight into the fast end of the showroom</h3>
+          <p className="muted-label">Rental-only filters</p>
+          <h3>Jump straight into the halo rental desk</h3>
           <ul className="plain-list">
             <li><Link to="/listings?brand=Ferrari">Ferrari inventory</Link></li>
             <li><Link to="/listings?brand=Lamborghini">Lamborghini inventory</Link></li>

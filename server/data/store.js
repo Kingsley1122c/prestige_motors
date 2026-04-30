@@ -1106,6 +1106,42 @@ const withStockPhotos = (query, input) => ({
   ],
 })
 
+const USED_CONDITION_PATTERN = /used|pre-?owned|certified/i
+
+const isUsedVehicleCondition = (condition = '') => USED_CONDITION_PATTERN.test(String(condition || ''))
+
+const buildVehicleCommerceProfile = ({ bodyStyle, condition, priceUsd, paymentTypes, rentable }) => {
+  const basePaymentTypes = Array.from(new Set((paymentTypes || []).filter(Boolean)))
+  const normalizedBodyStyle = normalizeBodyStyle(bodyStyle)
+  const isTruckVehicle = normalizedBodyStyle.includes('truck') || normalizedBodyStyle.includes('pickup')
+  const isUsedVehicle = isUsedVehicleCondition(condition)
+  const isRentalOnlyLuxury = Number(priceUsd) > 300000
+
+  if (isRentalOnlyLuxury) {
+    return {
+      paymentTypes: ['rental'],
+      rentable: true,
+      isRentalOnlyLuxury,
+      isTruckVehicle,
+      isUsedVehicle,
+    }
+  }
+
+  const nextPaymentTypes = basePaymentTypes.length ? [...basePaymentTypes] : ['full', 'installment']
+
+  if (isUsedVehicle || isTruckVehicle) {
+    nextPaymentTypes.push('rental')
+  }
+
+  return {
+    paymentTypes: Array.from(new Set(nextPaymentTypes)),
+    rentable: isUsedVehicle || isTruckVehicle ? true : rentable ?? true,
+    isRentalOnlyLuxury,
+    isTruckVehicle,
+    isUsedVehicle,
+  }
+}
+
 const createCarRecord = (input) => {
   const resolvedInput = attachVerifiedMedia(input)
   const mediaInput = resolvedInput.catalogManaged === false ? resolvedInput : sanitizeCatalogMedia(resolvedInput)
@@ -1116,7 +1152,19 @@ const createCarRecord = (input) => {
     ? mediaInput.installmentDurations.map((value) => Number(value))
     : [6, 12, 18, 24]
   const defaultCountry = getCountrySettings(DEFAULT_COUNTRY_CODE)
-  const paymentTypes = Array.from(new Set(mediaInput.paymentTypes?.length ? mediaInput.paymentTypes : ['full', 'installment']))
+  const commerceProfile = buildVehicleCommerceProfile({
+    bodyStyle,
+    condition: mediaInput.condition,
+    priceUsd,
+    paymentTypes: mediaInput.paymentTypes,
+    rentable: mediaInput.rentable,
+  })
+  const highlights = Array.from(new Set([
+    ...(mediaInput.highlights || []),
+    commerceProfile.isRentalOnlyLuxury
+      ? 'Worldwide premium rental coordination available'
+      : 'Worldwide delivery and export support available',
+  ]))
 
   return attachVehicleDisplayMedia({
     id: mediaInput.id,
@@ -1133,8 +1181,8 @@ const createCarRecord = (input) => {
     minimumDepositUsd,
     installmentDurations: durations,
     monthlyPlans: buildPlans(priceUsd, minimumDepositUsd, durations),
-    paymentTypes,
-    rentable: mediaInput.rentable ?? true,
+    paymentTypes: commerceProfile.paymentTypes,
+    rentable: commerceProfile.rentable,
     rentalTerms: normalizeRentalTerms(mediaInput.rentalTerms, priceUsd, bodyStyle),
     bodyStyle,
     fuelType: mediaInput.fuelType,
@@ -1147,7 +1195,7 @@ const createCarRecord = (input) => {
     heroImage: mediaInput.heroImage || '',
     gallery: mediaInput.gallery || [],
     features: mediaInput.features || [],
-    highlights: mediaInput.highlights || [],
+    highlights,
     delivery: {
       feeUsd: Number(mediaInput.delivery?.feeUsd || 0),
       eta: mediaInput.delivery?.eta || '2-5 business days',
@@ -1290,7 +1338,7 @@ const cars = [
   })),
   createCarRecord(withStockPhotos('lexus rx 500h f sport performance suv', {
     id: 'lexus-rx-500h-f-sport-2024', badge: 'Hybrid Performance', brand: 'Lexus', model: 'RX 500h F SPORT Performance', year: 2024, mileage: 2100,
-    location: 'Los Angeles', condition: 'Brand new', priceUsd: 76200, minimumDepositUsd: 9800, paymentTypes: ['full', 'installment'],
+    location: 'Los Angeles', condition: 'Certified used', priceUsd: 76200, minimumDepositUsd: 9800, paymentTypes: ['full', 'installment'],
     bodyStyle: 'SUV', fuelType: 'Hybrid', transmission: '6-speed automatic', drivetrain: 'AWD', exteriorColor: 'Copper Crest', interiorColor: 'Dark Rose Leather',
     description: 'A range-topping RX hybrid with stronger mid-range response, rich interior trim, and premium crossover practicality for buyers who want a more current Lexus spec.',
     features: ['DIRECT4 AWD', 'Mark Levinson surround audio', 'Dynamic rear steering', 'Advanced Park assist'],
@@ -1299,7 +1347,7 @@ const cars = [
   })),
   createCarRecord(withStockPhotos('lexus rx 350h luxury suv', {
     id: 'lexus-rx-350h-luxury-2025', badge: 'Luxury Hybrid', brand: 'Lexus', model: 'RX 350h Luxury', year: 2025, mileage: 1200,
-    location: 'Seattle', condition: 'Brand new', priceUsd: 69800, minimumDepositUsd: 9000, paymentTypes: ['full', 'installment'],
+    location: 'Seattle', condition: 'Certified used', priceUsd: 69800, minimumDepositUsd: 9000, paymentTypes: ['full', 'installment'],
     bodyStyle: 'SUV', fuelType: 'Hybrid', transmission: 'eCVT', drivetrain: 'AWD', exteriorColor: 'Nightfall Mica', interiorColor: 'Macadamia Leather',
     description: 'This RX 350h Luxury is positioned for buyers who want Lexus efficiency, softer long-distance comfort, and a polished cabin rather than aggressive trim styling.',
     features: ['Semi-aniline leather', 'Digital rearview mirror', 'Panoramic view monitor', 'Triple-beam LED headlamps'],
@@ -1317,12 +1365,30 @@ const cars = [
   })),
   createCarRecord(withStockPhotos('lexus es 300h luxury sedan', {
     id: 'lexus-es-300h-luxury-2025', badge: 'Fuel Saver', brand: 'Lexus', model: 'ES 300h Luxury', year: 2025, mileage: 1600,
-    location: 'Chicago', condition: 'Brand new', priceUsd: 54800, minimumDepositUsd: 7500, paymentTypes: ['full', 'installment'],
+    location: 'Chicago', condition: 'Certified used', priceUsd: 54800, minimumDepositUsd: 7500, paymentTypes: ['full', 'installment'],
     bodyStyle: 'Sedan', fuelType: 'Hybrid', transmission: 'eCVT', drivetrain: 'FWD', exteriorColor: 'Iridium', interiorColor: 'Palomino Leather',
     description: 'A new ES 300h configured for buyers who want lower running costs, quiet cruising, and the classic Lexus sedan format without stepping into a large flagship.',
     features: ['Hybrid efficiency system', '12.3-inch multimedia display', 'Blind spot monitor', 'Lexus Safety System+ 3.0'],
     highlights: ['Chicago metro inventory', 'Strong commuter and executive value', 'Soft-touch Lexus cabin finish'],
     delivery: { feeUsd: 260, eta: '2-4 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('lexus rx 350 premium suv used', {
+    id: 'lexus-rx-350-premium-2023', badge: 'Neatly Used RX', brand: 'Lexus', model: 'RX 350 Premium', year: 2023, mileage: 11800,
+    location: 'London', condition: 'Certified used', priceUsd: 51800, minimumDepositUsd: 6800, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'SUV', fuelType: 'Petrol', transmission: '8-speed automatic', drivetrain: 'AWD', exteriorColor: 'Cloudburst Grey', interiorColor: 'Macadamia Leather',
+    description: 'A neatly used RX built for global family buyers who want clean Lexus comfort, practical running costs, and verified export-ready paperwork.',
+    features: ['Blind spot monitor', 'Wireless Apple CarPlay', 'Panoramic roof', 'Power tailgate'],
+    highlights: ['London export lane active', 'Clean used RX stock with verified gallery images', 'Purchase and rental options both available'],
+    delivery: { feeUsd: 420, eta: '4-8 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('lexus rx 350h premium plus used suv', {
+    id: 'lexus-rx-350h-premium-plus-2024', badge: 'Used Hybrid RX', brand: 'Lexus', model: 'RX 350h Premium+', year: 2024, mileage: 9600,
+    location: 'Dubai', condition: 'Certified used', priceUsd: 57200, minimumDepositUsd: 7600, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'SUV', fuelType: 'Hybrid', transmission: 'eCVT', drivetrain: 'AWD', exteriorColor: 'Sonic Copper', interiorColor: 'Black Leather',
+    description: 'A neatly used RX hybrid with a smoother ride, lower fuel spend, and a worldwide delivery profile for buyers moving between city and long-distance use.',
+    features: ['Panoramic monitor', 'Mark Levinson audio', 'Digital key', 'Heated and ventilated seats'],
+    highlights: ['Dubai inspection and export support', 'Hybrid RX kept in neatly used condition', 'Low-mile premium-plus trim'],
+    delivery: { feeUsd: 470, eta: '5-9 business days after approval' },
   })),
   createCarRecord(withStockPhotos('lexus es 250 awd sedan', {
     id: 'lexus-es-250-awd-2024', badge: 'All Weather', brand: 'Lexus', model: 'ES 250 AWD', year: 2024, mileage: 5800,
@@ -1333,14 +1399,68 @@ const cars = [
     highlights: ['New York handover possible', 'Lower-entry Lexus executive sedan', 'Strong winter-market fit'],
     delivery: { feeUsd: 240, eta: '2-4 business days after approval' },
   })),
+  createCarRecord(withStockPhotos('lexus es 350 f sport used sedan', {
+    id: 'lexus-es-350-f-sport-2023', badge: 'Used ES Sport', brand: 'Lexus', model: 'ES 350 F SPORT', year: 2023, mileage: 14300,
+    location: 'Toronto', condition: 'Certified used', priceUsd: 41800, minimumDepositUsd: 5600, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Sedan', fuelType: 'Petrol', transmission: '8-speed automatic', drivetrain: 'FWD', exteriorColor: 'Ultra White', interiorColor: 'Circuit Red',
+    description: 'A neatly used ES F SPORT for buyers who want a sportier Lexus sedan look without leaving the dependable daily-driver price range.',
+    features: ['F SPORT seats', 'Adaptive variable suspension', '12.3-inch display', 'Blind spot assist'],
+    highlights: ['Toronto handover and export support', 'Used ES trim with sporty cabin finish', 'Budget-conscious premium sedan option'],
+    delivery: { feeUsd: 310, eta: '3-6 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('lexus es 250 luxury used sedan', {
+    id: 'lexus-es-250-luxury-2022', badge: 'Entry Lexus', brand: 'Lexus', model: 'ES 250 Luxury', year: 2022, mileage: 22100,
+    location: 'Johannesburg', condition: 'Certified used', priceUsd: 36200, minimumDepositUsd: 4900, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Sedan', fuelType: 'Petrol', transmission: '8-speed automatic', drivetrain: 'AWD', exteriorColor: 'Silver Lining', interiorColor: 'Rich Cream',
+    description: 'A neatly used Lexus ES added for lower-entry buyers who want comfort, strong cabin quietness, and a calmer monthly target than SUV stock.',
+    features: ['Leather trim', 'Memory seats', 'Parking sensors', 'Heated steering wheel'],
+    highlights: ['Johannesburg export-ready desk', 'Lower-budget Lexus executive sedan', 'Used condition verified before release'],
+    delivery: { feeUsd: 520, eta: '6-10 business days after approval' },
+  })),
   createCarRecord(withStockPhotos('lexus gx 550 overtrail suv', {
     id: 'lexus-gx-550-overtrail-2025', badge: 'Trail Luxe', brand: 'Lexus', model: 'GX 550 Overtrail+', year: 2025, mileage: 1800,
-    location: 'Dallas', condition: 'Brand new', priceUsd: 84300, minimumDepositUsd: 11000, paymentTypes: ['full', 'installment'],
+    location: 'Dallas', condition: 'Certified used', priceUsd: 84300, minimumDepositUsd: 11000, paymentTypes: ['full', 'installment'],
     bodyStyle: 'SUV', fuelType: 'Petrol', transmission: '10-speed automatic', drivetrain: '4WD', exteriorColor: 'Incognito', interiorColor: 'Black Leather',
     description: 'A new GX 550 Overtrail+ blending Lexus cabin quality with a more squared-off body and proper off-road hardware for buyers who want a tougher premium SUV.',
     features: ['E-KDSS suspension', '33-inch all-terrain package', 'Crawl control', 'Panoramic monitor'],
     highlights: ['Dallas off-road luxury stock', 'New GX body style', 'Suitable for adventure-led family use'],
     delivery: { feeUsd: 330, eta: '3-5 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('toyota camry xse used sedan', {
+    id: 'toyota-camry-xse-2023', badge: 'Budget Sedan', brand: 'Toyota', model: 'Camry XSE', year: 2023, mileage: 18600,
+    location: 'Lagos', condition: 'Certified used', priceUsd: 28600, minimumDepositUsd: 3900, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Sedan', fuelType: 'Petrol', transmission: '8-speed automatic', drivetrain: 'FWD', exteriorColor: 'Supersonic Red', interiorColor: 'Black',
+    description: 'A neatly used Camry added for buyers who want lower-budget comfort, easy parts access, and a clean daily-driver profile for global delivery.',
+    features: ['Leather and suede trim', 'Adaptive cruise', 'Blind spot monitor', 'Dual-zone climate'],
+    highlights: ['Lagos delivery lane open', 'Low-budget used Toyota sedan', 'Purchase and rental flow both supported'],
+    delivery: { feeUsd: 540, eta: '6-10 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('toyota rav4 xle premium used suv', {
+    id: 'toyota-rav4-xle-premium-2022', badge: 'Budget SUV', brand: 'Toyota', model: 'RAV4 XLE Premium', year: 2022, mileage: 23800,
+    location: 'Nairobi', condition: 'Certified used', priceUsd: 27800, minimumDepositUsd: 3800, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'SUV', fuelType: 'Petrol', transmission: '8-speed automatic', drivetrain: 'AWD', exteriorColor: 'Blueprint', interiorColor: 'Ash Grey',
+    description: 'A neatly used RAV4 for buyers who want durable SUV utility, strong resale confidence, and a lower monthly entry than the premium Lexus lane.',
+    features: ['Power liftgate', 'Lane tracing assist', 'Moonroof', 'Wireless charging'],
+    highlights: ['Nairobi global shipping coordination', 'Used Toyota SUV with clean gallery set', 'Popular lower-budget family option'],
+    delivery: { feeUsd: 560, eta: '6-10 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('toyota corolla cross xle used suv', {
+    id: 'toyota-corolla-cross-xle-2023', badge: 'Budget Crossover', brand: 'Toyota', model: 'Corolla Cross XLE', year: 2023, mileage: 17400,
+    location: 'Accra', condition: 'Certified used', priceUsd: 24200, minimumDepositUsd: 3300, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'SUV', fuelType: 'Petrol', transmission: 'CVT', drivetrain: 'FWD', exteriorColor: 'Celestite', interiorColor: 'Black Fabric',
+    description: 'A neatly used Corolla Cross built for lower-budget buyers who still want ground clearance, Toyota dependability, and worldwide delivery support.',
+    features: ['Apple CarPlay', 'Roof rails', 'Blind spot monitor', 'Smart key'],
+    highlights: ['Accra export and local-release support', 'Low-budget Toyota crossover', 'Clean daily-use family choice'],
+    delivery: { feeUsd: 530, eta: '6-9 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('honda civic ex used sedan', {
+    id: 'honda-civic-ex-2023', badge: 'Used Daily', brand: 'Honda', model: 'Civic EX', year: 2023, mileage: 21200,
+    location: 'Kuala Lumpur', condition: 'Certified used', priceUsd: 22100, minimumDepositUsd: 3100, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Sedan', fuelType: 'Petrol', transmission: 'CVT', drivetrain: 'FWD', exteriorColor: 'Meteorite Grey', interiorColor: 'Black Cloth',
+    description: 'A neatly used Civic that keeps the budget end of the catalog strong for buyers who want dependable transport with a cleaner ownership cost profile.',
+    features: ['Honda Sensing', 'Remote start', 'Sunroof', '8-speaker audio'],
+    highlights: ['Kuala Lumpur export route available', 'Low-budget used daily driver', 'Straightforward purchase or rental path'],
+    delivery: { feeUsd: 590, eta: '7-11 business days after approval' },
   })),
   createCarRecord(withStockPhotos('acura mdx type s advance suv', {
     id: 'acura-mdx-type-s-2025', badge: 'Performance Family', brand: 'Acura', model: 'MDX Type S Advance', year: 2025, mileage: 2400,
@@ -1353,7 +1473,7 @@ const cars = [
   })),
   createCarRecord(withStockPhotos('lexus tx 500h f sport premium suv', {
     id: 'lexus-tx-500h-f-sport-2025', badge: 'Three-Row Hybrid', brand: 'Lexus', model: 'TX 500h F SPORT Premium', year: 2025, mileage: 1400,
-    location: 'Miami', condition: 'Brand new', priceUsd: 74200, minimumDepositUsd: 9600, paymentTypes: ['full', 'installment'],
+    location: 'Miami', condition: 'Certified used', priceUsd: 74200, minimumDepositUsd: 9600, paymentTypes: ['full', 'installment'],
     bodyStyle: 'SUV', fuelType: 'Hybrid', transmission: '6-speed automatic', drivetrain: 'AWD', exteriorColor: 'Wind Chill Pearl', interiorColor: 'Black Leather',
     description: 'A current TX hybrid added for buyers who want Lexus three-row practicality without leaving the premium comfort lane or the brand’s cleaner cabin design language.',
     features: ['Three-row seating', 'DIRECT4 AWD', 'Mark Levinson audio', 'Panoramic view monitor'],
@@ -1380,7 +1500,7 @@ const cars = [
   })),
   createCarRecord(withStockPhotos('lexus ls 500 awd sedan', {
     id: 'lexus-ls-500-awd-2025', badge: 'Flagship Sedan', brand: 'Lexus', model: 'LS 500 AWD', year: 2025, mileage: 1100,
-    location: 'New York', condition: 'Brand new', priceUsd: 93400, minimumDepositUsd: 12600, paymentTypes: ['full', 'installment'],
+    location: 'New York', condition: 'Certified used', priceUsd: 93400, minimumDepositUsd: 12600, paymentTypes: ['full', 'installment'],
     bodyStyle: 'Sedan', fuelType: 'Petrol', transmission: '10-speed automatic', drivetrain: 'AWD', exteriorColor: 'Manganese Luster', interiorColor: 'White and Art Wood',
     description: 'A full-size Lexus flagship sedan aimed at buyers who want a softer luxury alternative to German executive cars without dropping out of the top-tier cabin class.',
     features: ['Executive rear package', '28-way front seats', 'Kiriko glass trim', 'Air suspension'],
@@ -1602,7 +1722,7 @@ const cars = [
   }),
   createCarRecord({
     id: 'ford-f150-raptor-r-2024', badge: 'Performance Truck', brand: 'Ford', model: 'F-150 Raptor R', year: 2024, mileage: 2400,
-    location: 'Austin', condition: 'Brand new', priceUsd: 134000, minimumDepositUsd: 18000, paymentTypes: ['full', 'installment'],
+    location: 'Austin', condition: 'Certified used', priceUsd: 134000, minimumDepositUsd: 18000, paymentTypes: ['full', 'installment'],
     bodyStyle: 'Truck', fuelType: 'Petrol', transmission: '10-speed automatic', drivetrain: '4WD', exteriorColor: 'Code Orange', interiorColor: 'Black and Orange',
     description: 'A supercharged halo pickup from our Texas performance-truck allocation, built for buyers who want the correct nameplate, aggressive off-road presence, and clean release paperwork.',
     features: ['FOX Live Valve shocks', '37-inch package', 'Recaro seats', 'Trail camera system'],
@@ -1611,7 +1731,7 @@ const cars = [
   }),
   createCarRecord({
     id: 'ram-1500-trx-2024', badge: 'Supercharged Truck', brand: 'Ram', model: '1500 TRX Final Edition', year: 2024, mileage: 1800,
-    location: 'Phoenix', condition: 'Brand new', priceUsd: 142000, minimumDepositUsd: 20000, paymentTypes: ['full', 'installment'],
+    location: 'Phoenix', condition: 'Certified used', priceUsd: 142000, minimumDepositUsd: 20000, paymentTypes: ['full', 'installment'],
     bodyStyle: 'Truck', fuelType: 'Petrol', transmission: '8-speed automatic', drivetrain: '4WD', exteriorColor: 'Diamond Black', interiorColor: 'Black and Red',
     description: 'A collector-grade TRX configuration sourced through our Southwest truck desk with matched exterior and interior catalog media and a clear high-value deposit workflow.',
     features: ['Launch control', 'Beadlock-capable wheels', 'TRX performance pages', 'Harman Kardon audio'],
@@ -1620,7 +1740,7 @@ const cars = [
   }),
   createCarRecord({
     id: 'gmc-hummer-ev-pickup-2025', badge: 'EV Truck', brand: 'GMC', model: 'Hummer EV Pickup 3X', year: 2025, mileage: 900,
-    location: 'Los Angeles', condition: 'Brand new', priceUsd: 156000, minimumDepositUsd: 22000, paymentTypes: ['full', 'installment'],
+    location: 'Los Angeles', condition: 'Certified used', priceUsd: 156000, minimumDepositUsd: 22000, paymentTypes: ['full', 'installment'],
     bodyStyle: 'Truck', fuelType: 'Electric', transmission: 'Single-speed', drivetrain: 'AWD', exteriorColor: 'Meteorite Metallic', interiorColor: 'Lunar Horizon',
     description: 'A tri-motor electric super truck from our California inventory with matched cockpit and bed-detail media for buyers who need the correct vehicle presentation before committing.',
     features: ['CrabWalk', 'Extract mode', 'Infinity roof panels', 'UltraVision cameras'],
@@ -1629,13 +1749,49 @@ const cars = [
   }),
   createCarRecord({
     id: 'chevrolet-silverado-hd-2024', badge: 'Heavy Duty', brand: 'Chevrolet', model: 'Silverado 2500HD High Country', year: 2024, mileage: 3200,
-    location: 'Houston', condition: 'Brand new', priceUsd: 119000, minimumDepositUsd: 16000, paymentTypes: ['full', 'installment'],
+    location: 'Houston', condition: 'Certified used', priceUsd: 119000, minimumDepositUsd: 16000, paymentTypes: ['full', 'installment'],
     bodyStyle: 'Truck', fuelType: 'Diesel', transmission: '10-speed automatic', drivetrain: '4WD', exteriorColor: 'Iridescent Pearl', interiorColor: 'Jet Black and Umber',
     description: 'A luxury heavy-duty pickup positioned for ranch, towing, and executive utility buyers who want exact truck-specific interior and exterior media before deposit approval.',
     features: ['Duramax diesel', 'Multi-Flex tailgate', 'Surround vision', 'Trailering tech package'],
     highlights: ['Houston heavy-duty inspection support', 'Cargo-bed and cabin imagery matched to model name', 'Fleet and owner-driver finance review supported'],
     delivery: { feeUsd: 430, eta: '2-4 business days after approval' },
   }),
+  createCarRecord(withStockPhotos('toyota tacoma trd off road used truck', {
+    id: 'toyota-tacoma-trd-off-road-2023', badge: 'Used Truck', brand: 'Toyota', model: 'Tacoma TRD Off-Road', year: 2023, mileage: 22800,
+    location: 'Perth', condition: 'Certified used', priceUsd: 41800, minimumDepositUsd: 5600, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Truck', fuelType: 'Petrol', transmission: '6-speed automatic', drivetrain: '4WD', exteriorColor: 'Magnetic Grey', interiorColor: 'Black Cloth',
+    description: 'A neatly used Tacoma for buyers who want a dependable midsize truck with proper off-road hardware, easy global serviceability, and cleaner pricing than the halo trucks.',
+    features: ['Locking rear diff', 'Crawl control', 'Multi-terrain select', 'All-terrain tyres'],
+    highlights: ['Perth export desk for global truck buyers', 'Used Tacoma with verified gallery images', 'Purchase and rental both available'],
+    delivery: { feeUsd: 620, eta: '7-11 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('ford ranger lariat used truck', {
+    id: 'ford-ranger-lariat-2023', badge: 'Global Utility', brand: 'Ford', model: 'Ranger Lariat', year: 2023, mileage: 26400,
+    location: 'Cape Town', condition: 'Certified used', priceUsd: 38900, minimumDepositUsd: 5200, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Truck', fuelType: 'Diesel', transmission: '10-speed automatic', drivetrain: '4WD', exteriorColor: 'Carbonized Grey', interiorColor: 'Ebony',
+    description: 'A neatly used Ranger aimed at global utility buyers who need a clean dual-cab truck for work, mixed-road travel, and export-friendly documentation.',
+    features: ['Tow package', 'Leather trim', 'Lane keep assist', '360 camera'],
+    highlights: ['Cape Town truck handover and export route', 'Lower-budget used truck option', 'Clean condition with gallery coverage'],
+    delivery: { feeUsd: 610, eta: '7-12 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('nissan frontier pro 4x used truck', {
+    id: 'nissan-frontier-pro-4x-2023', badge: 'Budget Truck', brand: 'Nissan', model: 'Frontier PRO-4X', year: 2023, mileage: 24100,
+    location: 'Doha', condition: 'Certified used', priceUsd: 34400, minimumDepositUsd: 4700, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Truck', fuelType: 'Petrol', transmission: '9-speed automatic', drivetrain: '4WD', exteriorColor: 'Boulder Grey', interiorColor: 'Charcoal',
+    description: 'A neatly used Frontier PRO-4X for buyers who want an affordable off-road-capable truck without stepping into premium American pickup pricing.',
+    features: ['Bilstein dampers', 'Skid plates', 'Around-view monitor', 'Fender audio'],
+    highlights: ['Doha off-road truck lane active', 'Affordable used pickup with global delivery support', 'Clean export paperwork available'],
+    delivery: { feeUsd: 580, eta: '6-10 business days after approval' },
+  })),
+  createCarRecord(withStockPhotos('toyota hilux invincible used pickup truck', {
+    id: 'toyota-hilux-invincible-2022', badge: 'Worldwide Pickup', brand: 'Toyota', model: 'Hilux Invincible', year: 2022, mileage: 31400,
+    location: 'Manchester', condition: 'Foreign used', priceUsd: 33200, minimumDepositUsd: 4500, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Truck', fuelType: 'Diesel', transmission: '6-speed automatic', drivetrain: '4WD', exteriorColor: 'Attitude Black', interiorColor: 'Black Leather',
+    description: 'A neatly used Hilux built for global buyers who want a durable pickup with easy parts access, real cargo utility, and trusted export appeal.',
+    features: ['Rear diff lock', 'Leather seats', 'Apple CarPlay', 'Tow package'],
+    highlights: ['Manchester global truck export route', 'Neatly used Hilux with correct pickup gallery', 'Popular worldwide work-and-family pickup'],
+    delivery: { feeUsd: 540, eta: '5-9 business days after approval' },
+  })),
   createCarRecord({
     id: 'porsche-911-turbo-s-2024', badge: 'Icon Sports Car', brand: 'Porsche', model: '911 Turbo S', year: 2024, mileage: 1400,
     location: 'Miami', condition: 'Brand new', priceUsd: 276000, minimumDepositUsd: 42000, paymentTypes: ['full', 'installment'],
@@ -1692,7 +1848,7 @@ const cars = [
   }),
   createCarRecord({
     id: 'toyota-tundra-capstone-2024', badge: 'Luxury Truck', brand: 'Toyota', model: 'Tundra Capstone', year: 2024, mileage: 2600,
-    location: 'Austin', condition: 'Brand new', priceUsd: 108000, minimumDepositUsd: 15000, paymentTypes: ['full', 'installment'],
+    location: 'Austin', condition: 'Certified used', priceUsd: 108000, minimumDepositUsd: 15000, paymentTypes: ['full', 'installment'],
     bodyStyle: 'Truck', fuelType: 'Hybrid', transmission: '10-speed automatic', drivetrain: '4WD', exteriorColor: 'Wind Chill Pearl', interiorColor: 'Black and White Leather',
     description: 'A premium hybrid pickup with exact truck-specific media covering the front stance, side profile, cabin, second row, and cargo bed before deposit review.',
     features: ['i-Force Max hybrid', 'Panoramic roof', 'Power running boards', 'Trailer backup guide'],
@@ -1701,7 +1857,7 @@ const cars = [
   }),
   createCarRecord({
     id: 'rivian-r1t-quad-motor-2024', badge: 'Adventure EV', brand: 'Rivian', model: 'R1T Quad-Motor', year: 2024, mileage: 1900,
-    location: 'Seattle', condition: 'Brand new', priceUsd: 126000, minimumDepositUsd: 18000, paymentTypes: ['full', 'installment'],
+    location: 'Seattle', condition: 'Certified used', priceUsd: 126000, minimumDepositUsd: 18000, paymentTypes: ['full', 'installment'],
     bodyStyle: 'Truck', fuelType: 'Electric', transmission: 'Single-speed', drivetrain: 'AWD', exteriorColor: 'Forest Green', interiorColor: 'Ocean Coast',
     description: 'An all-electric adventure truck with exact-match gallery views for the body, gear tunnel zone, dashboard, and seat layout rather than generic EV imagery.',
     features: ['Quad-motor AWD', 'Air suspension', 'Gear tunnel', 'Camp speaker'],
@@ -1774,7 +1930,6 @@ const paymentEvents = [
     userId: 'demo-user',
     carId: 'tesla-model-x-plaid-2024',
     eventType: 'manual-confirmed',
-    provider: 'manual',
     reference: 'TESLA-DEP-001',
     status: 'Confirmed',
     actorType: 'admin',
@@ -1830,7 +1985,6 @@ const paymentRequests = [
     referenceCode: '',
     paymentLink: '',
     adminNote: 'Buyer requested bank transfer instructions for the minimum deposit.',
-    paymentId: '',
     proofAttachment: null,
     proofUploadedAt: '',
     createdAt: '2026-04-20T09:45:00.000Z',
@@ -1848,7 +2002,6 @@ const serviceRequests = [
     id: 'service-1',
     userId: 'demo-user',
     type: 'concierge',
-    status: 'Reviewing brief',
     fullName: 'Amina Yusuf',
     email: 'amina.yusuf@prestigemotorsmiami.com',
     phone: '+1 917 555 0172',
@@ -1857,7 +2010,7 @@ const serviceRequests = [
     budgetUsd: 285000,
     assetDetails: 'Seeking a black-on-tan Flying Spur Speed with fewer than 5,000 miles and rear entertainment.',
     desiredOutcome: 'Open to US stock first, then Japan or GCC export stock with verified history.',
-    notes: 'Would like finance and enclosed transport options included in the proposal.',
+    status: 'Reviewing brief',
     createdAt: '2026-04-20T11:45:00.000Z',
   },
 ]
@@ -1866,7 +2019,6 @@ const meta = {
   brands: [],
   locations: [],
   paymentTypes: ['full', 'installment', 'rental'],
-  defaultCountry: DEFAULT_COUNTRY_CODE,
   countries: COUNTRY_OPTIONS,
   adminCredentialsHint: ADMIN_LOGIN_HINT_EMAIL ? { email: ADMIN_LOGIN_HINT_EMAIL } : null,
   testimonials: [
