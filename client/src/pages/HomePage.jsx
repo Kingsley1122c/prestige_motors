@@ -300,20 +300,20 @@ export function HomePage() {
 
       <section className="hero-section page-shell">
         <div className="hero-copy glass-panel">
-          <span className="eyebrow">Miami flagship inventory</span>
+          <span className="eyebrow">Worldwide truck-first inventory</span>
           <div className="hero-ribbon">
-            <span>Same-day VIN pack</span>
-            <span>Concierge finance desk</span>
-            <span>Enclosed US transport</span>
+            <span>Used truck desk</span>
+            <span>Used-car purchase and rental</span>
+            <span>Worldwide delivery coordination</span>
           </div>
           <h1>
-            Exotic Metal.
-            <span> Executive Delivery.</span>
+            Used Trucks.
+            <span> Global Delivery.</span>
           </h1>
           <p>
-            Prestige Motors Miami curates high-value US showroom cars and selective Asia imports
-            for buyers who want clean paperwork, disciplined finance terms, and a dealership-grade
-            handover process instead of listing-site guesswork.
+            Prestige Motors now leads with neatly used trucks, verified Lexus RX and ES stock,
+            and lower-budget daily cars for buyers who want clean paperwork, worldwide delivery
+            support, and rental-only access to halo exotics above $300,000.
           </p>
           <div className="hero-actions">
             <Link className="button button-primary" to="/listings">
