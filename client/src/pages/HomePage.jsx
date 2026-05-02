@@ -179,17 +179,6 @@ export function HomePage() {
     return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
   }, [adSignals.matchedBodyStyle, adSignals.matchedBrand, meta.company?.phone])
 
-  const heroStats = useMemo(() => {
-    const truckCount = cars.filter((car) => car.bodyStyle === 'Truck').length
-    const rentalOnlyCount = cars.filter((car) => car.rentable && !car.paymentTypes.includes('full') && !car.paymentTypes.includes('installment')).length
-
-    return [
-      { value: `${cars.length}`, label: 'Used and rental units live' },
-      { value: `${truckCount}`, label: 'Truck listings ready' },
-      { value: `${rentalOnlyCount}`, label: 'Rental-only halo cars' },
-    ]
-  }, [cars])
-
   const truckSpotlightCars = useMemo(
     () => sortVehiclesForMerchandising(cars.filter((car) => car.bodyStyle === 'Truck')).slice(0, 3),
     [cars],
@@ -322,14 +311,6 @@ export function HomePage() {
             <Link className="button button-secondary" to="/contact#inspection">
               Book a private showing
             </Link>
-          </div>
-          <div className="stat-row">
-            {heroStats.map((item) => (
-              <div key={item.label}>
-                <strong>{item.value}</strong>
-                <span>{item.label}</span>
-              </div>
-            ))}
           </div>
           <div className="hero-ledger">
             {showroomLanes.map((lane) => (

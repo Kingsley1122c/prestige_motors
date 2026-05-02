@@ -91,20 +91,6 @@ export function ListingsPage() {
     [cars, filters.bodyStyle, filters.brand, filters.location, filters.maxPrice, filters.minPrice, filters.paymentType],
   )
 
-  const inventorySnapshot = useMemo(() => {
-    const truckCount = cars.filter((car) => car.bodyStyle === 'Truck').length
-    const usedCount = cars.filter((car) => /used/i.test(car.condition)).length
-    const rentalOnlyCount = cars.filter((car) => car.rentable && !car.paymentTypes.includes('full') && !car.paymentTypes.includes('installment')).length
-    const topPrice = cars.reduce((highest, car) => Math.max(highest, car.priceUsd), 0)
-
-    return {
-      truckCount,
-      usedCount,
-      rentalOnlyCount,
-      topPrice,
-    }
-  }, [cars])
-
   const editorialCars = useMemo(() => sortVehiclesForMerchandising(cars).slice(0, 3), [cars])
 
   return (
@@ -138,24 +124,15 @@ export function ListingsPage() {
           </div>
         </div>
         <div className="surface-card listings-snapshot-card">
-          <p className="muted-label">Market snapshot</p>
-          <div className="listing-snapshot-grid">
-            <div>
-              <strong>{inventorySnapshot.truckCount}</strong>
-              <span>Truck listings live</span>
-            </div>
-            <div>
-              <strong>{inventorySnapshot.usedCount}</strong>
-              <span>Used vehicles ready</span>
-            </div>
-            <div>
-              <strong>{inventorySnapshot.rentalOnlyCount}</strong>
-              <span>Rental-only halo cars</span>
-            </div>
-            <div>
-              <strong>{formatUsd(inventorySnapshot.topPrice)}</strong>
-              <span>Highest rental-only ticket</span>
-            </div>
+          <p className="muted-label">Client release standard</p>
+          <p>
+            Every purchase or rental moves through identity review, deposit confirmation,
+            and delivery planning before the vehicle is released.
+          </p>
+          <div className="listings-hero-chips">
+            <span>ID review first</span>
+            <span>Verified deposit flow</span>
+            <span>Delivery planned before release</span>
           </div>
         </div>
       </div>
