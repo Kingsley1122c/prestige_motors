@@ -493,6 +493,37 @@ const VERIFIED_MEDIA_LIBRARY = {
     ],
     mediaVerified: true,
   },
+  'isuzu-nseries-reefer-truck-2021': {
+    heroImage: buildCommonsFilePath('Isuzu N-Series. Refrigerated box rigid truck. Spielvogel 2013.jpg'),
+    gallery: [
+      buildCommonsFilePath('Isuzu N-Series. Refrigerated box rigid truck. Spielvogel 2013.jpg'),
+      buildCommonsFilePath('Isuzu N-series, WhiteTruck, THERMO KING, GVW14250.jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'freightliner-m2-106-flatbed-2021': {
+    heroImage: buildCommonsFilePath('Freightliner Business Class M2 106.jpg'),
+    gallery: [
+      buildCommonsFilePath('Freightliner Business Class M2 106.jpg'),
+      buildCommonsFilePath('2008 Freightliner Business Class M2 106 in Blue, Front Right, 04-18-2022.jpg'),
+      buildCommonsFilePath('Freightliner Business Class M2 - Florida Power & Light (FPL).jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'peterbilt-fuel-tanker-2020': {
+    heroImage: buildCommonsFilePath('Peterbilt truck delivering gasoline to a Rotten Robbie.jpg'),
+    gallery: [
+      buildCommonsFilePath('Peterbilt truck delivering gasoline to a Rotten Robbie.jpg'),
+    ],
+    mediaVerified: true,
+  },
+  'mack-concrete-mixer-2021': {
+    heroImage: buildCommonsFilePath('Allied Concrete Mack trucks.jpg'),
+    gallery: [
+      buildCommonsFilePath('Allied Concrete Mack trucks.jpg'),
+    ],
+    mediaVerified: true,
+  },
   'lamborghini-urus-2024': {
     heroImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Lamborghini_Urus_SE_DSC_8524.jpg/1280px-Lamborghini_Urus_SE_DSC_8524.jpg',
     gallery: [
@@ -2016,6 +2047,42 @@ const cars = [
     features: ['Steel dump body', 'PTO hydraulics', 'Heavy-duty tandem axle', 'Construction-spec suspension'],
     highlights: ['Charlotte construction-equipment sourcing desk', 'Verified Mack dump-truck media', 'Built for site haulage, aggregate, and municipal fleet work'],
     delivery: { feeUsd: 920, eta: '5-9 business days after approval' },
+  }),
+  createCarRecord({
+    id: 'isuzu-nseries-reefer-truck-2021', badge: 'Cold Chain Truck', brand: 'Isuzu', model: 'N-Series Reefer Truck', year: 2021, mileage: 61200,
+    location: 'Phoenix', condition: 'Certified used', priceUsd: 58900, minimumDepositUsd: 7900, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Truck', fuelType: 'Diesel', transmission: 'Automatic', drivetrain: 'RWD', exteriorColor: 'White', interiorColor: 'Grey',
+    description: 'A refrigerated Isuzu work truck positioned for food, pharmacy, and cold-chain buyers who need temperature-controlled urban delivery without moving up to a full tractor-trailer.',
+    features: ['Thermo King refrigerated body', 'Insulated cargo walls', 'Roll-up rear door', 'Low-entry cab'],
+    highlights: ['Phoenix cold-chain fleet sourcing', 'Verified Isuzu refrigerated-truck media', 'Useful for produce, frozen food, and healthcare logistics'],
+    delivery: { feeUsd: 630, eta: '4-6 business days after approval' },
+  }),
+  createCarRecord({
+    id: 'freightliner-m2-106-flatbed-2021', badge: 'Flatbed Work Truck', brand: 'Freightliner', model: 'M2 106 Flatbed Truck', year: 2021, mileage: 73400,
+    location: 'Kansas City', condition: 'Certified used', priceUsd: 74200, minimumDepositUsd: 9900, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Truck', fuelType: 'Diesel', transmission: 'Automatic', drivetrain: 'RWD', exteriorColor: 'White', interiorColor: 'Grey Cloth',
+    description: 'A medium-duty Freightliner flatbed truck added for buyers handling pallet loads, bundled materials, site deliveries, and utility-contract cargo that does not need an enclosed box body.',
+    features: ['26-foot flatbed deck', 'Stake pockets', 'Tie-down rails', 'Tool storage boxes'],
+    highlights: ['Kansas City contractor and materials lane', 'Verified Freightliner M2 commercial imagery', 'Fit for lumber, steel, signage, and equipment transport'],
+    delivery: { feeUsd: 710, eta: '4-7 business days after approval' },
+  }),
+  createCarRecord({
+    id: 'peterbilt-fuel-tanker-2020', badge: 'Fuel Tanker', brand: 'Peterbilt', model: 'Fuel Tanker Truck', year: 2020, mileage: 286000,
+    location: 'Tulsa', condition: 'Certified used', priceUsd: 109800, minimumDepositUsd: 14700, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Truck', fuelType: 'Diesel', transmission: 'Manual', drivetrain: '6x4', exteriorColor: 'White and Red', interiorColor: 'Grey',
+    description: 'A used Peterbilt tanker truck for petroleum, aviation-fuel, and industrial-fluid buyers who need a real road-going tanker instead of a generic highway tractor listing.',
+    features: ['Fuel-tanker body', 'Pump and hose cabinet', 'Commercial-spec air brakes', 'Long-haul dual tank setup'],
+    highlights: ['Tulsa petroleum and fleet sourcing desk', 'Verified Peterbilt tanker media', 'Configured for regional fuel and fluid hauling contracts'],
+    delivery: { feeUsd: 940, eta: '5-8 business days after approval' },
+  }),
+  createCarRecord({
+    id: 'mack-concrete-mixer-2021', badge: 'Mixer Truck', brand: 'Mack', model: 'Concrete Mixer Truck', year: 2021, mileage: 84300,
+    location: 'Nashville', condition: 'Certified used', priceUsd: 132400, minimumDepositUsd: 17700, paymentTypes: ['full', 'installment'],
+    bodyStyle: 'Truck', fuelType: 'Diesel', transmission: 'Automatic', drivetrain: '8x4', exteriorColor: 'White', interiorColor: 'Grey Work Trim',
+    description: 'A heavy Mack mixer truck aimed at ready-mix plants, contractors, and civil-work buyers who need a dedicated concrete hauler with more specialization than a dump truck.',
+    features: ['Concrete mixer drum', 'Heavy-duty chassis', 'PTO hydraulic drive', 'Jobsite-ready suspension'],
+    highlights: ['Nashville ready-mix equipment lane', 'Verified Mack commercial mixer media', 'Built for plant-to-site batching and construction support'],
+    delivery: { feeUsd: 980, eta: '5-9 business days after approval' },
   }),
   createCarRecord(withStockPhotos('toyota tacoma trd off road used truck', {
     id: 'toyota-tacoma-trd-off-road-2023', badge: 'Used Truck', brand: 'Toyota', model: 'Tacoma TRD Off-Road', year: 2023, mileage: 22800,
