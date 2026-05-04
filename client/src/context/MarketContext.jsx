@@ -239,8 +239,12 @@ export function MarketProvider({ children }) {
 
     try {
       const result = await task()
-      if (successMessage) {
-        setFlash(successMessage)
+      const resolvedSuccessMessage = typeof successMessage === 'function'
+        ? successMessage(result)
+        : successMessage
+
+      if (resolvedSuccessMessage) {
+        setFlash(resolvedSuccessMessage)
       }
       return result
     } catch (mutationError) {

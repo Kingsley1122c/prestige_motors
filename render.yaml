@@ -37,7 +37,7 @@ services:
       - key: NODE_VERSION
         value: 22.16.0
       - key: VITE_API_BASE_URL
-        sync: false
+        value: https://prestige-motors-api.onrender.com
       - key: VITE_META_PIXEL_ID
         sync: false
       - key: VITE_TIKTOK_PIXEL_ID
